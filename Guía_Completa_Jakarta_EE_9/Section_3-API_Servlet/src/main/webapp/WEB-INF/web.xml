@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd"
+         version="5.0">
+    <session-config>
+        <session-timeout>
+            30
+        </session-timeout>
+    </session-config>
+    
+    <!--par Clave/Valor de alcance Global a la Aplicación-->
+    <!--Declarar una variable denominada “titleApp” que es común para toda la aplicación y compartida entre los distintos Servlets-->
+    <context-param>
+        <param-name>titleApp</param-name>
+        <param-value>titleHere</param-value>
+    </context-param>
+    
+    
+</web-app>

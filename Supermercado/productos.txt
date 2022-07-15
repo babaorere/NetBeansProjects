@@ -1,0 +1,13 @@
+Detergente;2500
+Queso;1500
+Mermelada;800
+Insecticida;2300
+Sal;450
+Lavaloza;2800
+Limpiavidrios;1300
+Mantequilla;1580
+Yogurt;250
+Aceite;1250
+Totona;839
+Quesita;758
+queso de olivia;655

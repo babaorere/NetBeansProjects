@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="HISTORICO PRESUPI" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="15" bottomMargin="10" uuid="2d44bde7-88e0-4ff7-b18b-9177302a7233">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="188"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="user" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="rpt_fecha_hora" class="java.sql.Timestamp">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<title>
+		<band height="130" splitType="Stretch">
+			<staticText>
+				<reportElement x="92" y="80" width="343" height="23" uuid="fa846f65-724c-4cef-880a-5c465f9b21fb"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="18" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[HISTORICO PRESUPUESTO INGRESO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="5" y="108" width="85" height="20" uuid="3dfa24e3-2110-4704-b823-a6775685c5b1"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[PERIODO DESDE EL :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="159" y="108" width="52" height="20" uuid="efe96c83-6343-417f-a4c4-4a34048dd560"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[HASTA EL:]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="0" y="71" width="184" height="4" forecolor="#F0F0F0" backcolor="#FF0000" uuid="144d384e-8206-485c-aa35-63aa4adb01d4"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="184" y="71" width="371" height="4" forecolor="#F0F0F0" backcolor="#003399" uuid="2b835a5d-e4df-4492-9e65-37900bcbdaf8"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="112" y="12" width="256" height="54" uuid="ae6b7437-4019-487b-bc5d-bea2b039dab4"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[REPUBLICA BOLIVARIANA DE VENEZUELA
+ALCADIA BOLIVARIANA MUNICIPIO AMBROSIO PLAZA
+INSTITUTO AUTONOMO DE VIVIENDA Y HABITAT (INVIHAB)
+GUARENAS EDO.MIRANDA
+RIF: G-200029552]]></text>
+			</staticText>
+			<textField pattern="dd-MM-yyyy h.mm a">
+				<reportElement x="406" y="11" width="144" height="20" uuid="700c19c7-9694-4efe-bf85-f23171a496fd"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{rpt_fecha_hora}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="21" splitType="Stretch">
+			<rectangle radius="0">
+				<reportElement x="480" y="1" width="75" height="18" uuid="08afe6d5-4393-46c7-838a-a2a0d218121f"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle radius="0">
+				<reportElement x="387" y="1" width="93" height="18" uuid="6b8d50bd-2a41-429e-856a-4b41294fc9fd"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle radius="0">
+				<reportElement x="315" y="1" width="72" height="18" uuid="03bd65ad-bb8c-47f6-80ef-b7c0145bfce5"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle radius="0">
+				<reportElement x="159" y="1" width="156" height="18" uuid="a24806c9-9d59-414c-a4f4-ce8f88346065"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle radius="0">
+				<reportElement x="85" y="1" width="74" height="18" uuid="d755bdd9-815c-4e25-9313-fe2b83fd35ee"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle radius="0">
+				<reportElement x="41" y="1" width="44" height="18" uuid="ac4b3d29-a36f-4a06-b48c-b52d8cd1d3e8"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle radius="0">
+				<reportElement x="0" y="1" width="41" height="18" uuid="e5960691-d321-4a60-87db-01626dcb50ba"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="4" y="1" width="37" height="18" uuid="0884baac-ec17-4a0c-9507-631b5e476989"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FECHA ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="46" y="1" width="34" height="18" uuid="1c19f814-aff9-4da4-9098-69a5ca27e82e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ORDEN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="184" y="0" width="89" height="19" uuid="bf0f0740-0add-4cea-9b4b-34c83a3ae383"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SUJETO RETENIDO ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="337" y="0" width="33" height="19" uuid="80541ced-d050-496c-8d36-465e98415e4d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MONTO
+FACTURA ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="490" y="1" width="53" height="18" uuid="b6d6cc3c-f027-42bb-96ca-ac736e86ba48"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MONTO
+RETENIDO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="98" y="1" width="48" height="18" uuid="6eac4e49-60de-4607-90a7-ae2c0c1e8e4d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FACTURA ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="399" y="1" width="67" height="18" uuid="c47e4d7d-aadb-47b3-8a32-72ca8159bd8a"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MONTO
+I.V.A.
+]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15"/>
+	</detail>
+	<summary>
+		<band height="542" splitType="Stretch">
+			<rectangle radius="5">
+				<reportElement x="0" y="-15" width="555" height="538" uuid="30a08f58-59e1-461f-bf03-6efc4d75bc2d"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="276" y="523" width="274" height="17" uuid="6ae59774-6936-493f-bf70-83170328067c"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<text><![CDATA["CAPIP SISTEMA INTEGRAL" para el control de la Administración pública]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

@@ -1,0 +1,178 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.webapp</groupId>
+    <artifactId>Section_3-API_Servlet</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>war</packaging>
+    <name>Section_3-API_Servlet</name>
+    
+    <properties>
+        <javaPlatform>17</javaPlatform>
+        <maven.compiler.source>${javaPlatform}</maven.compiler.source>
+        <maven.compiler.target>${javaPlatform}</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <failOnMissingWebXml>false</failOnMissingWebXml>
+        <jakartaee>9.0.0</jakartaee>
+    </properties>
+        
+    <dependencies>
+
+        <!-- Bloque de dependencias -->
+        <!-- MAVEN -->
+
+        <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-war-plugin -->
+        <dependency>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-war-plugin</artifactId>
+            <version>3.3.2</version>
+            <type>maven-plugin</type>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-compiler-plugin -->
+        <dependency>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.10.0</version>
+            <type>maven-plugin</type>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-resources-plugin -->
+        <dependency>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-resources-plugin</artifactId>
+            <version>3.2.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-dependency-plugin -->
+        <dependency>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>3.2.0</version>
+        </dependency>
+        
+        <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-install-plugin -->
+        <dependency>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-install-plugin</artifactId>
+            <version>3.0.0-M1</version>
+        </dependency>
+
+        <!-- Bloque de dependencias -->                                                
+
+        <!-- https://mvnrepository.com/artifact/jakarta.platform/jakarta.jakartaee-api -->
+        <dependency>
+            <groupId>jakarta.platform</groupId>
+            <artifactId>jakarta.jakartaee-api</artifactId>
+            <version>${jakartaee}</version>
+            <scope>provided</scope>
+        </dependency>
+        
+        <!-- https://mvnrepository.com/artifact/org.webjars/bootstrap -->
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>bootstrap</artifactId>
+            <version>5.1.3</version>
+        </dependency>
+        
+        <!-- https://mvnrepository.com/artifact/jakarta.servlet/jakarta.servlet-api -->
+        <!-- Utilizado entre otras cosa para los "Listerner" -->
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>5.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        
+        
+        <!-- https://mvnrepository.com/artifact/jstl/jstl -->
+        <!--        <dependency>
+            <groupId>jstl</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.2</version>
+        </dependency>-->
+        
+        <!-- Las siguientes dependencias, fueron añadidas para evitar ciertos warning y errores, que aparecen en el despliegue -->
+        <!-- https://mvnrepository.com/artifact/org.apache.velocity.tools/velocity-tools -->
+        <dependency>
+            <groupId>org.apache.velocity.tools</groupId>
+            <artifactId>velocity-tools</artifactId>
+            <version>2.0-alpha1</version>
+        </dependency>        
+                         
+        <!-- https://mvnrepository.com/artifact/javax.servlet/jstl -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.2</version>
+        </dependency>
+                                        
+                                                                      
+    </dependencies>
+
+    
+    <build>
+        <!-- Url de entrada-->
+        <finalName>${project.name}</finalName>         
+        
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>3.0.0-M1</version>
+                <configuration>
+                </configuration>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.10.0</version>
+                <configuration>
+                    <verbose>false</verbose>
+                    <fork>true</fork>
+                    
+                    <source>${javaPlatform}</source>
+                    <target>${javaPlatform}</target>
+                                        
+                    <compilerArgs>
+                    </compilerArgs>
+                    
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.3.2</version>
+                <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <!--<outputDirectory>${endorsed.dir}</outputDirectory>-->
+                            <silent>true</silent>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>jakarta.platform</groupId>
+                                    <artifactId>jakarta.jakartaee-api</artifactId>
+                                    <version>${jakartaee}</version>
+                                    <type>jar</type>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>            
+        </plugins>
+    </build>    
+</project>
