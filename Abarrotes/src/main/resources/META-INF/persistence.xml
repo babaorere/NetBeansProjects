@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+    <persistence-unit name="BD_Persistance" transaction-type="RESOURCE_LOCAL">
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>    
+        <class>EntityClass.Administradores</class>
+        <class>EntityClass.Productos</class>
+        <class>EntityClass.Ticket</class>
+        <class>EntityClass.Usuarios</class>
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect"/>
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+            <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://127.0.0.1:3306/jacemy"/>
+            <property name="javax.persistence.jdbc.user" value="jacemy"/>
+            <property name="javax.persistence.jdbc.password" value="B9G0vW3Z]NK!-i8h"/>
+        </properties>
+    </persistence-unit>
+</persistence>

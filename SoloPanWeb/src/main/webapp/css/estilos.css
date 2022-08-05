@@ -1,0 +1,68 @@
+
+/**
+ *******************************************************************************
+ *******************************************************************************
+*/
+
+h1 {
+    margin: 0px;
+    padding: 0px;
+    color: white;
+    text-align: center;
+}
+
+h3, h6 {
+    margin: 0px;
+    padding: 0px;
+    color: black;
+    text-align: center;
+}
+
+html, h2, h3, h4, h5, ol, ul, li, a {
+    margin: 0px;
+    padding: 0px;
+}
+
+
+body {
+    width: 920px;
+    margin: 3px auto;        
+    background-color: aqua;
+    line-height: 1;
+}
+
+header {
+        background-color:  forestgreen;          
+}
+
+footer {
+    margin-top: 3px;
+    text-align: center;
+}
+
+ol, ul {
+	list-style: none;
+}
+
+blockquote, q {
+	quotes: none;
+}
+
+blockquote:before, blockquote:after, q:before, q:after {
+	content: '';
+	content: none;
+}
+
+#contenedor {
+    height: 460px;
+    background-color: #8b5742;
+    text-align: justify;
+    margin-top: 5px;        
+}
+
+.fotoFondo {
+    background-image: url("../imagenes/fondo.jpg");
+    background-size: 600px;
+    background-position: center;
+    background-repeat: no-repeat;
+}

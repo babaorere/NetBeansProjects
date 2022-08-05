@@ -1,0 +1,13 @@
+SoloPanWeb
+
+Existen dos administradores admin@gmail.com y roger@gmail.com, con el campo "rol" de administrador, ambos con el password "1234", al entrar como administrador se presenta un menu, orientado a las tareas de un administrador, que tiene adicionalmente al menu de un cliente regular, un menu para atenden los pedidos, y ver una estadistica de los mismos.
+
+Se pueden hacer el regiatro de cualquier usuario, pero tendra por defector el "rol" de cliente, los administradores, por ahora, solo se incluyen directamente en la BD, con phpmyadmin, en un aversion futura se podran agregar administradores, via Web.
+
+Los clientes pueden realizar pedidos de pan, es una pantalla muy sencilla, solo para establecer la funcionalidad de la aplicacion, tambien el cliente puede ver la estadistica de sus pedidos, esta funcion esta pendiente por hacer.
+
+Que hace le programa, login, registro y pedidos, y hace discriminacion si el usuario es administrador o cliente, ademas en cada pagina se verifica si el usuario esta logueado, por seguridad, si no es asi, se manda al login. Los administradores, tienen un menu adicional a los clientes.
+
+El programa esta hecho en JSP (java sever page) es decir, codigo HTML con java embebido, con conexion a base de datos mysql, utilizando un servidor Tomcat, y desarrollado en Netbeans.
+
+Saludos
