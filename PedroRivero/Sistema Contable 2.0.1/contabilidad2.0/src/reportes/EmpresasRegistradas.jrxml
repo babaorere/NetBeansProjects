@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="EmpresasRegistradas" language="groovy" pageWidth="612" pageHeight="792" columnWidth="572" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="2f0fd044-be25-45bc-8e22-ded0c5ce3fe6">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[SELECT * FROM `mh_empresas`]]>
+	</queryString>
+	<field name="emp_id" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="emp_nombre" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="emp_rif" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="emp_inicioFiscal" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="emp_finFiscal" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="emp_fecha" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<background>
+		<band/>
+	</background>
+	<title>
+		<band height="36">
+			<staticText>
+				<reportElement x="0" y="0" width="572" height="36" forecolor="#000000" uuid="10de15f3-262a-43ae-86b6-d0eb813aa8d6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="28" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Empresas Registradas]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="15">
+			<textField>
+				<reportElement x="452" y="0" width="80" height="15" uuid="8bc73db5-f224-46b9-accf-c7c465e02079"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Pag "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="531" y="0" width="40" height="15" uuid="395b5509-d5e5-475f-9f8d-f41695f4380b"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="16">
+			<line>
+				<reportElement x="0" y="15" width="572" height="1" forecolor="#666666" uuid="57345dc0-396e-4eab-bb89-7692191d671f"/>
+			</line>
+			<staticText>
+				<reportElement x="0" y="1" width="100" height="15" uuid="61367e3b-c90e-4106-a2f0-6cf1ba94d0e3"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font fontName="Consolas" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Codigo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="99" y="1" width="217" height="15" uuid="69ae9a7b-0bed-4b95-a388-de50f5da7558"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font fontName="Consolas" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Empresa]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="316" y="1" width="100" height="15" uuid="b94ae43c-b859-4366-9bac-70f5094029da"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font fontName="Consolas" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[RIF]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="415" y="1" width="80" height="15" uuid="928044b2-7568-4925-8cf8-c657e3363590"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font fontName="Consolas" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Inicio Fiscal]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="494" y="0" width="80" height="15" uuid="80d10fa5-8341-4879-aa0e-0055d24cf501"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font fontName="Consolas" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CierreFiscal]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15">
+			<textField>
+				<reportElement x="0" y="0" width="100" height="15" uuid="5891fc9c-c60a-4758-b4ea-45b4651464ec"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font fontName="Consolas"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{emp_id}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="99" y="0" width="217" height="15" uuid="fbf3aa47-5711-4cb2-b182-b1eb958017a6"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font fontName="Consolas"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{emp_nombre}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="315" y="0" width="100" height="15" uuid="1dd92130-b2c1-4c4e-bbaa-c7e8e56a05bd"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font fontName="Consolas"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{emp_rif}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="414" y="0" width="80" height="15" uuid="3479b2fe-d766-4ef5-97c7-5fd4c7601228"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font fontName="Consolas"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{emp_inicioFiscal}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="493" y="0" width="80" height="15" uuid="e9fe259c-5d8d-41a6-a174-63de55815c27"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font fontName="Consolas"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{emp_finFiscal}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band/>
+	</columnFooter>
+	<summary>
+		<band/>
+	</summary>
+</jasperReport>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="mayorP1_auxAnt" language="groovy" pageWidth="101" pageHeight="12" columnWidth="101" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="661c8a17-4e2a-4d79-8e30-880e8ac0b173">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="emp" class="java.lang.String"/>
+	<parameter name="auxiliar" class="java.lang.String"/>
+	<parameter name="inicioFiscal" class="java.lang.String"/>
+	<parameter name="mesAnterior" class="java.lang.String"/>
+	<parameter name="cuenta" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT mh_comprobante.cta_id,`mh_comprobante`.`aux_id`,(SUM(`mh_comprobante`.`comp_debe`)-SUM(`mh_comprobante`.`comp_haber`)) AS Saldo
+FROM `mh_comprobante`
+WHERE `mh_comprobante`.`emp_id`=$P{emp} AND mh_comprobante.cta_id= $P{cuenta} AND  `mh_comprobante`.`aux_id`=$P{auxiliar}
+AND `mh_comprobante`.`comp_fecha` BETWEEN $P{inicioFiscal} AND $P{mesAnterior}
+GROUP BY `mh_comprobante`.`aux_id`]]>
+	</queryString>
+	<field name="cta_id" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="aux_id" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Saldo" class="java.lang.Double"/>
+	<detail>
+		<band height="12" splitType="Stretch">
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement x="1" y="0" width="100" height="12" isRemoveLineWhenBlank="true" uuid="090904fc-caae-40ee-b78e-ae6c21dfe096"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font fontName="Consolas" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Saldo}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

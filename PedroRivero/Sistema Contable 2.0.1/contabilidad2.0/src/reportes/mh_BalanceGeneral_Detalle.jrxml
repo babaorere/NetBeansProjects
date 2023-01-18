@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="mh_BalanceGeneral_Detalle" language="groovy" pageWidth="210" pageHeight="50" columnWidth="210" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="5b5068b0-9988-48f9-8a10-2d83f11c72d0">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="empresa" class="java.lang.String"/>
+	<parameter name="cuenta" class="java.lang.String"/>
+	<parameter name="fecha1" class="java.lang.String"/>
+	<parameter name="fecha2" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT `mh_comprobante`.`comp_fecha`, `mh_comprobante`.`cta_id`,
+CASE
+	WHEN(SUM( `mh_comprobante`.`comp_debe`- `mh_comprobante`.`comp_haber`))>=0
+ 		THEN SUM(`mh_comprobante`.`comp_debe`-`mh_comprobante`.`comp_haber`) ELSE ''  END AS Deudor,
+CASE
+	WHEN(SUM(`mh_comprobante`.`comp_debe`-`mh_comprobante`.`comp_haber`))<0
+
+         THEN SUM(`mh_comprobante`.`comp_debe`-`mh_comprobante`.`comp_haber`) ELSE ''  END AS Acreedor
+FROM `mh_comprobante`
+WHERE `mh_comprobante`.`emp_id`=$P{empresa} AND `mh_comprobante`.`cta_id`=$P{cuenta}
+AND `mh_comprobante`.`comp_fecha` BETWEEN $P{fecha1} AND $P{fecha2}
+GROUP BY `mh_comprobante`.`cta_id`]]>
+	</queryString>
+	<field name="comp_fecha" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="cta_id" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Deudor" class="java.lang.Double"/>
+	<field name="Acreedor" class="java.lang.Double"/>
+	<group name="cta_id">
+		<groupExpression><![CDATA[$F{cta_id}]]></groupExpression>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="22" splitType="Stretch">
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement x="1" y="1" width="100" height="20" uuid="093867ed-3118-4dfb-a4ce-437fbbe10be9"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Consolas"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Deudor}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement x="104" y="1" width="100" height="20" uuid="e7db751c-0ebf-4327-9c3d-696259e6adbc"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Consolas"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Acreedor}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

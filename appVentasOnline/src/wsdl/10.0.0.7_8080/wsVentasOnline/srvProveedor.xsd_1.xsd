@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='UTF-8'?><!-- Published by JAX-WS RI (http://jax-ws.java.net). RI's version is Metro/2.3.1-b419 (branches/2.3.1.x-7937; 2014-08-04T08:11:03+0000) JAXWS-RI/2.2.10-b140803.1500 JAXWS-API/2.2.11 JAXB-RI/2.2.10-b140802.1033 JAXB-API/2.2.12-b140109.1041 svn-revision#unknown. --><xs:schema xmlns:tns="http://wsServicios/" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0" targetNamespace="http://wsServicios/">
+
+<xs:element name="actualizacion" type="tns:actualizacion"/>
+
+<xs:element name="actualizacionResponse" type="tns:actualizacionResponse"/>
+
+<xs:element name="eliminar" type="tns:eliminar"/>
+
+<xs:element name="eliminarResponse" type="tns:eliminarResponse"/>
+
+<xs:element name="insertar" type="tns:insertar"/>
+
+<xs:element name="insertarResponse" type="tns:insertarResponse"/>
+
+<xs:element name="listar" type="tns:listar"/>
+
+<xs:element name="listarPorID" type="tns:listarPorID"/>
+
+<xs:element name="listarPorIDResponse" type="tns:listarPorIDResponse"/>
+
+<xs:element name="listarResponse" type="tns:listarResponse"/>
+
+<xs:complexType name="eliminar">
+<xs:sequence>
+<xs:element name="idProveedor" type="xs:int"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="eliminarResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:int"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="actualizacion">
+<xs:sequence>
+<xs:element name="nombre" type="xs:string" minOccurs="0"/>
+<xs:element name="direccion" type="xs:string" minOccurs="0"/>
+<xs:element name="telefono" type="xs:string" minOccurs="0"/>
+<xs:element name="email" type="xs:string" minOccurs="0"/>
+<xs:element name="idProveedor" type="xs:int"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="actualizacionResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:int"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="listar">
+<xs:sequence/>
+</xs:complexType>
+
+<xs:complexType name="listarResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:proveedor" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="proveedor">
+<xs:sequence>
+<xs:element name="direccion" type="xs:string" minOccurs="0"/>
+<xs:element name="email" type="xs:string" minOccurs="0"/>
+<xs:element name="idProveedor" type="xs:int"/>
+<xs:element name="nombre" type="xs:string" minOccurs="0"/>
+<xs:element name="telefono" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="insertar">
+<xs:sequence>
+<xs:element name="nombre" type="xs:string" minOccurs="0"/>
+<xs:element name="direccion" type="xs:string" minOccurs="0"/>
+<xs:element name="telefono" type="xs:string" minOccurs="0"/>
+<xs:element name="email" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="insertarResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:int"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="listarPorID">
+<xs:sequence>
+<xs:element name="idProveedor" type="xs:int"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="listarPorIDResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:proveedor" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+</xs:schema>

@@ -89,3 +89,7 @@ nb-configuration.xml
 ## OS X
 ##############################
 .DS_Store
+/mavenproject6/classes/
+/mavenproject6/test-classes/
+/WebApplication1/nbproject/private/
+/wsWebApplication/nbproject/private/

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="mayorP1_subreport2" language="groovy" pageWidth="101" pageHeight="13" columnWidth="101" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="366d1409-c10f-4e67-9744-987aea165cc0">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="emp" class="java.lang.String"/>
+	<parameter name="cuenta" class="java.lang.String"/>
+	<parameter name="inicioFiscal" class="java.lang.String"/>
+	<parameter name="mesActual" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT `mh_comprobante`.`cta_id`,(SUM(`mh_comprobante`.`comp_debe`)-SUM(`mh_comprobante`.`comp_haber`)) AS Saldo
+FROM `mh_comprobante`
+WHERE `mh_comprobante`.`emp_id`=$P{emp} AND `mh_comprobante`.`cta_id`=$P{cuenta}
+AND `mh_comprobante`.`comp_fecha` BETWEEN $P{inicioFiscal} AND $P{mesActual}
+GROUP BY `mh_comprobante`.`cta_id`]]>
+	</queryString>
+	<field name="cta_id" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Saldo" class="java.lang.Double"/>
+	<detail>
+		<band height="13" splitType="Stretch">
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement x="0" y="0" width="91" height="12" isRemoveLineWhenBlank="true" uuid="2e0f5111-e7aa-4d7a-9a8c-7d55c530f18e"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Consolas" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Saldo}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

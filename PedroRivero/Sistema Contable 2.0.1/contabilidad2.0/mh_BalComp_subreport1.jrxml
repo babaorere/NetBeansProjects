@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="mh_BalComp_subreport1" language="groovy" pageWidth="250" pageHeight="14" columnWidth="250" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="0481e550-c15e-4ffc-b088-acab8372d947">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="empresa" class="java.lang.String"/>
+	<parameter name="fecha1" class="java.lang.String"/>
+	<parameter name="fecha2" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT `mh_comprobante`.`comp_fecha`, `mh_comprobante`.`cta_id`,
+CASE
+	WHEN(SUM( `mh_comprobante`.`comp_debe`- `mh_comprobante`.`comp_haber`))>=0
+ 		THEN SUM(`mh_comprobante`.`comp_debe`-`mh_comprobante`.`comp_haber`) ELSE ''  END AS Deudor,
+CASE
+	WHEN(SUM(`mh_comprobante`.`comp_debe`-`mh_comprobante`.`comp_haber`))<0
+
+         THEN SUM(`mh_comprobante`.`comp_debe`-`mh_comprobante`.`comp_haber`) ELSE ''  END AS Acreedor
+FROM `mh_comprobante`
+WHERE `mh_comprobante`.`emp_id`=$P{empresa}
+AND `mh_comprobante`.`comp_fecha` BETWEEN $P{fecha1} AND $P{fecha2}
+GROUP BY `mh_comprobante`.`cta_id`]]>
+	</queryString>
+	<field name="comp_fecha" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="cta_id" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Deudor" class="java.lang.Double"/>
+	<field name="Acreedor" class="java.lang.Double"/>
+	<variable name="TotDeudor" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{Deudor}]]></variableExpression>
+	</variable>
+	<variable name="TotAcreedor" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{Acreedor}]]></variableExpression>
+	</variable>
+	<group name="cta_id">
+		<groupExpression><![CDATA[$F{cta_id}]]></groupExpression>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<summary>
+		<band height="13" splitType="Stretch">
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement x="24" y="0" width="110" height="12" uuid="20bb9596-089a-4b1f-999b-996bd2a6b1bb"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Consolas" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{TotDeudor}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement x="133" y="0" width="110" height="12" uuid="e5600bc0-ce92-4a51-b285-3b75b5fec53a"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Consolas" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{TotAcreedor}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

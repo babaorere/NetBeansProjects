@@ -1,0 +1,1337 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperPrint xmlns="http://jasperreports.sourceforge.net/jasperreports/print" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/print http://jasperreports.sourceforge.net/xsd/jasperprint.xsd" name="mh_LibroDiario" pageWidth="612" pageHeight="792" topMargin="20" leftMargin="20" bottomMargin="20" rightMargin="20" locale="es_VE" timezone="America/Caracas">
+	<property name="net.sf.jasperreports.export.xml.start.page.index" value="0"/>
+	<property name="net.sf.jasperreports.export.xml.end.page.index" value="0"/>
+	<property name="net.sf.jasperreports.export.xml.page.count" value="1"/>
+	<origin group="comp_id" band="groupHeader"/>
+	<origin group="comp_id" band="groupFooter"/>
+	<origin band="background"/>
+	<origin band="title"/>
+	<origin band="pageHeader"/>
+	<origin band="columnHeader"/>
+	<origin band="detail"/>
+	<page>
+		<text textAlignment="Center" verticalAlignment="Middle" textHeight="32.703125" lineSpacingFactor="1.2578125" leadingOffset="-5.7128906">
+			<reportElement uuid="0bb1af72-3507-420a-bdc5-4f57d641d957" x="20" y="20" width="572" height="34" forecolor="#000000" origin="3" srcId="6" printId="1"/>
+			<font fontName="SansSerif" size="26" isBold="true"/>
+			<textContent><![CDATA[Libro Diario]]></textContent>
+		</text>
+		<text textAlignment="Center" verticalAlignment="Middle" textHeight="14.050781" lineSpacingFactor="1.1708984" leadingOffset="-2.0625">
+			<reportElement uuid="98043ec3-c2f7-4954-9a33-ba281a14ebe0" x="20" y="53" width="178" height="15" forecolor="#000000" origin="3" srcId="7" printId="1"/>
+			<font fontName="Consolas" size="12" isBold="true"/>
+			<textContent><![CDATA[TECNO ASESORES AVICOLA, C.]]></textContent>
+		</text>
+		<text textAlignment="Center" verticalAlignment="Middle" textHeight="14.050781" lineSpacingFactor="1.1708984" leadingOffset="-2.0625" valueClass="java.sql.Date" pattern="dd/MM/yy">
+			<reportElement uuid="50d7c816-4079-482b-8021-080b9da8e1fe" x="496" y="53" width="96" height="15" forecolor="#000000" origin="3" srcId="8" printId="1"/>
+			<font fontName="Consolas" size="12" isBold="true"/>
+			<textContent><![CDATA[31/01/05]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="14.050781" lineSpacingFactor="1.1708984" leadingOffset="-2.0625">
+			<reportElement uuid="59f178b3-9676-4d6b-a9df-bab31669dba4" x="233" y="53" width="264" height="15" forecolor="#000000" origin="3" srcId="9" printId="1"/>
+			<font fontName="Consolas" size="12" isBold="true"/>
+			<textContent><![CDATA[Reporte de Comprobante Diario al ]]></textContent>
+		</text>
+		<text textAlignment="Right" textHeight="11.708984" lineSpacingFactor="1.1708984" leadingOffset="-1.71875">
+			<reportElement uuid="d7cbcf83-69fc-45e4-b273-a030e53ada42" x="472" y="68" width="80" height="12" origin="4" srcId="10" printId="1"/>
+			<font fontName="Consolas"/>
+			<textContent><![CDATA[Pag 1 de]]></textContent>
+		</text>
+		<text textHeight="11.708984" lineSpacingFactor="1.1708984" leadingOffset="-1.71875">
+			<reportElement uuid="b50af622-fe81-4bdd-8440-ec2f20848690" x="550" y="68" width="40" height="12" origin="4" srcId="11" printId="1"/>
+			<font fontName="Consolas"/>
+			<textContent><![CDATA[ 1]]></textContent>
+		</text>
+		<rectangle radius="0">
+			<reportElement uuid="54e9b179-c13c-4afd-8e9b-2913a43ab20a" x="20" y="80" width="572" height="12" origin="5" srcId="12" printId="1"/>
+			<graphicElement>
+				<pen lineStyle="Dashed"/>
+			</graphicElement>
+		</rectangle>
+		<text textAlignment="Center" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="7750d6c7-80d3-4fb2-af0d-2f488d4d89e7" x="507" y="80" width="79" height="12" origin="5" srcId="13" printId="1"/>
+			<font fontName="Consolas" size="8" isBold="true"/>
+			<textContent><![CDATA[Haber]]></textContent>
+		</text>
+		<text textAlignment="Center" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="93b0bea8-0c2c-4e43-94fb-c14250260577" x="428" y="80" width="79" height="12" origin="5" srcId="14" printId="1"/>
+			<font fontName="Consolas" size="8" isBold="true"/>
+			<textContent><![CDATA[Debe]]></textContent>
+		</text>
+		<text verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="d5dadb27-cbb3-4eab-9723-412659d6225b" x="302" y="80" width="121" height="12" origin="5" srcId="15" printId="1"/>
+			<font fontName="Consolas" size="8" isBold="true"/>
+			<textContent><![CDATA[Concepto]]></textContent>
+		</text>
+		<text verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="28248c69-561b-4942-87ac-aa30b04d8b2b" x="107" y="80" width="54" height="12" origin="5" srcId="16" printId="1"/>
+			<font fontName="Consolas" size="8" isBold="true"/>
+			<textContent><![CDATA[Fecha]]></textContent>
+		</text>
+		<text verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="a1aa1eb8-f045-4b6d-8cba-c0af100a41ae" x="20" y="80" width="86" height="12" origin="5" srcId="17" printId="1"/>
+			<font fontName="Consolas" size="8" isBold="true"/>
+			<textContent><![CDATA[Comprobante Nr]]></textContent>
+		</text>
+		<text verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="6da9ebb6-76df-4d05-88c6-62ddd7ea3773" x="162" y="80" width="68" height="12" origin="5" srcId="18" printId="1"/>
+			<font fontName="Consolas" size="8" isBold="true"/>
+			<textContent><![CDATA[Cuenta]]></textContent>
+		</text>
+		<text verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="abe70f23-7a57-431b-9752-97ea1f2944c3" x="230" y="80" width="71" height="12" origin="5" srcId="19" printId="1"/>
+			<font fontName="Consolas" size="8" isBold="true"/>
+			<textContent><![CDATA[Auxiliar]]></textContent>
+		</text>
+		<text verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Integer">
+			<reportElement uuid="aadcd59d-b1d9-4a3d-849e-20ecb66e8f55" x="20" y="92" width="21" height="12" origin="6" srcId="20" printId="1"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[1]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.sql.Date" pattern="dd/MM/yyyy">
+			<reportElement uuid="f7c40722-ab1f-4153-949b-6838ea6cfb5b" x="40" y="92" width="68" height="12" origin="6" srcId="21" printId="1"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[31/01/2005]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="83234889-c69d-4656-bca2-24462e56c25f" x="107" y="92" width="81" height="12" origin="6" srcId="22" printId="1"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[1110]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="0.0">
+			<reportElement uuid="dffb6b99-ce2d-4140-8b22-288bd2ef2ca8" x="187" y="92" width="71" height="12" origin="6" srcId="23" printId="1"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[]]></textContent>
+		</text>
+		<text textAlignment="Center" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="66db0e64-3c38-435f-9681-3c957facdead" x="257" y="92" width="135" height="12" origin="6" srcId="24" printId="1"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[ASIENTO DE APERTURA]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="a2afadbd-f889-43f9-b1c7-16ef157096b5" x="391" y="92" width="100" height="12" origin="6" srcId="25" printId="1"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[206.630.390,00]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="911fce2d-536f-4ef8-aa41-7e0c96f9a3d0" x="490" y="92" width="100" height="12" origin="6" srcId="26" printId="1"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[0,00]]></textContent>
+		</text>
+		<text verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Integer">
+			<reportElement uuid="aadcd59d-b1d9-4a3d-849e-20ecb66e8f55" x="20" y="104" width="21" height="12" origin="6" srcId="20" printId="2"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[1]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.sql.Date" pattern="dd/MM/yyyy">
+			<reportElement uuid="f7c40722-ab1f-4153-949b-6838ea6cfb5b" x="40" y="104" width="68" height="12" origin="6" srcId="21" printId="2"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[31/01/2005]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="83234889-c69d-4656-bca2-24462e56c25f" x="107" y="104" width="81" height="12" origin="6" srcId="22" printId="2"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[1200]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="dffb6b99-ce2d-4140-8b22-288bd2ef2ca8" x="187" y="104" width="71" height="12" origin="6" srcId="23" printId="2"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[1210]]></textContent>
+		</text>
+		<text textAlignment="Center" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="66db0e64-3c38-435f-9681-3c957facdead" x="257" y="104" width="135" height="12" origin="6" srcId="24" printId="2"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[ASIENTO DE APERTURA]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="a2afadbd-f889-43f9-b1c7-16ef157096b5" x="391" y="104" width="100" height="12" origin="6" srcId="25" printId="2"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[25.000.000,00]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="911fce2d-536f-4ef8-aa41-7e0c96f9a3d0" x="490" y="104" width="100" height="12" origin="6" srcId="26" printId="2"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[0,00]]></textContent>
+		</text>
+		<text verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Integer">
+			<reportElement uuid="aadcd59d-b1d9-4a3d-849e-20ecb66e8f55" x="20" y="116" width="21" height="12" origin="6" srcId="20" printId="3"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[1]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.sql.Date" pattern="dd/MM/yyyy">
+			<reportElement uuid="f7c40722-ab1f-4153-949b-6838ea6cfb5b" x="40" y="116" width="68" height="12" origin="6" srcId="21" printId="3"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[31/01/2005]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="83234889-c69d-4656-bca2-24462e56c25f" x="107" y="116" width="81" height="12" origin="6" srcId="22" printId="3"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[1340]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="0.0">
+			<reportElement uuid="dffb6b99-ce2d-4140-8b22-288bd2ef2ca8" x="187" y="116" width="71" height="12" origin="6" srcId="23" printId="3"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[]]></textContent>
+		</text>
+		<text textAlignment="Center" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="66db0e64-3c38-435f-9681-3c957facdead" x="257" y="116" width="135" height="12" origin="6" srcId="24" printId="3"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[ASIENTO DE APERTURA]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="a2afadbd-f889-43f9-b1c7-16ef157096b5" x="391" y="116" width="100" height="12" origin="6" srcId="25" printId="3"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[8.166.808,00]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="911fce2d-536f-4ef8-aa41-7e0c96f9a3d0" x="490" y="116" width="100" height="12" origin="6" srcId="26" printId="3"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[0,00]]></textContent>
+		</text>
+		<text verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Integer">
+			<reportElement uuid="aadcd59d-b1d9-4a3d-849e-20ecb66e8f55" x="20" y="128" width="21" height="12" origin="6" srcId="20" printId="4"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[1]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.sql.Date" pattern="dd/MM/yyyy">
+			<reportElement uuid="f7c40722-ab1f-4153-949b-6838ea6cfb5b" x="40" y="128" width="68" height="12" origin="6" srcId="21" printId="4"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[31/01/2005]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="83234889-c69d-4656-bca2-24462e56c25f" x="107" y="128" width="81" height="12" origin="6" srcId="22" printId="4"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[1341]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="0.0">
+			<reportElement uuid="dffb6b99-ce2d-4140-8b22-288bd2ef2ca8" x="187" y="128" width="71" height="12" origin="6" srcId="23" printId="4"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[]]></textContent>
+		</text>
+		<text textAlignment="Center" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="66db0e64-3c38-435f-9681-3c957facdead" x="257" y="128" width="135" height="12" origin="6" srcId="24" printId="4"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[ASIENTO DE APERTURA]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="a2afadbd-f889-43f9-b1c7-16ef157096b5" x="391" y="128" width="100" height="12" origin="6" srcId="25" printId="4"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[0,00]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="911fce2d-536f-4ef8-aa41-7e0c96f9a3d0" x="490" y="128" width="100" height="12" origin="6" srcId="26" printId="4"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[1.149.253,00]]></textContent>
+		</text>
+		<text verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Integer">
+			<reportElement uuid="aadcd59d-b1d9-4a3d-849e-20ecb66e8f55" x="20" y="140" width="21" height="12" origin="6" srcId="20" printId="5"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[1]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.sql.Date" pattern="dd/MM/yyyy">
+			<reportElement uuid="f7c40722-ab1f-4153-949b-6838ea6cfb5b" x="40" y="140" width="68" height="12" origin="6" srcId="21" printId="5"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[31/01/2005]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="83234889-c69d-4656-bca2-24462e56c25f" x="107" y="140" width="81" height="12" origin="6" srcId="22" printId="5"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[2110]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="0.0">
+			<reportElement uuid="dffb6b99-ce2d-4140-8b22-288bd2ef2ca8" x="187" y="140" width="71" height="12" origin="6" srcId="23" printId="5"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[]]></textContent>
+		</text>
+		<text textAlignment="Center" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="66db0e64-3c38-435f-9681-3c957facdead" x="257" y="140" width="135" height="12" origin="6" srcId="24" printId="5"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[ASIENTO DE APERTURA]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="a2afadbd-f889-43f9-b1c7-16ef157096b5" x="391" y="140" width="100" height="12" origin="6" srcId="25" printId="5"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[0,00]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="911fce2d-536f-4ef8-aa41-7e0c96f9a3d0" x="490" y="140" width="100" height="12" origin="6" srcId="26" printId="5"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[70.000.000,00]]></textContent>
+		</text>
+		<text verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Integer">
+			<reportElement uuid="aadcd59d-b1d9-4a3d-849e-20ecb66e8f55" x="20" y="152" width="21" height="12" origin="6" srcId="20" printId="6"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[1]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.sql.Date" pattern="dd/MM/yyyy">
+			<reportElement uuid="f7c40722-ab1f-4153-949b-6838ea6cfb5b" x="40" y="152" width="68" height="12" origin="6" srcId="21" printId="6"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[31/01/2005]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="83234889-c69d-4656-bca2-24462e56c25f" x="107" y="152" width="81" height="12" origin="6" srcId="22" printId="6"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[2120]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="dffb6b99-ce2d-4140-8b22-288bd2ef2ca8" x="187" y="152" width="71" height="12" origin="6" srcId="23" printId="6"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[2121]]></textContent>
+		</text>
+		<text textAlignment="Center" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="66db0e64-3c38-435f-9681-3c957facdead" x="257" y="152" width="135" height="12" origin="6" srcId="24" printId="6"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[ASIENTO DE APERTURA]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="a2afadbd-f889-43f9-b1c7-16ef157096b5" x="391" y="152" width="100" height="12" origin="6" srcId="25" printId="6"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[0,00]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="911fce2d-536f-4ef8-aa41-7e0c96f9a3d0" x="490" y="152" width="100" height="12" origin="6" srcId="26" printId="6"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[81.152.211,00]]></textContent>
+		</text>
+		<text verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Integer">
+			<reportElement uuid="aadcd59d-b1d9-4a3d-849e-20ecb66e8f55" x="20" y="164" width="21" height="12" origin="6" srcId="20" printId="7"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[1]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.sql.Date" pattern="dd/MM/yyyy">
+			<reportElement uuid="f7c40722-ab1f-4153-949b-6838ea6cfb5b" x="40" y="164" width="68" height="12" origin="6" srcId="21" printId="7"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[31/01/2005]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="83234889-c69d-4656-bca2-24462e56c25f" x="107" y="164" width="81" height="12" origin="6" srcId="22" printId="7"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[2120]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="dffb6b99-ce2d-4140-8b22-288bd2ef2ca8" x="187" y="164" width="71" height="12" origin="6" srcId="23" printId="7"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[2122]]></textContent>
+		</text>
+		<text textAlignment="Center" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="66db0e64-3c38-435f-9681-3c957facdead" x="257" y="164" width="135" height="12" origin="6" srcId="24" printId="7"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[ASIENTO DE APERTURA]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="a2afadbd-f889-43f9-b1c7-16ef157096b5" x="391" y="164" width="100" height="12" origin="6" srcId="25" printId="7"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[0,00]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="911fce2d-536f-4ef8-aa41-7e0c96f9a3d0" x="490" y="164" width="100" height="12" origin="6" srcId="26" printId="7"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[20.000.000,00]]></textContent>
+		</text>
+		<text verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Integer">
+			<reportElement uuid="aadcd59d-b1d9-4a3d-849e-20ecb66e8f55" x="20" y="176" width="21" height="12" origin="6" srcId="20" printId="8"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[1]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.sql.Date" pattern="dd/MM/yyyy">
+			<reportElement uuid="f7c40722-ab1f-4153-949b-6838ea6cfb5b" x="40" y="176" width="68" height="12" origin="6" srcId="21" printId="8"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[31/01/2005]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="83234889-c69d-4656-bca2-24462e56c25f" x="107" y="176" width="81" height="12" origin="6" srcId="22" printId="8"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[2140]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="0.0">
+			<reportElement uuid="dffb6b99-ce2d-4140-8b22-288bd2ef2ca8" x="187" y="176" width="71" height="12" origin="6" srcId="23" printId="8"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[]]></textContent>
+		</text>
+		<text textAlignment="Center" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="66db0e64-3c38-435f-9681-3c957facdead" x="257" y="176" width="135" height="12" origin="6" srcId="24" printId="8"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[ASIENTO DE APERTURA]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="a2afadbd-f889-43f9-b1c7-16ef157096b5" x="391" y="176" width="100" height="12" origin="6" srcId="25" printId="8"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[0,00]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="911fce2d-536f-4ef8-aa41-7e0c96f9a3d0" x="490" y="176" width="100" height="12" origin="6" srcId="26" printId="8"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[5.624.360,00]]></textContent>
+		</text>
+		<text verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Integer">
+			<reportElement uuid="aadcd59d-b1d9-4a3d-849e-20ecb66e8f55" x="20" y="188" width="21" height="12" origin="6" srcId="20" printId="9"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[1]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.sql.Date" pattern="dd/MM/yyyy">
+			<reportElement uuid="f7c40722-ab1f-4153-949b-6838ea6cfb5b" x="40" y="188" width="68" height="12" origin="6" srcId="21" printId="9"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[31/01/2005]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="83234889-c69d-4656-bca2-24462e56c25f" x="107" y="188" width="81" height="12" origin="6" srcId="22" printId="9"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[2700]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="0.0">
+			<reportElement uuid="dffb6b99-ce2d-4140-8b22-288bd2ef2ca8" x="187" y="188" width="71" height="12" origin="6" srcId="23" printId="9"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[]]></textContent>
+		</text>
+		<text textAlignment="Center" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="66db0e64-3c38-435f-9681-3c957facdead" x="257" y="188" width="135" height="12" origin="6" srcId="24" printId="9"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[ASIENTO DE APERTURA]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="a2afadbd-f889-43f9-b1c7-16ef157096b5" x="391" y="188" width="100" height="12" origin="6" srcId="25" printId="9"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[0,00]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="911fce2d-536f-4ef8-aa41-7e0c96f9a3d0" x="490" y="188" width="100" height="12" origin="6" srcId="26" printId="9"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[30.000.000,00]]></textContent>
+		</text>
+		<text verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Integer">
+			<reportElement uuid="aadcd59d-b1d9-4a3d-849e-20ecb66e8f55" x="20" y="200" width="21" height="12" origin="6" srcId="20" printId="10"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[1]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.sql.Date" pattern="dd/MM/yyyy">
+			<reportElement uuid="f7c40722-ab1f-4153-949b-6838ea6cfb5b" x="40" y="200" width="68" height="12" origin="6" srcId="21" printId="10"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[31/01/2005]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="83234889-c69d-4656-bca2-24462e56c25f" x="107" y="200" width="81" height="12" origin="6" srcId="22" printId="10"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[2710]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="0.0">
+			<reportElement uuid="dffb6b99-ce2d-4140-8b22-288bd2ef2ca8" x="187" y="200" width="71" height="12" origin="6" srcId="23" printId="10"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[]]></textContent>
+		</text>
+		<text textAlignment="Center" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="66db0e64-3c38-435f-9681-3c957facdead" x="257" y="200" width="135" height="12" origin="6" srcId="24" printId="10"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[ASIENTO DE APERTURA]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="a2afadbd-f889-43f9-b1c7-16ef157096b5" x="391" y="200" width="100" height="12" origin="6" srcId="25" printId="10"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[0,00]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="911fce2d-536f-4ef8-aa41-7e0c96f9a3d0" x="490" y="200" width="100" height="12" origin="6" srcId="26" printId="10"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[30.150.306,00]]></textContent>
+		</text>
+		<text verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Integer">
+			<reportElement uuid="aadcd59d-b1d9-4a3d-849e-20ecb66e8f55" x="20" y="212" width="21" height="12" origin="6" srcId="20" printId="11"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[1]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.sql.Date" pattern="dd/MM/yyyy">
+			<reportElement uuid="f7c40722-ab1f-4153-949b-6838ea6cfb5b" x="40" y="212" width="68" height="12" origin="6" srcId="21" printId="11"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[31/01/2005]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="83234889-c69d-4656-bca2-24462e56c25f" x="107" y="212" width="81" height="12" origin="6" srcId="22" printId="11"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[2720]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="0.0">
+			<reportElement uuid="dffb6b99-ce2d-4140-8b22-288bd2ef2ca8" x="187" y="212" width="71" height="12" origin="6" srcId="23" printId="11"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[]]></textContent>
+		</text>
+		<text textAlignment="Center" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="66db0e64-3c38-435f-9681-3c957facdead" x="257" y="212" width="135" height="12" origin="6" srcId="24" printId="11"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[ASIENTO DE APERTURA]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="a2afadbd-f889-43f9-b1c7-16ef157096b5" x="391" y="212" width="100" height="12" origin="6" srcId="25" printId="11"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[0,00]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="911fce2d-536f-4ef8-aa41-7e0c96f9a3d0" x="490" y="212" width="100" height="12" origin="6" srcId="26" printId="11"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[1.721.068,00]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="e718b64e-18b1-4489-bf8d-cc0e68fb37c3" x="392" y="224" width="100" height="12" origin="1" srcId="1" printId="1"/>
+			<font fontName="Consolas" size="8" isBold="true"/>
+			<textContent><![CDATA[239.797.198,00]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="08be0499-9637-4018-aa9c-9d7e28c61bb8" x="491" y="224" width="100" height="12" origin="1" srcId="2" printId="1"/>
+			<font fontName="Consolas" size="8" isBold="true"/>
+			<textContent><![CDATA[239.797.198,00]]></textContent>
+		</text>
+		<text verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="41530864-5c8f-4e4b-af7f-228597d09919" x="60" y="223" width="141" height="12" origin="1" srcId="3" printId="1"/>
+			<font fontName="Consolas" size="8" isBold="true"/>
+			<textContent><![CDATA[Total Comprobante: 1]]></textContent>
+		</text>
+		<line>
+			<reportElement uuid="1ab90a7d-bd8b-420c-a5d5-d82f5fd70fea" x="20" y="235" width="568" height="1" origin="1" srcId="4" printId="1"/>
+		</line>
+		<line>
+			<reportElement uuid="97018122-3e18-4610-a072-20c401d1f09e" x="20" y="224" width="572" height="1" origin="1" srcId="5" printId="1"/>
+			<graphicElement>
+				<pen lineStyle="Dashed"/>
+			</graphicElement>
+		</line>
+		<text verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Integer">
+			<reportElement uuid="aadcd59d-b1d9-4a3d-849e-20ecb66e8f55" x="20" y="236" width="21" height="12" origin="6" srcId="20" printId="12"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[2]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.sql.Date" pattern="dd/MM/yyyy">
+			<reportElement uuid="f7c40722-ab1f-4153-949b-6838ea6cfb5b" x="40" y="236" width="68" height="12" origin="6" srcId="21" printId="12"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[31/01/2005]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="83234889-c69d-4656-bca2-24462e56c25f" x="107" y="236" width="81" height="12" origin="6" srcId="22" printId="12"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[1120]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="dffb6b99-ce2d-4140-8b22-288bd2ef2ca8" x="187" y="236" width="71" height="12" origin="6" srcId="23" printId="12"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[1122]]></textContent>
+		</text>
+		<text textAlignment="Center" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="66db0e64-3c38-435f-9681-3c957facdead" x="257" y="236" width="135" height="12" origin="6" srcId="24" printId="12"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[CARGOS A PY M POLLOS]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="a2afadbd-f889-43f9-b1c7-16ef157096b5" x="391" y="236" width="100" height="12" origin="6" srcId="25" printId="12"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[9.774.286,00]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="911fce2d-536f-4ef8-aa41-7e0c96f9a3d0" x="490" y="236" width="100" height="12" origin="6" srcId="26" printId="12"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[0,00]]></textContent>
+		</text>
+		<text verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Integer">
+			<reportElement uuid="aadcd59d-b1d9-4a3d-849e-20ecb66e8f55" x="20" y="248" width="21" height="12" origin="6" srcId="20" printId="13"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[2]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.sql.Date" pattern="dd/MM/yyyy">
+			<reportElement uuid="f7c40722-ab1f-4153-949b-6838ea6cfb5b" x="40" y="248" width="68" height="12" origin="6" srcId="21" printId="13"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[31/01/2005]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="83234889-c69d-4656-bca2-24462e56c25f" x="107" y="248" width="81" height="12" origin="6" srcId="22" printId="13"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[1110]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="0.0">
+			<reportElement uuid="dffb6b99-ce2d-4140-8b22-288bd2ef2ca8" x="187" y="248" width="71" height="12" origin="6" srcId="23" printId="13"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[]]></textContent>
+		</text>
+		<text textAlignment="Center" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="66db0e64-3c38-435f-9681-3c957facdead" x="257" y="248" width="135" height="12" origin="6" srcId="24" printId="13"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[CHEQ. # 1]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="a2afadbd-f889-43f9-b1c7-16ef157096b5" x="391" y="248" width="100" height="12" origin="6" srcId="25" printId="13"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[0,00]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="911fce2d-536f-4ef8-aa41-7e0c96f9a3d0" x="490" y="248" width="100" height="12" origin="6" srcId="26" printId="13"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[2.314.500,00]]></textContent>
+		</text>
+		<text verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Integer">
+			<reportElement uuid="aadcd59d-b1d9-4a3d-849e-20ecb66e8f55" x="20" y="260" width="21" height="12" origin="6" srcId="20" printId="14"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[2]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.sql.Date" pattern="dd/MM/yyyy">
+			<reportElement uuid="f7c40722-ab1f-4153-949b-6838ea6cfb5b" x="40" y="260" width="68" height="12" origin="6" srcId="21" printId="14"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[31/01/2005]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="83234889-c69d-4656-bca2-24462e56c25f" x="107" y="260" width="81" height="12" origin="6" srcId="22" printId="14"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[1110]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="0.0">
+			<reportElement uuid="dffb6b99-ce2d-4140-8b22-288bd2ef2ca8" x="187" y="260" width="71" height="12" origin="6" srcId="23" printId="14"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[]]></textContent>
+		</text>
+		<text textAlignment="Center" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="66db0e64-3c38-435f-9681-3c957facdead" x="257" y="260" width="135" height="12" origin="6" srcId="24" printId="14"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[CHEQ. # 2]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="a2afadbd-f889-43f9-b1c7-16ef157096b5" x="391" y="260" width="100" height="12" origin="6" srcId="25" printId="14"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[0,00]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="911fce2d-536f-4ef8-aa41-7e0c96f9a3d0" x="490" y="260" width="100" height="12" origin="6" srcId="26" printId="14"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[4.021.786,00]]></textContent>
+		</text>
+		<text verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Integer">
+			<reportElement uuid="aadcd59d-b1d9-4a3d-849e-20ecb66e8f55" x="20" y="272" width="21" height="12" origin="6" srcId="20" printId="15"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[2]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.sql.Date" pattern="dd/MM/yyyy">
+			<reportElement uuid="f7c40722-ab1f-4153-949b-6838ea6cfb5b" x="40" y="272" width="68" height="12" origin="6" srcId="21" printId="15"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[31/01/2005]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="83234889-c69d-4656-bca2-24462e56c25f" x="107" y="272" width="81" height="12" origin="6" srcId="22" printId="15"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[1110]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="0.0">
+			<reportElement uuid="dffb6b99-ce2d-4140-8b22-288bd2ef2ca8" x="187" y="272" width="71" height="12" origin="6" srcId="23" printId="15"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[]]></textContent>
+		</text>
+		<text textAlignment="Center" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="66db0e64-3c38-435f-9681-3c957facdead" x="257" y="272" width="135" height="12" origin="6" srcId="24" printId="15"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[CHEQ. # 3]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="a2afadbd-f889-43f9-b1c7-16ef157096b5" x="391" y="272" width="100" height="12" origin="6" srcId="25" printId="15"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[0,00]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="911fce2d-536f-4ef8-aa41-7e0c96f9a3d0" x="490" y="272" width="100" height="12" origin="6" srcId="26" printId="15"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[1.150.000,00]]></textContent>
+		</text>
+		<text verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Integer">
+			<reportElement uuid="aadcd59d-b1d9-4a3d-849e-20ecb66e8f55" x="20" y="284" width="21" height="12" origin="6" srcId="20" printId="16"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[2]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.sql.Date" pattern="dd/MM/yyyy">
+			<reportElement uuid="f7c40722-ab1f-4153-949b-6838ea6cfb5b" x="40" y="284" width="68" height="12" origin="6" srcId="21" printId="16"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[31/01/2005]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="83234889-c69d-4656-bca2-24462e56c25f" x="107" y="284" width="81" height="12" origin="6" srcId="22" printId="16"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[1110]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="0.0">
+			<reportElement uuid="dffb6b99-ce2d-4140-8b22-288bd2ef2ca8" x="187" y="284" width="71" height="12" origin="6" srcId="23" printId="16"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[]]></textContent>
+		</text>
+		<text textAlignment="Center" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="66db0e64-3c38-435f-9681-3c957facdead" x="257" y="284" width="135" height="12" origin="6" srcId="24" printId="16"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[CHEQ. # 4]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="a2afadbd-f889-43f9-b1c7-16ef157096b5" x="391" y="284" width="100" height="12" origin="6" srcId="25" printId="16"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[0,00]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="911fce2d-536f-4ef8-aa41-7e0c96f9a3d0" x="490" y="284" width="100" height="12" origin="6" srcId="26" printId="16"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[2.288.000,00]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="e718b64e-18b1-4489-bf8d-cc0e68fb37c3" x="392" y="296" width="100" height="12" origin="1" srcId="1" printId="2"/>
+			<font fontName="Consolas" size="8" isBold="true"/>
+			<textContent><![CDATA[9.774.286,00]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="08be0499-9637-4018-aa9c-9d7e28c61bb8" x="491" y="296" width="100" height="12" origin="1" srcId="2" printId="2"/>
+			<font fontName="Consolas" size="8" isBold="true"/>
+			<textContent><![CDATA[9.774.286,00]]></textContent>
+		</text>
+		<text verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="41530864-5c8f-4e4b-af7f-228597d09919" x="60" y="295" width="141" height="12" origin="1" srcId="3" printId="2"/>
+			<font fontName="Consolas" size="8" isBold="true"/>
+			<textContent><![CDATA[Total Comprobante: 2]]></textContent>
+		</text>
+		<line>
+			<reportElement uuid="1ab90a7d-bd8b-420c-a5d5-d82f5fd70fea" x="20" y="307" width="568" height="1" origin="1" srcId="4" printId="2"/>
+		</line>
+		<line>
+			<reportElement uuid="97018122-3e18-4610-a072-20c401d1f09e" x="20" y="296" width="572" height="1" origin="1" srcId="5" printId="2"/>
+			<graphicElement>
+				<pen lineStyle="Dashed"/>
+			</graphicElement>
+		</line>
+		<text verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Integer">
+			<reportElement uuid="aadcd59d-b1d9-4a3d-849e-20ecb66e8f55" x="20" y="308" width="21" height="12" origin="6" srcId="20" printId="17"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[3]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.sql.Date" pattern="dd/MM/yyyy">
+			<reportElement uuid="f7c40722-ab1f-4153-949b-6838ea6cfb5b" x="40" y="308" width="68" height="12" origin="6" srcId="21" printId="17"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[31/01/2005]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="83234889-c69d-4656-bca2-24462e56c25f" x="107" y="308" width="81" height="12" origin="6" srcId="22" printId="17"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[1120]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="dffb6b99-ce2d-4140-8b22-288bd2ef2ca8" x="187" y="308" width="71" height="12" origin="6" srcId="23" printId="17"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[1123]]></textContent>
+		</text>
+		<text textAlignment="Center" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="66db0e64-3c38-435f-9681-3c957facdead" x="257" y="308" width="135" height="12" origin="6" srcId="24" printId="17"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[CARGOS A PY M POLLOS]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="a2afadbd-f889-43f9-b1c7-16ef157096b5" x="391" y="308" width="100" height="12" origin="6" srcId="25" printId="17"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[1.207.000,00]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="911fce2d-536f-4ef8-aa41-7e0c96f9a3d0" x="490" y="308" width="100" height="12" origin="6" srcId="26" printId="17"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[0,00]]></textContent>
+		</text>
+		<text verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Integer">
+			<reportElement uuid="aadcd59d-b1d9-4a3d-849e-20ecb66e8f55" x="20" y="320" width="21" height="12" origin="6" srcId="20" printId="18"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[3]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.sql.Date" pattern="dd/MM/yyyy">
+			<reportElement uuid="f7c40722-ab1f-4153-949b-6838ea6cfb5b" x="40" y="320" width="68" height="12" origin="6" srcId="21" printId="18"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[31/01/2005]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="83234889-c69d-4656-bca2-24462e56c25f" x="107" y="320" width="81" height="12" origin="6" srcId="22" printId="18"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[1110]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="0.0">
+			<reportElement uuid="dffb6b99-ce2d-4140-8b22-288bd2ef2ca8" x="187" y="320" width="71" height="12" origin="6" srcId="23" printId="18"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[]]></textContent>
+		</text>
+		<text textAlignment="Center" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="66db0e64-3c38-435f-9681-3c957facdead" x="257" y="320" width="135" height="12" origin="6" srcId="24" printId="18"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[CHEQ. # 5]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="a2afadbd-f889-43f9-b1c7-16ef157096b5" x="391" y="320" width="100" height="12" origin="6" srcId="25" printId="18"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[0,00]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="911fce2d-536f-4ef8-aa41-7e0c96f9a3d0" x="490" y="320" width="100" height="12" origin="6" srcId="26" printId="18"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[1.207.000,00]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="e718b64e-18b1-4489-bf8d-cc0e68fb37c3" x="392" y="332" width="100" height="12" origin="1" srcId="1" printId="3"/>
+			<font fontName="Consolas" size="8" isBold="true"/>
+			<textContent><![CDATA[1.207.000,00]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="08be0499-9637-4018-aa9c-9d7e28c61bb8" x="491" y="332" width="100" height="12" origin="1" srcId="2" printId="3"/>
+			<font fontName="Consolas" size="8" isBold="true"/>
+			<textContent><![CDATA[1.207.000,00]]></textContent>
+		</text>
+		<text verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="41530864-5c8f-4e4b-af7f-228597d09919" x="60" y="331" width="141" height="12" origin="1" srcId="3" printId="3"/>
+			<font fontName="Consolas" size="8" isBold="true"/>
+			<textContent><![CDATA[Total Comprobante: 3]]></textContent>
+		</text>
+		<line>
+			<reportElement uuid="1ab90a7d-bd8b-420c-a5d5-d82f5fd70fea" x="20" y="343" width="568" height="1" origin="1" srcId="4" printId="3"/>
+		</line>
+		<line>
+			<reportElement uuid="97018122-3e18-4610-a072-20c401d1f09e" x="20" y="332" width="572" height="1" origin="1" srcId="5" printId="3"/>
+			<graphicElement>
+				<pen lineStyle="Dashed"/>
+			</graphicElement>
+		</line>
+		<text verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Integer">
+			<reportElement uuid="aadcd59d-b1d9-4a3d-849e-20ecb66e8f55" x="20" y="344" width="21" height="12" origin="6" srcId="20" printId="19"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[4]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.sql.Date" pattern="dd/MM/yyyy">
+			<reportElement uuid="f7c40722-ab1f-4153-949b-6838ea6cfb5b" x="40" y="344" width="68" height="12" origin="6" srcId="21" printId="19"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[31/01/2005]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="83234889-c69d-4656-bca2-24462e56c25f" x="107" y="344" width="81" height="12" origin="6" srcId="22" printId="19"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[5000]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="dffb6b99-ce2d-4140-8b22-288bd2ef2ca8" x="187" y="344" width="71" height="12" origin="6" srcId="23" printId="19"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[5001]]></textContent>
+		</text>
+		<text textAlignment="Center" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="66db0e64-3c38-435f-9681-3c957facdead" x="257" y="344" width="135" height="12" origin="6" srcId="24" printId="19"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[PAGOS S/ CHEQUES]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="a2afadbd-f889-43f9-b1c7-16ef157096b5" x="391" y="344" width="100" height="12" origin="6" srcId="25" printId="19"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[14.650.000,00]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="911fce2d-536f-4ef8-aa41-7e0c96f9a3d0" x="490" y="344" width="100" height="12" origin="6" srcId="26" printId="19"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[0,00]]></textContent>
+		</text>
+		<text verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Integer">
+			<reportElement uuid="aadcd59d-b1d9-4a3d-849e-20ecb66e8f55" x="20" y="356" width="21" height="12" origin="6" srcId="20" printId="20"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[4]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.sql.Date" pattern="dd/MM/yyyy">
+			<reportElement uuid="f7c40722-ab1f-4153-949b-6838ea6cfb5b" x="40" y="356" width="68" height="12" origin="6" srcId="21" printId="20"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[31/01/2005]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="83234889-c69d-4656-bca2-24462e56c25f" x="107" y="356" width="81" height="12" origin="6" srcId="22" printId="20"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[5000]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="dffb6b99-ce2d-4140-8b22-288bd2ef2ca8" x="187" y="356" width="71" height="12" origin="6" srcId="23" printId="20"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[5004]]></textContent>
+		</text>
+		<text textAlignment="Center" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="66db0e64-3c38-435f-9681-3c957facdead" x="257" y="356" width="135" height="12" origin="6" srcId="24" printId="20"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[PAGOS S/ CHEQUES]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="a2afadbd-f889-43f9-b1c7-16ef157096b5" x="391" y="356" width="100" height="12" origin="6" srcId="25" printId="20"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[620.000,00]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="911fce2d-536f-4ef8-aa41-7e0c96f9a3d0" x="490" y="356" width="100" height="12" origin="6" srcId="26" printId="20"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[0,00]]></textContent>
+		</text>
+		<text verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Integer">
+			<reportElement uuid="aadcd59d-b1d9-4a3d-849e-20ecb66e8f55" x="20" y="368" width="21" height="12" origin="6" srcId="20" printId="21"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[4]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.sql.Date" pattern="dd/MM/yyyy">
+			<reportElement uuid="f7c40722-ab1f-4153-949b-6838ea6cfb5b" x="40" y="368" width="68" height="12" origin="6" srcId="21" printId="21"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[31/01/2005]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="83234889-c69d-4656-bca2-24462e56c25f" x="107" y="368" width="81" height="12" origin="6" srcId="22" printId="21"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[5000]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="dffb6b99-ce2d-4140-8b22-288bd2ef2ca8" x="187" y="368" width="71" height="12" origin="6" srcId="23" printId="21"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[5005]]></textContent>
+		</text>
+		<text textAlignment="Center" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="66db0e64-3c38-435f-9681-3c957facdead" x="257" y="368" width="135" height="12" origin="6" srcId="24" printId="21"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[PAGOS S/ CHEQUES]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="a2afadbd-f889-43f9-b1c7-16ef157096b5" x="391" y="368" width="100" height="12" origin="6" srcId="25" printId="21"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[200.000,00]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="911fce2d-536f-4ef8-aa41-7e0c96f9a3d0" x="490" y="368" width="100" height="12" origin="6" srcId="26" printId="21"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[0,00]]></textContent>
+		</text>
+		<text verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Integer">
+			<reportElement uuid="aadcd59d-b1d9-4a3d-849e-20ecb66e8f55" x="20" y="380" width="21" height="12" origin="6" srcId="20" printId="22"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[4]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.sql.Date" pattern="dd/MM/yyyy">
+			<reportElement uuid="f7c40722-ab1f-4153-949b-6838ea6cfb5b" x="40" y="380" width="68" height="12" origin="6" srcId="21" printId="22"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[31/01/2005]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="83234889-c69d-4656-bca2-24462e56c25f" x="107" y="380" width="81" height="12" origin="6" srcId="22" printId="22"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[5000]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="dffb6b99-ce2d-4140-8b22-288bd2ef2ca8" x="187" y="380" width="71" height="12" origin="6" srcId="23" printId="22"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[5006]]></textContent>
+		</text>
+		<text textAlignment="Center" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="66db0e64-3c38-435f-9681-3c957facdead" x="257" y="380" width="135" height="12" origin="6" srcId="24" printId="22"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[PAGOS S/ CHEQUES]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="a2afadbd-f889-43f9-b1c7-16ef157096b5" x="391" y="380" width="100" height="12" origin="6" srcId="25" printId="22"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[400.000,00]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="911fce2d-536f-4ef8-aa41-7e0c96f9a3d0" x="490" y="380" width="100" height="12" origin="6" srcId="26" printId="22"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[0,00]]></textContent>
+		</text>
+		<text verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Integer">
+			<reportElement uuid="aadcd59d-b1d9-4a3d-849e-20ecb66e8f55" x="20" y="392" width="21" height="12" origin="6" srcId="20" printId="23"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[4]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.sql.Date" pattern="dd/MM/yyyy">
+			<reportElement uuid="f7c40722-ab1f-4153-949b-6838ea6cfb5b" x="40" y="392" width="68" height="12" origin="6" srcId="21" printId="23"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[31/01/2005]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="83234889-c69d-4656-bca2-24462e56c25f" x="107" y="392" width="81" height="12" origin="6" srcId="22" printId="23"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[1110]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="0.0">
+			<reportElement uuid="dffb6b99-ce2d-4140-8b22-288bd2ef2ca8" x="187" y="392" width="71" height="12" origin="6" srcId="23" printId="23"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[]]></textContent>
+		</text>
+		<text textAlignment="Center" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="66db0e64-3c38-435f-9681-3c957facdead" x="257" y="392" width="135" height="12" origin="6" srcId="24" printId="23"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[CHEQ. # 6]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="a2afadbd-f889-43f9-b1c7-16ef157096b5" x="391" y="392" width="100" height="12" origin="6" srcId="25" printId="23"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[0,00]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="911fce2d-536f-4ef8-aa41-7e0c96f9a3d0" x="490" y="392" width="100" height="12" origin="6" srcId="26" printId="23"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[270.000,00]]></textContent>
+		</text>
+		<text verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Integer">
+			<reportElement uuid="aadcd59d-b1d9-4a3d-849e-20ecb66e8f55" x="20" y="404" width="21" height="12" origin="6" srcId="20" printId="24"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[4]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.sql.Date" pattern="dd/MM/yyyy">
+			<reportElement uuid="f7c40722-ab1f-4153-949b-6838ea6cfb5b" x="40" y="404" width="68" height="12" origin="6" srcId="21" printId="24"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[31/01/2005]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="83234889-c69d-4656-bca2-24462e56c25f" x="107" y="404" width="81" height="12" origin="6" srcId="22" printId="24"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[1110]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="0.0">
+			<reportElement uuid="dffb6b99-ce2d-4140-8b22-288bd2ef2ca8" x="187" y="404" width="71" height="12" origin="6" srcId="23" printId="24"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[]]></textContent>
+		</text>
+		<text textAlignment="Center" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="66db0e64-3c38-435f-9681-3c957facdead" x="257" y="404" width="135" height="12" origin="6" srcId="24" printId="24"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[CHEQ. # 7]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="a2afadbd-f889-43f9-b1c7-16ef157096b5" x="391" y="404" width="100" height="12" origin="6" srcId="25" printId="24"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[0,00]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="911fce2d-536f-4ef8-aa41-7e0c96f9a3d0" x="490" y="404" width="100" height="12" origin="6" srcId="26" printId="24"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[400.000,00]]></textContent>
+		</text>
+		<text verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Integer">
+			<reportElement uuid="aadcd59d-b1d9-4a3d-849e-20ecb66e8f55" x="20" y="416" width="21" height="12" origin="6" srcId="20" printId="25"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[4]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.sql.Date" pattern="dd/MM/yyyy">
+			<reportElement uuid="f7c40722-ab1f-4153-949b-6838ea6cfb5b" x="40" y="416" width="68" height="12" origin="6" srcId="21" printId="25"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[31/01/2005]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="83234889-c69d-4656-bca2-24462e56c25f" x="107" y="416" width="81" height="12" origin="6" srcId="22" printId="25"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[1110]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="0.0">
+			<reportElement uuid="dffb6b99-ce2d-4140-8b22-288bd2ef2ca8" x="187" y="416" width="71" height="12" origin="6" srcId="23" printId="25"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[]]></textContent>
+		</text>
+		<text textAlignment="Center" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="66db0e64-3c38-435f-9681-3c957facdead" x="257" y="416" width="135" height="12" origin="6" srcId="24" printId="25"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[CHEQ. # 7]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="a2afadbd-f889-43f9-b1c7-16ef157096b5" x="391" y="416" width="100" height="12" origin="6" srcId="25" printId="25"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[0,00]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="911fce2d-536f-4ef8-aa41-7e0c96f9a3d0" x="490" y="416" width="100" height="12" origin="6" srcId="26" printId="25"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[350.000,00]]></textContent>
+		</text>
+		<text verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Integer">
+			<reportElement uuid="aadcd59d-b1d9-4a3d-849e-20ecb66e8f55" x="20" y="428" width="21" height="12" origin="6" srcId="20" printId="26"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[4]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.sql.Date" pattern="dd/MM/yyyy">
+			<reportElement uuid="f7c40722-ab1f-4153-949b-6838ea6cfb5b" x="40" y="428" width="68" height="12" origin="6" srcId="21" printId="26"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[31/01/2005]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="83234889-c69d-4656-bca2-24462e56c25f" x="107" y="428" width="81" height="12" origin="6" srcId="22" printId="26"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[1110]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="0.0">
+			<reportElement uuid="dffb6b99-ce2d-4140-8b22-288bd2ef2ca8" x="187" y="428" width="71" height="12" origin="6" srcId="23" printId="26"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[]]></textContent>
+		</text>
+		<text textAlignment="Center" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="66db0e64-3c38-435f-9681-3c957facdead" x="257" y="428" width="135" height="12" origin="6" srcId="24" printId="26"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[CHEQ. # 8]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="a2afadbd-f889-43f9-b1c7-16ef157096b5" x="391" y="428" width="100" height="12" origin="6" srcId="25" printId="26"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[0,00]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="911fce2d-536f-4ef8-aa41-7e0c96f9a3d0" x="490" y="428" width="100" height="12" origin="6" srcId="26" printId="26"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[1.300.000,00]]></textContent>
+		</text>
+		<text verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Integer">
+			<reportElement uuid="aadcd59d-b1d9-4a3d-849e-20ecb66e8f55" x="20" y="440" width="21" height="12" origin="6" srcId="20" printId="27"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[4]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.sql.Date" pattern="dd/MM/yyyy">
+			<reportElement uuid="f7c40722-ab1f-4153-949b-6838ea6cfb5b" x="40" y="440" width="68" height="12" origin="6" srcId="21" printId="27"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[31/01/2005]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="83234889-c69d-4656-bca2-24462e56c25f" x="107" y="440" width="81" height="12" origin="6" srcId="22" printId="27"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[1110]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="0.0">
+			<reportElement uuid="dffb6b99-ce2d-4140-8b22-288bd2ef2ca8" x="187" y="440" width="71" height="12" origin="6" srcId="23" printId="27"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[]]></textContent>
+		</text>
+		<text textAlignment="Center" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="66db0e64-3c38-435f-9681-3c957facdead" x="257" y="440" width="135" height="12" origin="6" srcId="24" printId="27"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[CHEQ. # 9]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="a2afadbd-f889-43f9-b1c7-16ef157096b5" x="391" y="440" width="100" height="12" origin="6" srcId="25" printId="27"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[0,00]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="911fce2d-536f-4ef8-aa41-7e0c96f9a3d0" x="490" y="440" width="100" height="12" origin="6" srcId="26" printId="27"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[2.300.000,00]]></textContent>
+		</text>
+		<text verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Integer">
+			<reportElement uuid="aadcd59d-b1d9-4a3d-849e-20ecb66e8f55" x="20" y="452" width="21" height="12" origin="6" srcId="20" printId="28"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[4]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.sql.Date" pattern="dd/MM/yyyy">
+			<reportElement uuid="f7c40722-ab1f-4153-949b-6838ea6cfb5b" x="40" y="452" width="68" height="12" origin="6" srcId="21" printId="28"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[31/01/2005]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="83234889-c69d-4656-bca2-24462e56c25f" x="107" y="452" width="81" height="12" origin="6" srcId="22" printId="28"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[1110]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="0.0">
+			<reportElement uuid="dffb6b99-ce2d-4140-8b22-288bd2ef2ca8" x="187" y="452" width="71" height="12" origin="6" srcId="23" printId="28"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[]]></textContent>
+		</text>
+		<text textAlignment="Center" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="66db0e64-3c38-435f-9681-3c957facdead" x="257" y="452" width="135" height="12" origin="6" srcId="24" printId="28"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[CHEQ. # 10]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="a2afadbd-f889-43f9-b1c7-16ef157096b5" x="391" y="452" width="100" height="12" origin="6" srcId="25" printId="28"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[0,00]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="911fce2d-536f-4ef8-aa41-7e0c96f9a3d0" x="490" y="452" width="100" height="12" origin="6" srcId="26" printId="28"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[5.000.000,00]]></textContent>
+		</text>
+		<text verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Integer">
+			<reportElement uuid="aadcd59d-b1d9-4a3d-849e-20ecb66e8f55" x="20" y="464" width="21" height="12" origin="6" srcId="20" printId="29"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[4]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.sql.Date" pattern="dd/MM/yyyy">
+			<reportElement uuid="f7c40722-ab1f-4153-949b-6838ea6cfb5b" x="40" y="464" width="68" height="12" origin="6" srcId="21" printId="29"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[31/01/2005]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="83234889-c69d-4656-bca2-24462e56c25f" x="107" y="464" width="81" height="12" origin="6" srcId="22" printId="29"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[1110]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="0.0">
+			<reportElement uuid="dffb6b99-ce2d-4140-8b22-288bd2ef2ca8" x="187" y="464" width="71" height="12" origin="6" srcId="23" printId="29"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[]]></textContent>
+		</text>
+		<text textAlignment="Center" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="66db0e64-3c38-435f-9681-3c957facdead" x="257" y="464" width="135" height="12" origin="6" srcId="24" printId="29"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[CHEQ. # 11]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="a2afadbd-f889-43f9-b1c7-16ef157096b5" x="391" y="464" width="100" height="12" origin="6" srcId="25" printId="29"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[0,00]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="911fce2d-536f-4ef8-aa41-7e0c96f9a3d0" x="490" y="464" width="100" height="12" origin="6" srcId="26" printId="29"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[500.000,00]]></textContent>
+		</text>
+		<text verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Integer">
+			<reportElement uuid="aadcd59d-b1d9-4a3d-849e-20ecb66e8f55" x="20" y="476" width="21" height="12" origin="6" srcId="20" printId="30"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[4]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.sql.Date" pattern="dd/MM/yyyy">
+			<reportElement uuid="f7c40722-ab1f-4153-949b-6838ea6cfb5b" x="40" y="476" width="68" height="12" origin="6" srcId="21" printId="30"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[31/01/2005]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="83234889-c69d-4656-bca2-24462e56c25f" x="107" y="476" width="81" height="12" origin="6" srcId="22" printId="30"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[1110]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="0.0">
+			<reportElement uuid="dffb6b99-ce2d-4140-8b22-288bd2ef2ca8" x="187" y="476" width="71" height="12" origin="6" srcId="23" printId="30"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[]]></textContent>
+		</text>
+		<text textAlignment="Center" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="66db0e64-3c38-435f-9681-3c957facdead" x="257" y="476" width="135" height="12" origin="6" srcId="24" printId="30"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[CHEQ. # 12]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="a2afadbd-f889-43f9-b1c7-16ef157096b5" x="391" y="476" width="100" height="12" origin="6" srcId="25" printId="30"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[0,00]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="911fce2d-536f-4ef8-aa41-7e0c96f9a3d0" x="490" y="476" width="100" height="12" origin="6" srcId="26" printId="30"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[200.000,00]]></textContent>
+		</text>
+		<text verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Integer">
+			<reportElement uuid="aadcd59d-b1d9-4a3d-849e-20ecb66e8f55" x="20" y="488" width="21" height="12" origin="6" srcId="20" printId="31"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[4]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.sql.Date" pattern="dd/MM/yyyy">
+			<reportElement uuid="f7c40722-ab1f-4153-949b-6838ea6cfb5b" x="40" y="488" width="68" height="12" origin="6" srcId="21" printId="31"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[31/01/2005]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="83234889-c69d-4656-bca2-24462e56c25f" x="107" y="488" width="81" height="12" origin="6" srcId="22" printId="31"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[1110]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="0.0">
+			<reportElement uuid="dffb6b99-ce2d-4140-8b22-288bd2ef2ca8" x="187" y="488" width="71" height="12" origin="6" srcId="23" printId="31"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[]]></textContent>
+		</text>
+		<text textAlignment="Center" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="66db0e64-3c38-435f-9681-3c957facdead" x="257" y="488" width="135" height="12" origin="6" srcId="24" printId="31"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[CHEQ. # 13]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="a2afadbd-f889-43f9-b1c7-16ef157096b5" x="391" y="488" width="100" height="12" origin="6" srcId="25" printId="31"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[0,00]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="911fce2d-536f-4ef8-aa41-7e0c96f9a3d0" x="490" y="488" width="100" height="12" origin="6" srcId="26" printId="31"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[700.000,00]]></textContent>
+		</text>
+		<text verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Integer">
+			<reportElement uuid="aadcd59d-b1d9-4a3d-849e-20ecb66e8f55" x="20" y="500" width="21" height="12" origin="6" srcId="20" printId="32"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[4]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.sql.Date" pattern="dd/MM/yyyy">
+			<reportElement uuid="f7c40722-ab1f-4153-949b-6838ea6cfb5b" x="40" y="500" width="68" height="12" origin="6" srcId="21" printId="32"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[31/01/2005]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="83234889-c69d-4656-bca2-24462e56c25f" x="107" y="500" width="81" height="12" origin="6" srcId="22" printId="32"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[1110]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="0.0">
+			<reportElement uuid="dffb6b99-ce2d-4140-8b22-288bd2ef2ca8" x="187" y="500" width="71" height="12" origin="6" srcId="23" printId="32"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[]]></textContent>
+		</text>
+		<text textAlignment="Center" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="66db0e64-3c38-435f-9681-3c957facdead" x="257" y="500" width="135" height="12" origin="6" srcId="24" printId="32"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[CHEQ. # 14]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="a2afadbd-f889-43f9-b1c7-16ef157096b5" x="391" y="500" width="100" height="12" origin="6" srcId="25" printId="32"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[0,00]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="911fce2d-536f-4ef8-aa41-7e0c96f9a3d0" x="490" y="500" width="100" height="12" origin="6" srcId="26" printId="32"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[4.000.000,00]]></textContent>
+		</text>
+		<text verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Integer">
+			<reportElement uuid="aadcd59d-b1d9-4a3d-849e-20ecb66e8f55" x="20" y="512" width="21" height="12" origin="6" srcId="20" printId="33"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[4]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.sql.Date" pattern="dd/MM/yyyy">
+			<reportElement uuid="f7c40722-ab1f-4153-949b-6838ea6cfb5b" x="40" y="512" width="68" height="12" origin="6" srcId="21" printId="33"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[31/01/2005]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="83234889-c69d-4656-bca2-24462e56c25f" x="107" y="512" width="81" height="12" origin="6" srcId="22" printId="33"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[1110]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="0.0">
+			<reportElement uuid="dffb6b99-ce2d-4140-8b22-288bd2ef2ca8" x="187" y="512" width="71" height="12" origin="6" srcId="23" printId="33"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[]]></textContent>
+		</text>
+		<text textAlignment="Center" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="66db0e64-3c38-435f-9681-3c957facdead" x="257" y="512" width="135" height="12" origin="6" srcId="24" printId="33"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[CHEQ. # 15]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="a2afadbd-f889-43f9-b1c7-16ef157096b5" x="391" y="512" width="100" height="12" origin="6" srcId="25" printId="33"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[0,00]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="911fce2d-536f-4ef8-aa41-7e0c96f9a3d0" x="490" y="512" width="100" height="12" origin="6" srcId="26" printId="33"/>
+			<font fontName="Consolas" size="8"/>
+			<textContent><![CDATA[850.000,00]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="e718b64e-18b1-4489-bf8d-cc0e68fb37c3" x="392" y="524" width="100" height="12" origin="1" srcId="1" printId="4"/>
+			<font fontName="Consolas" size="8" isBold="true"/>
+			<textContent><![CDATA[15.870.000,00]]></textContent>
+		</text>
+		<text textAlignment="Right" verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375" valueClass="java.lang.Double" pattern="#,##0.00">
+			<reportElement uuid="08be0499-9637-4018-aa9c-9d7e28c61bb8" x="491" y="524" width="100" height="12" origin="1" srcId="2" printId="4"/>
+			<font fontName="Consolas" size="8" isBold="true"/>
+			<textContent><![CDATA[15.870.000,00]]></textContent>
+		</text>
+		<text verticalAlignment="Middle" textHeight="9.3671875" lineSpacingFactor="1.1708984" leadingOffset="-1.375">
+			<reportElement uuid="41530864-5c8f-4e4b-af7f-228597d09919" x="60" y="523" width="141" height="12" origin="1" srcId="3" printId="4"/>
+			<font fontName="Consolas" size="8" isBold="true"/>
+			<textContent><![CDATA[Total Comprobante: 4]]></textContent>
+		</text>
+		<line>
+			<reportElement uuid="1ab90a7d-bd8b-420c-a5d5-d82f5fd70fea" x="20" y="535" width="568" height="1" origin="1" srcId="4" printId="4"/>
+		</line>
+		<line>
+			<reportElement uuid="97018122-3e18-4610-a072-20c401d1f09e" x="20" y="524" width="572" height="1" origin="1" srcId="5" printId="4"/>
+			<graphicElement>
+				<pen lineStyle="Dashed"/>
+			</graphicElement>
+		</line>
+	</page>
+</jasperPrint>

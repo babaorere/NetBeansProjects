@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="mh_LibroDiario" language="groovy" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="d4ceb8b9-e1e0-42b5-9303-3c4f3951e949">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="cod" class="java.lang.String"/>
+	<parameter name="fecha1" class="java.lang.String"/>
+	<parameter name="fecha2" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT `mh_empresas`.`emp_nombre`,`mh_comprobante`.`comp_id`,`mh_comprobante`.`comp_fecha`,`mh_comprobante`.`cta_id`,`mh_comprobante`.`aux_id`,
+		`mh_comprobante`.`comp_concepto`,`mh_comprobante`.`comp_debe`,`mh_comprobante`.`comp_haber`
+FROM `mh_empresas` INNER JOIN `mh_auxiliar` ON `mh_empresas`.`emp_id`=`mh_auxiliar`.`emp_id`
+					INNER JOIN `mh_comprobante` ON `mh_auxiliar`.`emp_id`=`mh_comprobante`.`emp_id`
+WHERE `mh_empresas`.`emp_id`= $P{cod} AND `mh_comprobante`.`emp_id`= $P{cod}
+AND `mh_comprobante`.`comp_fecha` BETWEEN $P{fecha1} AND $P{fecha2}
+GROUP BY `mh_comprobante`.`comp_linea`]]>
+	</queryString>
+	<field name="emp_nombre" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="comp_id" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="comp_fecha" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="cta_id" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="aux_id" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="comp_concepto" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="comp_debe" class="java.lang.Double">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="comp_haber" class="java.lang.Double">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<variable name="tDebe" class="java.lang.Double" resetType="Group" resetGroup="comp_id" calculation="Sum">
+		<variableExpression><![CDATA[$F{comp_debe}]]></variableExpression>
+	</variable>
+	<variable name="tHaber" class="java.lang.Double" resetType="Group" resetGroup="comp_id" calculation="Sum">
+		<variableExpression><![CDATA[$F{comp_haber}]]></variableExpression>
+	</variable>
+	<group name="comp_id">
+		<groupExpression><![CDATA[$F{comp_id}]]></groupExpression>
+		<groupFooter>
+			<band height="12">
+				<textField pattern="#,##0.00;-#,##0.00">
+					<reportElement x="372" y="0" width="100" height="12" uuid="e718b64e-18b1-4489-bf8d-cc0e68fb37c3"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Consolas" size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{tDebe}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00;-#,##0.00">
+					<reportElement x="471" y="0" width="100" height="12" uuid="08be0499-9637-4018-aa9c-9d7e28c61bb8"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Consolas" size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{tHaber}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="40" y="-1" width="141" height="12" uuid="41530864-5c8f-4e4b-af7f-228597d09919"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Consolas" size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Total Comprobante: " + $F{comp_id}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement x="0" y="11" width="568" height="1" uuid="1ab90a7d-bd8b-420c-a5d5-d82f5fd70fea"/>
+				</line>
+				<line>
+					<reportElement x="0" y="0" width="572" height="1" uuid="97018122-3e18-4610-a072-20c401d1f09e"/>
+					<graphicElement>
+						<pen lineStyle="Dashed"/>
+					</graphicElement>
+				</line>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="48" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="572" height="34" forecolor="#000000" uuid="0bb1af72-3507-420a-bdc5-4f57d641d957"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="26" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Libro Diario]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="33" width="178" height="15" forecolor="#000000" uuid="98043ec3-c2f7-4954-9a33-ba281a14ebe0"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Consolas" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{emp_nombre}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yy">
+				<reportElement x="476" y="33" width="96" height="15" forecolor="#000000" uuid="50d7c816-4079-482b-8021-080b9da8e1fe"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Consolas" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{comp_fecha}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="213" y="33" width="264" height="15" forecolor="#000000" uuid="59f178b3-9676-4d6b-a9df-bab31669dba4"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Consolas" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Reporte de Comprobante Diario al ]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="12" splitType="Stretch">
+			<textField>
+				<reportElement x="452" y="0" width="80" height="12" uuid="d7cbcf83-69fc-45e4-b273-a030e53ada42"/>
+				<textElement textAlignment="Right">
+					<font fontName="Consolas"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pag "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="530" y="0" width="40" height="12" uuid="b50af622-fe81-4bdd-8440-ec2f20848690"/>
+				<textElement>
+					<font fontName="Consolas"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="12" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="572" height="12" uuid="54e9b179-c13c-4afd-8e9b-2913a43ab20a"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="487" y="0" width="79" height="12" uuid="7750d6c7-80d3-4fb2-af0d-2f488d4d89e7"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Consolas" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Haber]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="408" y="0" width="79" height="12" uuid="93b0bea8-0c2c-4e43-94fb-c14250260577"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Consolas" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Debe]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="282" y="0" width="121" height="12" uuid="d5dadb27-cbb3-4eab-9723-412659d6225b"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Consolas" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Concepto]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="87" y="0" width="54" height="12" uuid="28248c69-561b-4942-87ac-aa30b04d8b2b"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Consolas" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="0" width="86" height="12" uuid="a1aa1eb8-f045-4b6d-8cba-c0af100a41ae"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Consolas" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Comprobante Nr]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="142" y="0" width="68" height="12" uuid="6da9ebb6-76df-4d05-88c6-62ddd7ea3773"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Consolas" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cuenta]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="210" y="0" width="71" height="12" uuid="abe70f23-7a57-431b-9752-97ea1f2944c3"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Consolas" size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Auxiliar]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="12" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="21" height="12" uuid="aadcd59d-b1d9-4a3d-849e-20ecb66e8f55"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Consolas" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{comp_id}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="20" y="0" width="68" height="12" uuid="f7c40722-ab1f-4153-949b-6838ea6cfb5b"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Consolas" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{comp_fecha}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="87" y="0" width="81" height="12" uuid="83234889-c69d-4656-bca2-24462e56c25f"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Consolas" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cta_id}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="167" y="0" width="71" height="12" uuid="dffb6b99-ce2d-4140-8b22-288bd2ef2ca8"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Consolas" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{aux_id}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="237" y="0" width="135" height="12" uuid="66db0e64-3c38-435f-9681-3c957facdead"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Consolas" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{comp_concepto}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement x="371" y="0" width="100" height="12" uuid="a2afadbd-f889-43f9-b1c7-16ef157096b5"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Consolas" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{comp_debe}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement x="470" y="0" width="100" height="12" uuid="911fce2d-536f-4ef8-aa41-7e0c96f9a3d0"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Consolas" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{comp_haber}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

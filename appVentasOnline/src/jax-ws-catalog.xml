@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
+    <system systemId="http://10.0.0.7:8080/wsVentasOnline/srvUsuario?wsdl" uri="wsdl/10.0.0.7_8080/wsVentasOnline/srvUsuario.wsdl"/>
+    <system systemId="http://10.0.0.7:8080/wsVentasOnline/srvUsuario?xsd=1" uri="wsdl/10.0.0.7_8080/wsVentasOnline/srvUsuario.xsd_1.xsd"/>
+    <system systemId="http://10.0.0.7:8080/wsVentasOnline/srvProveedor?wsdl" uri="wsdl/10.0.0.7_8080/wsVentasOnline/srvProveedor.wsdl"/>
+    <system systemId="http://10.0.0.7:8080/wsVentasOnline/srvProveedor?xsd=1" uri="wsdl/10.0.0.7_8080/wsVentasOnline/srvProveedor.xsd_1.xsd"/>
+</catalog>
