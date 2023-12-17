@@ -1,0 +1,1 @@
+Template files (e.g., Thymeleaf templates).

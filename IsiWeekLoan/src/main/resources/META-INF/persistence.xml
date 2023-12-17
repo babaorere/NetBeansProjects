@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
+             http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd"
+             version="2.2">
+
+    <!-- JPA/Hibernate Configuration. -->
+
+    <persistence-unit name="my-persistence-unit" transaction-type="RESOURCE_LOCAL">
+        <!-- Proveedor de JPA (aquí se utiliza Hibernate como ejemplo) -->
+    <!--     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider> -->
+
+        <!-- Clases de entidad -->
+    <!--     <class>com.mycompany.model.User</class> -->
+    <!--     <class>com.mycompany.model.Product</class> -->
+
+        <!-- Configuración de la fuente de datos (DataSource) -->
+    <!--     <properties> -->
+            <!-- Configura la URL de la base de datos -->
+    <!--         <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/mydb"/> -->
+
+            <!-- Configura el nombre de usuario y contraseña -->
+    <!--         <property name="javax.persistence.jdbc.user" value="root"/> -->
+    <!--         <property name="javax.persistence.jdbc.password" value="secretpassword"/> -->
+
+            <!-- Configura el dialecto de la base de datos (para Hibernate) -->
+    <!--         <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/> -->
+
+            <!-- Otros ajustes de Hibernate (opcional) -->
+    <!--         <property name="hibernate.show_sql" value="true"/> -->
+    <!--         <property name="hibernate.hbm2ddl.auto" value="update"/> -->
+    <!--     </properties> -->
+    </persistence-unit>
+</persistence>
