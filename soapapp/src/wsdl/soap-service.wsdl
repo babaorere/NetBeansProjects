@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             targetNamespace="http://www.soapapp.com"
+             name="SoapService">
+    <types>
+        <xsd:schema>
+            <!-- Definiciones de tipos aquí -->
+        </xsd:schema>
+    </types>
+    <message name="StringRequest">
+        <part name="inputString" type="xsd:string"/>
+    </message>
+    <message name="StringResponse">
+        <part name="outputString" type="xsd:string"/>
+    </message>
+    <message name="FileRequest">
+        <part name="file" type="xsd:base64Binary"/>
+    </message>
+    <message name="FileResponse">
+        <part name="message" type="xsd:string"/>
+    </message>
+    <portType name="SoapServicePortType">
+        <operation name="sendString">
+            <input message="tns:StringRequest"/>
+            <output message="tns:StringResponse"/>
+        </operation>
+        <operation name="uploadFile">
+            <input message="tns:FileRequest"/>
+            <output message="tns:FileResponse"/>
+        </operation>
+    </portType>
+    <binding name="SoapServiceSoapBinding" type="tns:SoapServicePortType">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="sendString">
+            <soap:operation soapAction=""/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+        <operation name="uploadFile">
+            <soap:operation soapAction=""/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+    </binding>
+    <service name="SoapService">
+        <port name="SoapServicePort" binding="tns:SoapServiceSoapBinding">
+            <soap:address location="http://localhost:8080/soapapp/service"/>
+        </port>
+    </service>
+</definitions>
+

@@ -1,0 +1,8 @@
+// Código JavaScript para hacer un test
+var x = 5;
+if (x > 0) {
+    console.log("El valor de x es positivo");
+} else {
+    console.log("El valor de x es cero o negativo");
+}  
+

@@ -1,0 +1,245 @@
+
+[32;2m--------------------------------------------------------------
+[32;2m|  Gramática generada con éxito, se crearon 21 producciones  |
+[32;2m|    Todos los componentes están listos para su ejecución    |
+[32;2m------ Grammar v0.68 (By Yisus Efebei and M45t3r L3g10n) -----[0m
+
+....................................................................................................
+[34;2mNo se encontró alguna producción llamada "ERROR" para su eliminación
+
+....................................................................................................
+[34;2mNo se encontró alguna producción llamada "ERROR_1" para su eliminación
+
+....................................................................................................
+[34;2mNo se encontró alguna producción llamada "ERROR_2" para su eliminación
+
+....................................................................................................
+[34;2m**** Agrupación 1 "SENTENCIA_IF" realizada, pero sin cambios ****
+[34;2mCantidad de componentes: 8
+
+....................................................................................................
+[34;2m**** Agrupación 2 "SENTENCIA_IF" realizada, pero sin cambios ****
+[34;2mCantidad de componentes: 9
+
+....................................................................................................
+**** Agrupación 3 "VAR_ASIGNACION" realizada con éxito ****
+Cantidad de componentes: 3
+La cantidad de producciones se redujo de 21 a 15
+
+....................................................................................................
+[34;2m**** Agrupación 4 "VAR_ASIGNACION" realizada, pero sin cambios ****
+[34;2mCantidad de componentes: 2
+
+....................................................................................................
+**** Agrupación 5 "EXPRESION_ARIT" realizada con éxito ****
+Cantidad de componentes: 1
+No hubo reducción en la cantidad de producciones (15)
+
+....................................................................................................
+[34;2m**** Agrupación 6 "EXPRESION_ARIT" realizada, pero sin cambios ****
+[34;2mCantidad de componentes: 2
+
+....................................................................................................
+[34;2m**** Agrupación 7 "EXPRESION_ARIT" realizada, pero sin cambios ****
+[34;2mCantidad de componentes: 2
+
+....................................................................................................
+[34;2m**** Agrupación 8 "EXPRESION_ARIT" realizada, pero sin cambios ****
+[34;2mCantidad de componentes: 2
+
+....................................................................................................
+[34;2m**** Agrupación 9 "EXPRESION_ARIT" realizada, pero sin cambios ****
+[34;2mCantidad de componentes: 2
+
+....................................................................................................
+[34;2m**** Agrupación 10 "EXPRESION_ARIT" realizada, pero sin cambios ****
+[34;2mCantidad de componentes: 2
+
+....................................................................................................
+[34;2m**** Agrupación 11 "EXPRESION_ARIT" realizada, pero sin cambios ****
+[34;2mCantidad de componentes: 2
+
+....................................................................................................
+[34;2m**** Agrupación 12 "EXPRESION_ARIT" realizada, pero sin cambios ****
+[34;2mCantidad de componentes: 3
+
+....................................................................................................
+[34;2m**** Agrupación 13 "VAR_ASIGNACION" realizada, pero sin cambios ****
+[34;2mCantidad de componentes: 3
+
+....................................................................................................
+[34;2m**** Agrupación 14 "EXPRESION_LOG" realizada, pero sin cambios ****
+[34;2mCantidad de componentes: 1
+
+....................................................................................................
+[34;2m**** Agrupación 15 "EXPRESION_LOG" realizada, pero sin cambios ****
+[34;2mCantidad de componentes: 1
+
+....................................................................................................
+[34;2m**** Agrupación 16 "EXPRESION_LOG" realizada, pero sin cambios ****
+[34;2mCantidad de componentes: 2
+
+....................................................................................................
+[34;2m**** Agrupación 17 "EXPRESION_LOG" realizada, pero sin cambios ****
+[34;2mCantidad de componentes: 3
+
+....................................................................................................
+[34;2m**** Agrupación 18 "EXPRESION_LOG" realizada, pero sin cambios ****
+[34;2mCantidad de componentes: 2
+
+....................................................................................................
+[34;2m**** Agrupación 19 "EXPRESION_LOG" realizada, pero sin cambios ****
+[34;2mCantidad de componentes: 3
+
+....................................................................................................
+[34;2m**** Agrupación 20 "EXPRESION_LOG" realizada, pero sin cambios ****
+[34;2mCantidad de componentes: 3
+
+....................................................................................................
+[34;2m**** Agrupación 21 "EXPRESION_LOG" realizada, pero sin cambios ****
+[34;2mCantidad de componentes: 3
+
+....................................................................................................
+[34;2m**** Agrupación 22 "EXPRESION_LOG" realizada, pero sin cambios ****
+[34;2mCantidad de componentes: 3
+
+....................................................................................................
+[34;2m**** Agrupación 23 "DECLARACION" realizada, pero sin cambios ****
+[34;2mCantidad de componentes: 3
+
+....................................................................................................
+[34;2m**** Agrupación 24 "SENTENCIA" realizada, pero sin cambios ****
+[34;2mCantidad de componentes: 2
+
+....................................................................................................
+[34;2m**** Agrupación 25 "DECLARACION" realizada, pero sin cambios ****
+[34;2mCantidad de componentes: 3
+
+....................................................................................................
+[34;2m**** Agrupación 26 "SENTENCIA" realizada, pero sin cambios ****
+[34;2mCantidad de componentes: 2
+
+....................................................................................................
+**** Agrupación 27 "DECLARACION" realizada con éxito ****
+Cantidad de componentes: 3
+La cantidad de producciones se redujo de 15 a 13
+
+....................................................................................................
+[34;2m**** Agrupación 28 "SENTENCIA" realizada, pero sin cambios ****
+[34;2mCantidad de componentes: 2
+
+....................................................................................................
+[34;2m**** Agrupación 29 "DECLARACION" realizada, pero sin cambios ****
+[34;2mCantidad de componentes: 3
+
+....................................................................................................
+**** Agrupación 30 "SENTENCIA" realizada con éxito ****
+Cantidad de componentes: 2
+La cantidad de producciones se redujo de 13 a 12
+
+....................................................................................................
+[34;2m**** Agrupación 31 "SENTENCIA_WHILE" realizada, pero sin cambios ****
+[34;2mCantidad de componentes: 7
+
+....................................................................................................
+[34;2m**** Agrupación 32 "SENTENCIA_FOR" realizada, pero sin cambios ****
+[34;2mCantidad de componentes: 10
+
+....................................................................................................
+**** Agrupación 33 "SENTENCIA" realizada con éxito ****
+Cantidad de componentes: 2
+La cantidad de producciones se redujo de 12 a 11
+
+....................................................................................................
+[34;2m**** Agrupación 34 "SENTENCIA" realizada, pero sin cambios ****
+[34;2mCantidad de componentes: 1
+
+....................................................................................................
+[34;2m**** Agrupación 35 "SENTENCIA" realizada, pero sin cambios ****
+[34;2mCantidad de componentes: 6
+
+....................................................................................................
+[34;2m**** Agrupación 36 "SENTENCIA" realizada, pero sin cambios ****
+[34;2mCantidad de componentes: 5
+
+....................................................................................................
+**** Agrupación 37 "SENTENCIA" realizada con éxito ****
+Cantidad de componentes: 1
+No hubo reducción en la cantidad de producciones (11)
+
+....................................................................................................
+[34;2m**** Agrupación 38 "SENTENCIA" realizada, pero sin cambios ****
+[34;2mCantidad de componentes: 1
+
+....................................................................................................
+[34;2m**** Agrupación 39 "SENTENCIA" realizada, pero sin cambios ****
+[34;2mCantidad de componentes: 1
+
+....................................................................................................
+[34;2m**** Agrupación 40 "SENTENCIA" realizada, pero sin cambios ****
+[34;2mCantidad de componentes: 1
+
+....................................................................................................
+**** Agrupación 41 "SENTENCIA_LIST" realizada con éxito ****
+Cantidad de componentes: 1
+La cantidad de producciones se redujo de 11 a 10
+
+....................................................................................................
+[34;2m**** Agrupación 42 "SENTENCIA_LIST" realizada, pero sin cambios ****
+[34;2mCantidad de componentes: 2
+
+
+[35;2m**** Mostrando gramáticas ****
+
+....................................................................................................
+Produccion(SENTENCIA_LIST, 2, 1, 3, 9, [
+Token(var, VAR, 2, 1),
+Token(x, IDENTIFICADOR, 2, 5),
+Token(=, ASIGNACION, 2, 7),
+Token(5, NUMERO, 2, 9),
+Token(;, PUNTO_COMA, 2, 10),
+Token(let, LET, 3, 1),
+Token(y, IDENTIFICADOR, 3, 5),
+Token(=, ASIGNACION, 3, 7),
+Token(5, NUMERO, 3, 9)])
+
+....................................................................................................
+Produccion(IF, 4, 1, 4, 1, [
+Token(if, IF, 4, 1)])
+
+....................................................................................................
+Produccion(PAREN_A, 4, 4, 4, 4, [
+Token((, PAREN_A, 4, 4)])
+
+....................................................................................................
+Produccion(IDENTIFICADOR, 4, 5, 4, 5, [
+Token(x, IDENTIFICADOR, 4, 5)])
+
+....................................................................................................
+Produccion(OPLOG, 4, 7, 4, 7, [
+Token(>, OPLOG, 4, 7)])
+
+....................................................................................................
+Produccion(EXPRESION_ARIT, 4, 9, 4, 9, [
+Token(0, NUMERO, 4, 9)])
+
+....................................................................................................
+Produccion(PAREN_C, 4, 10, 4, 10, [
+Token(), PAREN_C, 4, 10)])
+
+....................................................................................................
+Produccion(LLAVE_A, 4, 12, 4, 12, [
+Token({, LLAVE_A, 4, 12)])
+
+....................................................................................................
+Produccion(SENTENCIA, 5, 5, 5, 10, [
+Token(y, IDENTIFICADOR, 5, 5),
+Token(=, ASIGNACION, 5, 7),
+Token(1, NUMERO, 5, 9),
+Token(;, PUNTO_COMA, 5, 10)])
+
+....................................................................................................
+Produccion(LLAVE_C, 6, 1, 6, 1, [
+Token(}, LLAVE_C, 6, 1)])
+
+

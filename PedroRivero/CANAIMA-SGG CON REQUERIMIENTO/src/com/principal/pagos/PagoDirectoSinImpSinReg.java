@@ -1,0 +1,2590 @@
+/*
+ * Todos los derechos reservados por CAPIP Sistemas C.A., Venezuela
+ * RIF J-407111787
+ * capipsistemas@gmail.com, baba.orere@gmail.com
+ * @2016, 2017, 2018
+ */
+package com.principal.pagos;
+
+import com.principal.capipsistema.Globales;
+import com.principal.capipsistema.Propiedades;
+import static com.principal.capipsistema.Propiedades.CAPIP_IVA_APLICADO;
+import static com.principal.capipsistema.Propiedades.CAPIP_IVA_PARTIDA;
+import com.principal.capipsistema.UserTrack;
+import com.principal.compromisos.Compromiso;
+import com.principal.compromisos.CompromisosConsultar;
+import com.principal.connection.ConnCapip;
+import com.principal.gen_next_num.GenNextNum;
+import com.principal.gen_next_num.OrdPagNextNum;
+import com.principal.impuestos.ImpuestoRetencion;
+import com.principal.modelos.IvaAplicModel;
+import com.principal.modelos.PptoModel;
+import com.principal.modelos.PresupeModel;
+import com.principal.utils.CapipState;
+import com.principal.utils.Format;
+import com.principal.utils.GenNum_xPag;
+import com.principal.utils.TipoCompr;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
+import static java.lang.Math.min;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
+import javax.swing.AbstractAction;
+import javax.swing.JFormattedTextField;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+public final class PagoDirectoSinImpSinReg extends javax.swing.JFrame {
+
+    private static final BigDecimal[] porcRetIslr = {BigDecimal.valueOf(0.00d), BigDecimal.valueOf(0.01d), BigDecimal.valueOf(0.02d), BigDecimal.valueOf(0.03d), BigDecimal.valueOf(0.04d), BigDecimal.valueOf(0.05d), BigDecimal.valueOf(0.06d)};
+
+    private static final BigDecimal[] porcRetIva = {BigDecimal.valueOf(0.00d), BigDecimal.valueOf(0.75d), BigDecimal.valueOf(1.00d)};
+
+    private final java.awt.Window parent;
+
+    private boolean conIva;
+
+    private final static long serialVersionUID = 1L;
+
+    private BigDecimal iva_grav_bs;
+
+    BigDecimal IVA_DEC_VALUE;
+
+    private CapipState estado;
+
+    /**
+     * Mantiene el generador de numeros o ID para los compromisos
+     */
+    private final GenNextNum comprNextNum;
+
+    /**
+     * Mantiene el generador de numeros o ID para los causados
+     */
+    private final GenNextNum cauNextNum;
+
+    /**
+     * Mantiene el generador de numeros o ID para los pagos
+     */
+    private OrdPagNextNum pagNextNum;
+
+    /**
+     * Rev
+     *
+     * @param inparent
+     */
+    public PagoDirectoSinImpSinReg(final java.awt.Window inparent) {
+        super();
+        initComponents();
+        this.parent = inparent;
+        comprNextNum = new GenNextNum("CO");
+        cauNextNum = new GenNextNum("CAU");
+        pagNextNum = null;
+        setOwnBehavior();
+        setCompBehavior();
+        setStartConditions();
+    }
+
+    /**
+     * Para Reubicar la ventana al ser visualizada
+     *
+     * @param inb
+     */
+    @Override
+    public void setVisible(boolean inb) {
+        // Para mostrar la ventana en el tope de la pantalla
+        if (inb) {
+            setLocation((Toolkit.getDefaultToolkit().getScreenSize().width - getWidth()) / 2, 10);
+        }
+        super.setVisible(inb);
+    }
+
+    /**
+     * Establece el comportamiento de la presente Ventana Rev 21/09/2016
+     */
+    private void setOwnBehavior() {
+        try {
+            UserTrack.trackUser(getClass().getName(), "INIT", getTitle());
+        } catch (final Exception inex) {
+            JOptionPane.showMessageDialog(null, inex);
+            logger.error(inex);
+        }
+        setTitle(Propiedades.CAPIP_SISTEMAS + " - " + getTitle() + " - " + Propiedades.CAPIP_CLIENTE_RAZONSOCIAL);
+        // Establecer acción al cerrar ventana
+        addWindowListener(new java.awt.event.WindowAdapter() {
+
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                actSalir();
+            }
+        });
+        // Para salir con la tecla ESC
+        getRootPane().getInputMap(javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW).put(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ESCAPE, 0), "Cancel");
+        getRootPane().getActionMap().put("Cancel", new javax.swing.AbstractAction() {
+
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                actSalir();
+            }
+        });
+    }
+
+    /**
+     * Rev 06/11/2016
+     */
+    private void setCompBehavior() {
+        Compromiso.setTblBenefBehavior(tblBenef, new AbstractAction() {
+
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                actSelectBenef();
+            }
+        });
+        Compromiso.setTblItemBehavior(tblItem);
+        Compromiso.setTxtFechaFactBehavior(txtFechaFact);
+        Compromiso.setTxtCantBehavior((JFormattedTextField) txtCant, (JFormattedTextField) txtPUnitario, txtSubTotal);
+        Compromiso.setTxtPUnitarioBehavior((JFormattedTextField) txtCant, (JFormattedTextField) txtPUnitario, txtSubTotal);
+    }
+
+    /**
+     * Rev /10/2016
+     */
+    private void setStartConditions() {
+        pagNextNum = new GenNum_xPag();
+        clearComp();
+    }
+
+    /**
+     * Rev 07/11/2016
+     */
+    void calcularTotal() {
+        BigDecimal total_bs = BigDecimal.ZERO;
+        for (int i = 0; i < tblItem.getRowCount(); i++) {
+            total_bs = total_bs.add(Format.toBigDec((double) tblItem.getValueAt(i, 3)));
+        }
+        txtTotalBs.setText(Format.toStr(total_bs));
+        BigDecimal ivaRet;
+        BigDecimal islrRet;
+        try {
+            ivaRet = Format.toBigDec(txtIvaRet.getText());
+            islrRet = Format.toBigDec(txtIslrRet.getText());
+        } catch (final Exception inex) {
+            JOptionPane.showMessageDialog(this, "Error al formateat los totales" + System.getProperty("line.separator") + inex);
+            ivaRet = BigDecimal.ZERO;
+            islrRet = BigDecimal.ZERO;
+            logger.error(inex);
+        }
+        BigDecimal montoAPagar = total_bs.subtract(ivaRet).subtract(islrRet).setScale(2, RoundingMode.HALF_UP);
+        try {
+            if (cmbIva.getSelectedIndex() <= 0) {
+                IVA_DEC_VALUE = BigDecimal.ZERO;
+            } else {
+                final long id_iva_aplicado = Long.valueOf(((String) cmbIva.getSelectedItem()).split("\t")[2].trim());
+                final IvaAplicModel regIva = CAPIP_IVA_APLICADO.get(id_iva_aplicado);
+                //
+                IVA_DEC_VALUE = regIva.getValor_porc().movePointLeft(2);
+            }
+            txtIva_bs.setText(Format.toStr(iva_grav_bs.multiply(IVA_DEC_VALUE).setScale(2, RoundingMode.HALF_UP)));
+            txtSumaTotalCau.setText(txtTotalBs.getText());
+            txtSumaTotalCau_menosRet.setText(Format.toStr(montoAPagar));
+            txtA_Pagar.setText(Format.toStr(montoAPagar));
+            txtResta.setText("0,00");
+            txtMontoPagado.setText("0,00");
+        } catch (final Exception inex) {
+            JOptionPane.showMessageDialog(null, "Error al formatear los totales" + System.getProperty("line.separator") + inex);
+            txtIvaRet.setText("0,00");
+            txtTotalRet.setText("0,00");
+            txtIva_bs.setText("0,00");
+            txtSumaTotalCau.setText("0,00");
+            txtSumaTotalCau_menosRet.setText("0,00");
+            txtA_Pagar.setText("0,00");
+            txtResta.setText("0,00");
+            txtMontoPagado.setText("0,00");
+            logger.error(inex);
+        }
+    }
+
+    /**
+     * Rev 07/11/2016
+     *
+     * @param isIVA
+     */
+    private void actComprInsertItem(boolean inisIVA) {
+        // Validar cantidad
+        final BigDecimal cant;
+        try {
+            final JFormattedTextField txtAux = (JFormattedTextField) txtCant;
+            txtAux.commitEdit();
+            cant = (BigDecimal) txtAux.getValue();
+        } catch (final Exception inex) {
+            JOptionPane.showMessageDialog(null, "Cantidad inválida");
+            java.awt.EventQueue.invokeLater(txtCant::requestFocusInWindow);
+            logger.error(inex);
+            return;
+        }
+        if (cant.compareTo(BigDecimal.ZERO) <= 0) {
+            JOptionPane.showMessageDialog(null, "Cantidad inválida");
+            java.awt.EventQueue.invokeLater(txtCant::requestFocusInWindow);
+            return;
+        }
+        // Validar descripción
+        final String sAux = txtDesc.getText().trim();
+        if (sAux.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Descripción inválida");
+            java.awt.EventQueue.invokeLater(txtDesc::requestFocusInWindow);
+            return;
+        }
+        final String sDesc = sAux.toUpperCase().substring(0, min(sAux.length(), 128));
+        // Validar precio unitario
+        final BigDecimal punitario;
+        try {
+            final JFormattedTextField txtAux = (JFormattedTextField) txtPUnitario;
+            txtAux.commitEdit();
+            punitario = (BigDecimal) txtAux.getValue();
+        } catch (final Exception inex) {
+            JOptionPane.showMessageDialog(null, "Precio Unitario inválido");
+            java.awt.EventQueue.invokeLater(txtPUnitario::requestFocusInWindow);
+            logger.error(inex);
+            return;
+        }
+        if (punitario.compareTo(BigDecimal.ZERO) <= 0) {
+            JOptionPane.showMessageDialog(null, "Precio Unitario inválido");
+            java.awt.EventQueue.invokeLater(txtPUnitario::requestFocusInWindow);
+            return;
+        }
+        final BigDecimal subtotal = cant.multiply(punitario);
+        txtSubTotal.setText(Format.toStr(subtotal));
+        final String sCodPartida;
+        final String sDescPartida;
+        // Verificar si se trata de la inclusión del IVA
+        if (inisIVA) {
+            if (cmbIva.getSelectedIndex() <= 0) {
+                JOptionPane.showMessageDialog(null, "Debe seleccionar un IVA");
+                java.awt.EventQueue.invokeLater(tblItem::requestFocusInWindow);
+                return;
+            }
+            final long id_iva_aplicado = Long.valueOf(((String) cmbIva.getSelectedItem()).split("\t")[2].trim());
+            final IvaAplicModel regIva = CAPIP_IVA_APLICADO.get(id_iva_aplicado);
+            PptoModel regPpto = null;
+            try {
+                regPpto = PptoModel.getReg_x_Id("presupe", regIva.getId_part_ppto());
+            } catch (final Exception inex) {
+                JOptionPane.showMessageDialog(null, "Error al recuperar el IVA" + System.getProperty("line.separator") + inex);
+                java.awt.EventQueue.invokeLater(tblItem::requestFocusInWindow);
+                logger.error(inex);
+                return;
+            }
+            sCodPartida = regPpto.getCodigo();
+            sDescPartida = regPpto.getPartida();
+        } else {
+            sCodPartida = "";
+            sDescPartida = "";
+        }
+        final Object[] datos = new Object[6];
+        final DefaultTableModel model = (DefaultTableModel) tblItem.getModel();
+        datos[0] = Format.toDouble(cant);
+        datos[1] = sDesc;
+        datos[2] = Format.toDouble(punitario);
+        datos[3] = Format.toDouble(subtotal);
+        datos[4] = sCodPartida;
+        datos[5] = sDescPartida;
+        model.addRow(datos);
+        // Limpiar campos
+        ((JFormattedTextField) txtCant).setValue(BigDecimal.ZERO);
+        txtDesc.setText("");
+        ((JFormattedTextField) txtPUnitario).setValue(BigDecimal.ZERO);
+        txtSubTotal.setText("0,00");
+        // Inicializar los impuestos
+        if (conIva) {
+            cmbIvaPorcRet.setSelectedIndex(-1);
+            cmbIvaPorcRet.setEnabled(true);
+        } else {
+            cmbIvaPorcRet.setSelectedItem(0);
+            cmbIvaPorcRet.setEnabled(false);
+        }
+        cmbIslrPorc.setSelectedIndex(-1);
+        calcularTotal();
+        java.awt.EventQueue.invokeLater(txtCant::requestFocus);
+    }
+
+    @SuppressWarnings("unchecked")
+    private // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
+        btngPorcIva = new javax.swing.ButtonGroup();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        txtRazonSocial = new javax.swing.JTextField();
+        txtNroFact = new javax.swing.JTextField();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        txtDesc = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        txaConcepto = new javax.swing.JTextArea();
+        txtSubTotal = new javax.swing.JFormattedTextField();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tblItem = new javax.swing.JTable();
+        txtCant = com.principal.textfield_decimal.DecimalTextField.getTextField();
+        txtPUnitario = com.principal.textfield_decimal.DecimalTextField.getTextField();
+        jLabel18 = new javax.swing.JLabel();
+        txtNumControl = new javax.swing.JTextField();
+        jLabel14 = new javax.swing.JLabel();
+        btnGuardar = new javax.swing.JButton();
+        btnInsertar = new javax.swing.JButton();
+        btnEliminar = new javax.swing.JButton();
+        btnIVA = new javax.swing.JButton();
+        btnConsultar = new javax.swing.JButton();
+        jPanel3 = new javax.swing.JPanel();
+        cmbIva = new javax.swing.JComboBox();
+        jPanel4 = new javax.swing.JPanel();
+        jLabel17 = new javax.swing.JLabel();
+        jLabel19 = new javax.swing.JLabel();
+        jLabel20 = new javax.swing.JLabel();
+        jLabel21 = new javax.swing.JLabel();
+        txtSumaTotalCau_menosRet = new javax.swing.JFormattedTextField();
+        txtSumaTotalCau = new javax.swing.JFormattedTextField();
+        txtIva_bs = new javax.swing.JFormattedTextField();
+        txtA_Pagar = com.principal.textfield_decimal.DecimalTextField.getTextField();
+        txtResta = new javax.swing.JFormattedTextField();
+        jLabel32 = new javax.swing.JLabel();
+        txtMontoPagado = new javax.swing.JFormattedTextField();
+        jLabel35 = new javax.swing.JLabel();
+        jPanel5 = new javax.swing.JPanel();
+        jLabel22 = new javax.swing.JLabel();
+        jLabel23 = new javax.swing.JLabel();
+        jLabel24 = new javax.swing.JLabel();
+        jLabel25 = new javax.swing.JLabel();
+        txtIvaRet = new javax.swing.JFormattedTextField();
+        txtIslrRet = new javax.swing.JFormattedTextField();
+        txtOtrasRetenciones = new javax.swing.JFormattedTextField();
+        txtTotalRet = new javax.swing.JFormattedTextField();
+        jPanel6 = new javax.swing.JPanel();
+        cmbIvaPorcRet = new javax.swing.JComboBox();
+        cmbIslrPorc = new javax.swing.JComboBox();
+        jPanel2 = new javax.swing.JPanel();
+        jLabel26 = new javax.swing.JLabel();
+        jLabel27 = new javax.swing.JLabel();
+        jLabel28 = new javax.swing.JLabel();
+        txtID_Compr = new javax.swing.JFormattedTextField();
+        txtNumCausado = new javax.swing.JFormattedTextField();
+        txtOrdPago = new javax.swing.JFormattedTextField();
+        jLabel29 = new javax.swing.JLabel();
+        txtFecha = new javax.swing.JFormattedTextField();
+        jLabel30 = new javax.swing.JLabel();
+        txtTotalBs = new javax.swing.JFormattedTextField();
+        txtFechaFact = new javax.swing.JFormattedTextField();
+        jLabel34 = new javax.swing.JLabel();
+        txtRIF_CI = new javax.swing.JTextField();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        tblBenef = new javax.swing.JTable();
+        btnAtras = new javax.swing.JButton();
+        chkISLR = new javax.swing.JCheckBox();
+        jLabel118 = new javax.swing.JLabel();
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        setTitle("ORDEN DE PAGO DIRECTA");
+        setMinimumSize(new java.awt.Dimension(1150, 710));
+        setResizable(false);
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        // NOI18N
+        jLabel1.setFont(new java.awt.Font("Arial", 3, 14));
+        jLabel1.setText("Razón Social:");
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, 103, -1));
+        // NOI18N
+        jLabel4.setFont(new java.awt.Font("Arial", 3, 14));
+        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel4.setText("RIF / CI:");
+        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 20, 60, -1));
+        // NOI18N
+        txtRazonSocial.setFont(new java.awt.Font("Arial", 3, 18));
+        txtRazonSocial.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        txtRazonSocial.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        txtRazonSocial.setEnabled(false);
+        txtRazonSocial.setSelectionColor(new java.awt.Color(175, 204, 125));
+        getContentPane().add(txtRazonSocial, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 10, 290, 30));
+        // NOI18N
+        txtNroFact.setFont(new java.awt.Font("Arial", 3, 18));
+        txtNroFact.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtNroFact.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        txtNroFact.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        txtNroFact.setEnabled(false);
+        txtNroFact.setSelectionColor(new java.awt.Color(175, 204, 125));
+        txtNroFact.addActionListener(new java.awt.event.ActionListener() {
+
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtNroFactActionPerformed(evt);
+            }
+        });
+        txtNroFact.addKeyListener(new java.awt.event.KeyAdapter() {
+
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtNroFactKeyTyped(evt);
+            }
+        });
+        getContentPane().add(txtNroFact, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 10, 142, 30));
+        jPanel1.setOpaque(false);
+        jPanel1.setPreferredSize(new java.awt.Dimension(815, 540));
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        // NOI18N
+        jLabel9.setFont(new java.awt.Font("Arial", 3, 14));
+        jLabel9.setText("Cant:");
+        jPanel1.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, 39, 30));
+        // NOI18N
+        jLabel10.setFont(new java.awt.Font("Arial", 3, 14));
+        jLabel10.setText("P/Und:");
+        jPanel1.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 0, 50, 30));
+        // NOI18N
+        jLabel11.setFont(new java.awt.Font("Arial", 3, 14));
+        jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel11.setText("Descripción:");
+        jPanel1.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 0, 90, 30));
+        // NOI18N
+        jLabel12.setFont(new java.awt.Font("Arial", 3, 14));
+        jLabel12.setText("Sub-Total");
+        jPanel1.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(492, 40, 70, 30));
+        txtDesc.setBackground(new java.awt.Color(175, 204, 125));
+        // NOI18N
+        txtDesc.setFont(new java.awt.Font("Arial", 3, 18));
+        txtDesc.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        txtDesc.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        txtDesc.addActionListener(new java.awt.event.ActionListener() {
+
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtDescActionPerformed(evt);
+            }
+        });
+        jPanel1.add(txtDesc, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 0, 350, 30));
+        // NOI18N
+        jLabel7.setFont(new java.awt.Font("Arial", 3, 12));
+        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel7.setText("Concepto de la Orden");
+        jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 300, 170, -1));
+        txaConcepto.setColumns(20);
+        // NOI18N
+        txaConcepto.setFont(new java.awt.Font("Arial", 3, 18));
+        txaConcepto.setLineWrap(true);
+        txaConcepto.setRows(5);
+        txaConcepto.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        txaConcepto.setEnabled(false);
+        txaConcepto.setSelectionColor(new java.awt.Color(175, 204, 125));
+        txaConcepto.addKeyListener(new java.awt.event.KeyAdapter() {
+
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txaConceptoKeyTyped(evt);
+            }
+        });
+        jScrollPane3.setViewportView(txaConcepto);
+        jPanel1.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 320, 750, 60));
+        txtSubTotal.setBackground(new java.awt.Color(175, 204, 125));
+        txtSubTotal.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        txtSubTotal.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
+        txtSubTotal.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txtSubTotal.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        txtSubTotal.setEnabled(false);
+        // NOI18N
+        txtSubTotal.setFont(new java.awt.Font("Arial", 3, 18));
+        jPanel1.add(txtSubTotal, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 40, 190, 30));
+        tblItem.setModel(new javax.swing.table.DefaultTableModel(new Object[][] {}, new String[] { "Cant.", "Descripción", "P. Unitario Bs.", "Sub. Total Bs.", "Cod. Partida", "Partida" }) {
+
+            Class[] types = new Class[] { java.lang.Double.class, java.lang.String.class, java.lang.Double.class, java.lang.Double.class, java.lang.String.class, java.lang.String.class };
+
+            boolean[] canEdit = new boolean[] { false, false, false, false, false, false };
+
+            public Class getColumnClass(int columnIndex) {
+                return types[columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit[columnIndex];
+            }
+        });
+        tblItem.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+        tblItem.setEnabled(false);
+        tblItem.setSelectionBackground(new java.awt.Color(175, 204, 125));
+        jScrollPane2.setViewportView(tblItem);
+        if (tblItem.getColumnModel().getColumnCount() > 0) {
+            tblItem.getColumnModel().getColumn(0).setMinWidth(25);
+            tblItem.getColumnModel().getColumn(0).setPreferredWidth(50);
+            tblItem.getColumnModel().getColumn(0).setMaxWidth(75);
+            tblItem.getColumnModel().getColumn(1).setPreferredWidth(200);
+            tblItem.getColumnModel().getColumn(2).setPreferredWidth(125);
+            tblItem.getColumnModel().getColumn(3).setPreferredWidth(125);
+            tblItem.getColumnModel().getColumn(4).setMinWidth(100);
+            tblItem.getColumnModel().getColumn(4).setPreferredWidth(150);
+            tblItem.getColumnModel().getColumn(4).setMaxWidth(180);
+            tblItem.getColumnModel().getColumn(5).setPreferredWidth(350);
+        }
+        jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(12, 80, 750, 210));
+        txtCant.setBackground(new java.awt.Color(175, 204, 125));
+        // NOI18N
+        txtCant.setFont(new java.awt.Font("Arial", 3, 18));
+        txtCant.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txtCant.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        txtCant.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        txtCant.addActionListener(new java.awt.event.ActionListener() {
+
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtCantActionPerformed(evt);
+            }
+        });
+        txtCant.addKeyListener(new java.awt.event.KeyAdapter() {
+
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtCantKeyTyped(evt);
+            }
+        });
+        jPanel1.add(txtCant, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 0, 60, 35));
+        txtPUnitario.setBackground(new java.awt.Color(175, 204, 125));
+        // NOI18N
+        txtPUnitario.setFont(new java.awt.Font("Arial", 3, 18));
+        txtPUnitario.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txtPUnitario.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        txtPUnitario.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        txtPUnitario.addActionListener(new java.awt.event.ActionListener() {
+
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtPUnitarioActionPerformed(evt);
+            }
+        });
+        txtPUnitario.addKeyListener(new java.awt.event.KeyAdapter() {
+
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtPUnitarioKeyTyped(evt);
+            }
+        });
+        jPanel1.add(txtPUnitario, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 0, 140, 31));
+        // NOI18N
+        jLabel18.setFont(new java.awt.Font("Arial", 3, 14));
+        jLabel18.setText("Núm. Control");
+        jLabel18.setToolTipText("");
+        jPanel1.add(jLabel18, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 40, 100, 30));
+        txtNumControl.setBackground(new java.awt.Color(175, 204, 125));
+        // NOI18N
+        txtNumControl.setFont(new java.awt.Font("Arial", 3, 18));
+        txtNumControl.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtNumControl.setToolTipText("Número asociado a la Factura");
+        txtNumControl.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        txtNumControl.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        txtNumControl.addActionListener(new java.awt.event.ActionListener() {
+
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtNumControlActionPerformed(evt);
+            }
+        });
+        txtNumControl.addKeyListener(new java.awt.event.KeyAdapter() {
+
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtNumControlKeyTyped(evt);
+            }
+        });
+        jPanel1.add(txtNumControl, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 40, 150, 31));
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, 770, 390));
+        // NOI18N
+        jLabel14.setFont(new java.awt.Font("Arial", 3, 14));
+        jLabel14.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel14.setText("BENEFICIARIOS");
+        jLabel14.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
+        getContentPane().add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(910, 170, 120, 20));
+        btnGuardar.setBackground(java.awt.SystemColor.inactiveCaption);
+        // NOI18N
+        btnGuardar.setFont(new java.awt.Font("Arial", 2, 18));
+        btnGuardar.setText("GUARDAR");
+        btnGuardar.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        btnGuardar.setEnabled(false);
+        btnGuardar.addFocusListener(new java.awt.event.FocusAdapter() {
+
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                btnGuardarFocusGained(evt);
+            }
+
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                btnGuardarFocusLost(evt);
+            }
+        });
+        btnGuardar.addActionListener(new java.awt.event.ActionListener() {
+
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGuardarActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnGuardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 630, 110, 40));
+        btnInsertar.setBackground(java.awt.SystemColor.inactiveCaption);
+        // NOI18N
+        btnInsertar.setFont(new java.awt.Font("Arial", 2, 18));
+        btnInsertar.setText("INSERTAR");
+        btnInsertar.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        btnInsertar.setEnabled(false);
+        btnInsertar.addActionListener(new java.awt.event.ActionListener() {
+
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnInsertarActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnInsertar, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 630, 110, 40));
+        btnEliminar.setBackground(java.awt.SystemColor.inactiveCaption);
+        // NOI18N
+        btnEliminar.setFont(new java.awt.Font("Arial", 2, 18));
+        btnEliminar.setText("ELIM. ULT.");
+        btnEliminar.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        btnEliminar.setEnabled(false);
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnEliminar, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 630, 110, 40));
+        btnIVA.setBackground(java.awt.SystemColor.inactiveCaption);
+        // NOI18N
+        btnIVA.setFont(new java.awt.Font("Arial", 2, 18));
+        btnIVA.setText("IVA");
+        btnIVA.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        btnIVA.setEnabled(false);
+        btnIVA.addActionListener(new java.awt.event.ActionListener() {
+
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnIVAActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnIVA, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 630, 100, 40));
+        btnConsultar.setBackground(java.awt.SystemColor.inactiveCaption);
+        // NOI18N
+        btnConsultar.setFont(new java.awt.Font("Arial", 2, 18));
+        btnConsultar.setText("CONSULTAR");
+        btnConsultar.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        btnConsultar.addActionListener(new java.awt.event.ActionListener() {
+
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConsultarActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnConsultar, new org.netbeans.lib.awtextra.AbsoluteConstraints(770, 630, 140, 40));
+        jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255), 3));
+        jPanel3.setOpaque(false);
+        jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        // NOI18N
+        cmbIva.setFont(new java.awt.Font("Arial", 3, 18));
+        cmbIva.setMinimumSize(new java.awt.Dimension(64, 27));
+        cmbIva.setPreferredSize(new java.awt.Dimension(64, 27));
+        cmbIva.addItemListener(new java.awt.event.ItemListener() {
+
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cmbIvaItemStateChanged(evt);
+            }
+        });
+        cmbIva.addActionListener(new java.awt.event.ActionListener() {
+
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbIvaActionPerformed(evt);
+            }
+        });
+        jPanel3.add(cmbIva, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 20, 300, 30));
+        getContentPane().add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 440, 380, 180));
+        jPanel4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255), 3));
+        jPanel4.setOpaque(false);
+        jPanel4.setLayout(new java.awt.GridBagLayout());
+        // NOI18N
+        jLabel17.setFont(new java.awt.Font("Arial", 1, 12));
+        jLabel17.setText("MONTO");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.ipadx = 6;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(20, 10, 0, 0);
+        jPanel4.add(jLabel17, gridBagConstraints);
+        // NOI18N
+        jLabel19.setFont(new java.awt.Font("Arial", 1, 12));
+        jLabel19.setText("A PAGAR");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(20, 10, 0, 0);
+        jPanel4.add(jLabel19, gridBagConstraints);
+        // NOI18N
+        jLabel20.setFont(new java.awt.Font("Arial", 1, 12));
+        jLabel20.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel20.setText("TOTAL MENOS RET.");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(20, 10, 0, 10);
+        jPanel4.add(jLabel20, gridBagConstraints);
+        // NOI18N
+        jLabel21.setFont(new java.awt.Font("Arial", 1, 12));
+        jLabel21.setText("RESTA POR PAGAR");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.ipadx = 11;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(10, 10, 0, 0);
+        jPanel4.add(jLabel21, gridBagConstraints);
+        txtSumaTotalCau_menosRet.setBackground(new java.awt.Color(175, 204, 125));
+        txtSumaTotalCau_menosRet.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        txtSumaTotalCau_menosRet.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
+        txtSumaTotalCau_menosRet.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtSumaTotalCau_menosRet.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        txtSumaTotalCau_menosRet.setEnabled(false);
+        // NOI18N
+        txtSumaTotalCau_menosRet.setFont(new java.awt.Font("Arial", 3, 18));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.gridheight = 2;
+        gridBagConstraints.ipadx = 146;
+        gridBagConstraints.ipady = 14;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 10, 20, 10);
+        jPanel4.add(txtSumaTotalCau_menosRet, gridBagConstraints);
+        txtSumaTotalCau.setBackground(new java.awt.Color(175, 204, 125));
+        txtSumaTotalCau.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        txtSumaTotalCau.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
+        txtSumaTotalCau.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txtSumaTotalCau.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        txtSumaTotalCau.setEnabled(false);
+        // NOI18N
+        txtSumaTotalCau.setFont(new java.awt.Font("Arial", 3, 14));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridheight = 2;
+        gridBagConstraints.ipadx = 126;
+        gridBagConstraints.ipady = 12;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(10, 10, 0, 0);
+        jPanel4.add(txtSumaTotalCau, gridBagConstraints);
+        txtIva_bs.setBackground(new java.awt.Color(175, 204, 125));
+        txtIva_bs.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        txtIva_bs.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
+        txtIva_bs.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txtIva_bs.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        txtIva_bs.setEnabled(false);
+        // NOI18N
+        txtIva_bs.setFont(new java.awt.Font("Arial", 3, 14));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridheight = 2;
+        gridBagConstraints.ipadx = 126;
+        gridBagConstraints.ipady = 12;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(10, 10, 0, 0);
+        jPanel4.add(txtIva_bs, gridBagConstraints);
+        txtA_Pagar.setBackground(new java.awt.Color(175, 204, 125));
+        txtA_Pagar.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        txtA_Pagar.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
+        txtA_Pagar.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txtA_Pagar.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        txtA_Pagar.setEnabled(false);
+        // NOI18N
+        txtA_Pagar.setFont(new java.awt.Font("Arial", 3, 14));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridheight = 2;
+        gridBagConstraints.ipadx = 126;
+        gridBagConstraints.ipady = 12;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(10, 10, 0, 0);
+        jPanel4.add(txtA_Pagar, gridBagConstraints);
+        txtResta.setBackground(new java.awt.Color(175, 204, 125));
+        txtResta.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        txtResta.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
+        txtResta.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txtResta.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        txtResta.setEnabled(false);
+        // NOI18N
+        txtResta.setFont(new java.awt.Font("Arial", 3, 14));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridheight = 2;
+        gridBagConstraints.ipadx = 126;
+        gridBagConstraints.ipady = 12;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(10, 10, 20, 0);
+        jPanel4.add(txtResta, gridBagConstraints);
+        // NOI18N
+        jLabel32.setFont(new java.awt.Font("Arial", 1, 12));
+        jLabel32.setText("I.V.A  APLICADO");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(20, 10, 0, 0);
+        jPanel4.add(jLabel32, gridBagConstraints);
+        txtMontoPagado.setBackground(new java.awt.Color(175, 204, 125));
+        txtMontoPagado.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        txtMontoPagado.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
+        txtMontoPagado.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtMontoPagado.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        txtMontoPagado.setEnabled(false);
+        // NOI18N
+        txtMontoPagado.setFont(new java.awt.Font("Arial", 3, 18));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.gridheight = 2;
+        gridBagConstraints.ipadx = 146;
+        gridBagConstraints.ipady = 14;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 10);
+        jPanel4.add(txtMontoPagado, gridBagConstraints);
+        // NOI18N
+        jLabel35.setFont(new java.awt.Font("Arial", 1, 12));
+        jLabel35.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel35.setText("PAGADO");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.ipadx = 51;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(20, 30, 0, 0);
+        jPanel4.add(jLabel35, gridBagConstraints);
+        getContentPane().add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 440, 440, 180));
+        jPanel5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255), 3));
+        jPanel5.setOpaque(false);
+        jPanel5.setLayout(null);
+        // NOI18N
+        jLabel22.setFont(new java.awt.Font("Arial", 1, 12));
+        jLabel22.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel22.setText("I.V.A.");
+        jPanel5.add(jLabel22);
+        jLabel22.setBounds(90, 20, 40, 14);
+        // NOI18N
+        jLabel23.setFont(new java.awt.Font("Arial", 1, 12));
+        jLabel23.setText("I.S.R.L.");
+        jPanel5.add(jLabel23);
+        jLabel23.setBounds(100, 70, 38, 14);
+        // NOI18N
+        jLabel24.setFont(new java.awt.Font("Arial", 1, 12));
+        jLabel24.setText("OTRAS RETENCIONES");
+        jPanel5.add(jLabel24);
+        jLabel24.setBounds(10, 110, 130, 14);
+        // NOI18N
+        jLabel25.setFont(new java.awt.Font("Arial", 1, 12));
+        jLabel25.setText("TOTAL RETENCION");
+        jPanel5.add(jLabel25);
+        jLabel25.setBounds(10, 150, 110, 14);
+        txtIvaRet.setBackground(new java.awt.Color(175, 204, 125));
+        txtIvaRet.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        txtIvaRet.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
+        txtIvaRet.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txtIvaRet.setText("0,00");
+        txtIvaRet.setToolTipText("");
+        txtIvaRet.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        txtIvaRet.setEnabled(false);
+        // NOI18N
+        txtIvaRet.setFont(new java.awt.Font("Arial", 3, 14));
+        jPanel5.add(txtIvaRet);
+        txtIvaRet.setBounds(140, 10, 120, 30);
+        txtIslrRet.setBackground(new java.awt.Color(175, 204, 125));
+        txtIslrRet.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        txtIslrRet.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
+        txtIslrRet.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txtIslrRet.setText("0,00");
+        txtIslrRet.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        txtIslrRet.setEnabled(false);
+        // NOI18N
+        txtIslrRet.setFont(new java.awt.Font("Arial", 3, 14));
+        jPanel5.add(txtIslrRet);
+        txtIslrRet.setBounds(140, 60, 120, 30);
+        txtOtrasRetenciones.setBackground(new java.awt.Color(175, 204, 125));
+        txtOtrasRetenciones.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        txtOtrasRetenciones.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
+        txtOtrasRetenciones.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txtOtrasRetenciones.setText("0,00");
+        txtOtrasRetenciones.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        txtOtrasRetenciones.setEnabled(false);
+        // NOI18N
+        txtOtrasRetenciones.setFont(new java.awt.Font("Arial", 3, 14));
+        jPanel5.add(txtOtrasRetenciones);
+        txtOtrasRetenciones.setBounds(140, 100, 120, 30);
+        txtTotalRet.setBackground(new java.awt.Color(175, 204, 125));
+        txtTotalRet.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        txtTotalRet.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
+        txtTotalRet.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txtTotalRet.setText("0,00");
+        txtTotalRet.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        txtTotalRet.setEnabled(false);
+        // NOI18N
+        txtTotalRet.setFont(new java.awt.Font("Arial", 3, 14));
+        jPanel5.add(txtTotalRet);
+        txtTotalRet.setBounds(140, 140, 120, 30);
+        jPanel6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255)));
+        jPanel6.setOpaque(false);
+        jPanel6.setLayout(new java.awt.GridBagLayout());
+        // NOI18N
+        cmbIvaPorcRet.setFont(new java.awt.Font("Arial", 2, 14));
+        cmbIvaPorcRet.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "  0%", " 75%", "100%" }));
+        cmbIvaPorcRet.setSelectedIndex(-1);
+        cmbIvaPorcRet.setEnabled(false);
+        cmbIvaPorcRet.setPreferredSize(new java.awt.Dimension(75, 25));
+        cmbIvaPorcRet.addItemListener(new java.awt.event.ItemListener() {
+
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cmbIvaPorcRetItemStateChanged(evt);
+            }
+        });
+        jPanel6.add(cmbIvaPorcRet, new java.awt.GridBagConstraints());
+        // NOI18N
+        cmbIslrPorc.setFont(new java.awt.Font("Arial", 2, 14));
+        cmbIslrPorc.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "  0%", "  1%", "  2%", "  3%", "  4%", "  5%" }));
+        cmbIslrPorc.setSelectedIndex(-1);
+        cmbIslrPorc.setPreferredSize(new java.awt.Dimension(75, 25));
+        cmbIslrPorc.addItemListener(new java.awt.event.ItemListener() {
+
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cmbIslrPorcItemStateChanged(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.insets = new java.awt.Insets(20, 0, 0, 0);
+        jPanel6.add(cmbIslrPorc, gridBagConstraints);
+        jPanel5.add(jPanel6);
+        jPanel6.setBounds(0, 0, 90, 100);
+        getContentPane().add(jPanel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(860, 440, 270, 180));
+        jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanel2.setForeground(new java.awt.Color(255, 0, 0));
+        jPanel2.setOpaque(false);
+        jPanel2.setLayout(null);
+        // NOI18N
+        jLabel26.setFont(new java.awt.Font("Arial", 1, 10));
+        jLabel26.setText("COMPROMISO Nº");
+        jPanel2.add(jLabel26);
+        jLabel26.setBounds(10, 10, 90, 20);
+        // NOI18N
+        jLabel27.setFont(new java.awt.Font("Arial", 1, 10));
+        jLabel27.setText("GASTO CAUSADO Nº");
+        jPanel2.add(jLabel27);
+        jLabel27.setBounds(100, 10, 110, 20);
+        // NOI18N
+        jLabel28.setFont(new java.awt.Font("Arial", 1, 10));
+        jLabel28.setText("ORDEN DE PAGO Nº");
+        jPanel2.add(jLabel28);
+        jLabel28.setBounds(210, 10, 100, 20);
+        txtID_Compr.setEditable(false);
+        txtID_Compr.setBackground(new java.awt.Color(175, 204, 125));
+        txtID_Compr.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        txtID_Compr.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtID_Compr.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        txtID_Compr.setEnabled(false);
+        // NOI18N
+        txtID_Compr.setFont(new java.awt.Font("Arial", 3, 18));
+        jPanel2.add(txtID_Compr);
+        txtID_Compr.setBounds(10, 30, 80, 30);
+        txtNumCausado.setEditable(false);
+        txtNumCausado.setBackground(new java.awt.Color(175, 204, 125));
+        txtNumCausado.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        txtNumCausado.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtNumCausado.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        txtNumCausado.setEnabled(false);
+        // NOI18N
+        txtNumCausado.setFont(new java.awt.Font("Arial", 3, 18));
+        jPanel2.add(txtNumCausado);
+        txtNumCausado.setBounds(100, 30, 90, 30);
+        txtOrdPago.setEditable(false);
+        txtOrdPago.setBackground(new java.awt.Color(175, 204, 125));
+        txtOrdPago.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        txtOrdPago.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtOrdPago.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        txtOrdPago.setEnabled(false);
+        // NOI18N
+        txtOrdPago.setFont(new java.awt.Font("Arial", 3, 18));
+        jPanel2.add(txtOrdPago);
+        txtOrdPago.setBounds(210, 30, 90, 30);
+        getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(810, 80, 320, 80));
+        // NOI18N
+        jLabel29.setFont(new java.awt.Font("Arial", 1, 14));
+        jLabel29.setText("Nº Factura");
+        getContentPane().add(jLabel29, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 20, -1, -1));
+        txtFecha.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        txtFecha.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter(new java.text.SimpleDateFormat("dd/MM/yyyy"))));
+        txtFecha.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtFecha.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        txtFecha.setEnabled(false);
+        // NOI18N
+        txtFecha.setFont(new java.awt.Font("Arial", 3, 18));
+        txtFecha.setSelectionColor(new java.awt.Color(175, 204, 125));
+        getContentPane().add(txtFecha, new org.netbeans.lib.awtextra.AbsoluteConstraints(990, 40, 120, 30));
+        // NOI18N
+        jLabel30.setFont(new java.awt.Font("Arial", 1, 14));
+        jLabel30.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel30.setText("Fecha");
+        getContentPane().add(jLabel30, new org.netbeans.lib.awtextra.AbsoluteConstraints(887, 50, 90, -1));
+        txtTotalBs.setEditable(false);
+        txtTotalBs.setBackground(new java.awt.Color(175, 204, 125));
+        txtTotalBs.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        txtTotalBs.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
+        txtTotalBs.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txtTotalBs.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        txtTotalBs.setEnabled(false);
+        // NOI18N
+        txtTotalBs.setFont(new java.awt.Font("Arial", 3, 24));
+        txtTotalBs.setSelectionColor(new java.awt.Color(175, 204, 125));
+        getContentPane().add(txtTotalBs, new org.netbeans.lib.awtextra.AbsoluteConstraints(930, 630, 200, 40));
+        txtFechaFact.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        txtFechaFact.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter(new java.text.SimpleDateFormat("dd/MM/yyyy"))));
+        txtFechaFact.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtFechaFact.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        txtFechaFact.setEnabled(false);
+        // NOI18N
+        txtFechaFact.setFont(new java.awt.Font("Arial", 3, 18));
+        txtFechaFact.setSelectionColor(new java.awt.Color(175, 204, 125));
+        txtFechaFact.addActionListener(new java.awt.event.ActionListener() {
+
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtFechaFactActionPerformed(evt);
+            }
+        });
+        getContentPane().add(txtFechaFact, new org.netbeans.lib.awtextra.AbsoluteConstraints(990, 6, 120, 30));
+        // NOI18N
+        jLabel34.setFont(new java.awt.Font("Arial", 1, 14));
+        jLabel34.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel34.setText("Fecha Factura");
+        getContentPane().add(jLabel34, new org.netbeans.lib.awtextra.AbsoluteConstraints(872, 17, 110, 20));
+        // NOI18N
+        txtRIF_CI.setFont(new java.awt.Font("Arial", 3, 18));
+        txtRIF_CI.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtRIF_CI.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        txtRIF_CI.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        txtRIF_CI.setEnabled(false);
+        txtRIF_CI.setSelectionColor(new java.awt.Color(175, 204, 125));
+        getContentPane().add(txtRIF_CI, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 10, 142, 30));
+        tblBenef.setAutoCreateRowSorter(true);
+        // NOI18N
+        tblBenef.setFont(new java.awt.Font("Arial", 3, 14));
+        tblBenef.setModel(new javax.swing.table.DefaultTableModel(new Object[][] {}, new String[] { "BENEFICIARIOS", "RIF / CI", "DOMICILIO", "TELÉFONOS" }) {
+
+            Class[] types = new Class[] { java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class };
+
+            boolean[] canEdit = new boolean[] { false, false, true, true };
+
+            public Class getColumnClass(int columnIndex) {
+                return types[columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit[columnIndex];
+            }
+        });
+        tblBenef.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+        tblBenef.setColumnSelectionAllowed(true);
+        tblBenef.setSelectionBackground(new java.awt.Color(175, 204, 125));
+        tblBenef.addMouseListener(new java.awt.event.MouseAdapter() {
+
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblBenefMouseClicked(evt);
+            }
+        });
+        jScrollPane4.setViewportView(tblBenef);
+        tblBenef.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        if (tblBenef.getColumnModel().getColumnCount() > 0) {
+            tblBenef.getColumnModel().getColumn(0).setMinWidth(100);
+            tblBenef.getColumnModel().getColumn(0).setPreferredWidth(200);
+            tblBenef.getColumnModel().getColumn(0).setMaxWidth(300);
+            tblBenef.getColumnModel().getColumn(1).setMinWidth(100);
+            tblBenef.getColumnModel().getColumn(1).setPreferredWidth(125);
+            tblBenef.getColumnModel().getColumn(1).setMaxWidth(150);
+            tblBenef.getColumnModel().getColumn(2).setPreferredWidth(250);
+            tblBenef.getColumnModel().getColumn(3).setPreferredWidth(150);
+        }
+        getContentPane().add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(810, 190, 320, 240));
+        btnAtras.setBackground(java.awt.SystemColor.inactiveCaption);
+        // NOI18N
+        btnAtras.setFont(new java.awt.Font("Arial", 2, 18));
+        btnAtras.setText("ATRAS");
+        btnAtras.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        btnAtras.addActionListener(new java.awt.event.ActionListener() {
+
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAtrasActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnAtras, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 630, 80, 40));
+        chkISLR.setBackground(java.awt.SystemColor.inactiveCaption);
+        // NOI18N
+        chkISLR.setFont(new java.awt.Font("Arial", 2, 18));
+        chkISLR.setText("I.S.L.R.");
+        chkISLR.setAlignmentX(0.5F);
+        chkISLR.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        chkISLR.setEnabled(false);
+        chkISLR.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        getContentPane().add(chkISLR, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 630, 120, 40));
+        // NOI18N
+        jLabel118.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/fondo azul 22.png")));
+        getContentPane().add(jLabel118, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -30, 1150, 750));
+    }
+
+    // </editor-fold>//GEN-END:initComponents
+    /**
+     * Rev
+     *
+     * @param evt
+     */
+    private void btnIVAActionPerformed(java.awt.event.ActionEvent evt) {
+//GEN-FIRST:event_btnIVAActionPerformed
+        if (tblItem.getRowCount() <= 0) {
+            return;
+        }
+        txtCant.setEnabled(false);
+        ((JFormattedTextField) txtCant).setValue(BigDecimal.ONE);
+        txtDesc.setEnabled(false);
+        txtDesc.setText("");
+        txtDesc.setText("Impuesto al Valor Agregado");
+        try {
+            iva_grav_bs = Format.toBigDec(txtTotalBs.getText());
+        } catch (final Exception inex) {
+            JOptionPane.showMessageDialog(this, "Error al formatear el Total Gravable" + System.getProperty("line.separator") + inex);
+            iva_grav_bs = BigDecimal.ZERO;
+            logger.error(inex);
+        }
+        if (cmbIva.getSelectedIndex() <= 0) {
+            IVA_DEC_VALUE = BigDecimal.ZERO;
+        } else {
+            final long id_iva_aplicado = Long.valueOf(((String) cmbIva.getSelectedItem()).split("\t")[2].trim());
+            final IvaAplicModel regIva = CAPIP_IVA_APLICADO.get(id_iva_aplicado);
+            //
+            IVA_DEC_VALUE = regIva.getValor_porc().movePointLeft(2);
+        }
+        txtPUnitario.setEnabled(false);
+        BigDecimal iva_bs = iva_grav_bs.multiply(IVA_DEC_VALUE).setScale(2, RoundingMode.HALF_UP);
+        try {
+            final long id_iva_aplicado = Long.valueOf(((String) cmbIva.getSelectedItem()).split("\t")[2].trim());
+            final IvaAplicModel regIva = CAPIP_IVA_APLICADO.get(id_iva_aplicado);
+            final PptoModel regPpto = PptoModel.getReg_x_Id("presupe", regIva.getId_part_ppto());
+            if (!PresupeModel.checkMontoDescontar(regPpto.getCodigo(), iva_bs)) {
+                JOptionPane.showMessageDialog(this, "Saldo insuficiente en la partida del Impuesto del Valor Agregado");
+                txtCant.setText("0,00");
+                txtDesc.setText("0,00");
+                txtPUnitario.setText("0,00");
+                txtSubTotal.setText("0,00");
+                java.awt.EventQueue.invokeLater(txtCant::requestFocusInWindow);
+                return;
+            }
+        } catch (final Exception inex) {
+            JOptionPane.showMessageDialog(this, "Error al trata de verificar la disponibilidad del IVA" + System.getProperty("line.separator") + inex);
+            txtCant.setText("0,00");
+            txtDesc.setText("0,00");
+            txtPUnitario.setText("0,00");
+            txtSubTotal.setText("0,00");
+            java.awt.EventQueue.invokeLater(txtCant::requestFocusInWindow);
+            logger.error(inex);
+            return;
+        }
+        ((JFormattedTextField) txtPUnitario).setValue(iva_bs);
+        txtSubTotal.setText(Format.toStr(iva_bs));
+        conIva = true;
+        actComprInsertItem(true);
+        btnIVA.setEnabled(false);
+        txtCant.setEnabled(true);
+        txtDesc.setEnabled(true);
+        txtPUnitario.setEnabled(true);
+    }
+
+//GEN-LAST:event_btnIVAActionPerformed
+    /**
+     * Rev
+     *
+     * @param evt
+     */
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {
+//GEN-FIRST:event_btnEliminarActionPerformed
+        if (tblItem.getRowCount() <= 0) {
+            return;
+        }
+        final DefaultTableModel model = (DefaultTableModel) tblItem.getModel();
+        int fila = tblItem.getRowCount() - 1;
+        final String codPar = (String) tblItem.getValueAt(fila, 4);
+        // Verificar que es la partida del IVA
+        for (PptoModel partIva : CAPIP_IVA_PARTIDA.values()) {
+            if (codPar.equals(partIva.getCodigo())) {
+                btnIVA.setEnabled(true);
+                cmbIvaPorcRet.setEnabled(false);
+                cmbIvaPorcRet.setSelectedIndex(-1);
+                txtIvaRet.setText("0,00");
+            }
+        }
+        model.removeRow(fila);
+        calcularTotal();
+    }
+
+//GEN-LAST:event_btnEliminarActionPerformed
+    /**
+     * Rev
+     *
+     * @param evt
+     */
+    private void btnInsertarActionPerformed(java.awt.event.ActionEvent evt) {
+//GEN-FIRST:event_btnInsertarActionPerformed
+        actComprInsertItem(false);
+    }
+
+//GEN-LAST:event_btnInsertarActionPerformed
+    /**
+     * Rev
+     *
+     * @param evt
+     */
+    private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {
+//GEN-FIRST:event_btnGuardarActionPerformed
+        actGuardar();
+    }
+
+//GEN-LAST:event_btnGuardarActionPerformed
+    /**
+     * Rev 14/11/2016
+     */
+    private void actGuardar() {
+        if (tblItem.getRowCount() <= 0) {
+            JOptionPane.showMessageDialog(null, "Debe incluir al menus un Item");
+            txtCant.requestFocusInWindow();
+            return;
+        }
+        final Map<String, Object> param = new HashMap<>(101);
+        if (!valComprComp(param)) {
+            return;
+        }
+        if (!valCausadoComp(param)) {
+            return;
+        }
+        if (!valIvaComp(param)) {
+            return;
+        }
+        if (!valIslrComp(param)) {
+            return;
+        }
+        if (!valORetComp(param)) {
+            return;
+        }
+        if (!valPagoComp(param)) {
+            return;
+        }
+        try {
+            ConnCapip.getInstance().BeginTransaction();
+            param.put("id_compr", 0L);
+            param.put("id_causado", 0L);
+            retencionGuardar(param);
+            pagoGuardar(param);
+            ConnCapip.getInstance().EndTransaction();
+        } catch (final Exception inex) {
+            try {
+                ConnCapip.getInstance().RollBack();
+            } catch (final Exception inex1) {
+                JOptionPane.showMessageDialog(null, inex1);
+                logger.error(inex1);
+            }
+            JOptionPane.showMessageDialog(null, "Error durante la operación: " + System.getProperty("line.separator") + inex);
+            logger.error(inex);
+            return;
+        }
+        JOptionPane.showMessageDialog(this, "Operación realizada");
+        try {
+            if (((BigDecimal) param.get("iva_bs")).compareTo(BigDecimal.ZERO) > 0) {
+                ImpuestoRetencion.genIvaReport((long) param.get("id_iva_retencion"), param);
+            }
+        } catch (final Exception inex) {
+            JOptionPane.showMessageDialog(this, "Error al tratar de generar el Reporte de IVA" + System.getProperty("line.separator") + inex);
+            logger.error(inex);
+        }
+        try {
+            if (((BigDecimal) param.get("islr_retenido_bs")).compareTo(BigDecimal.ZERO) > 0) {
+                ImpuestoRetencion.genIslrReport((long) param.get("id_islr_retencion"), param);
+            }
+        } catch (final Exception inex) {
+            JOptionPane.showMessageDialog(this, "Error al tratar de generar el Reporte de I.S.L.R." + System.getProperty("line.separator") + inex);
+            logger.error(inex);
+        }
+        try {
+            if (((BigDecimal) param.get("otras_ret_bs")).compareTo(BigDecimal.ZERO) > 0) {
+                ImpuestoRetencion.genORetMaster(param);
+            }
+        } catch (final Exception inex) {
+            JOptionPane.showMessageDialog(this, "Error al tratar de generar el Reporte de I.S.L.R." + System.getProperty("line.separator") + inex);
+            logger.error(inex);
+        }
+        try {
+            PagoOrden.genReportSinImp((long) param.get("id_orden_pago"), "ORDEN DE PAGO DIRECTA", true, false);
+        } catch (final Exception inex) {
+            JOptionPane.showMessageDialog(this, "Error al tratar de generar el Reporte de Pago" + System.getProperty("line.separator") + inex);
+            logger.error(inex);
+        }
+        setStartConditions();
+    }
+
+    /**
+     * Rev
+     *
+     * @param evt
+     */
+    private void txtDescActionPerformed(java.awt.event.ActionEvent evt) {
+//GEN-FIRST:event_txtDescActionPerformed
+        txtDesc.transferFocus();
+    }
+
+//GEN-LAST:event_txtDescActionPerformed
+    private void tblBenefMouseClicked(java.awt.event.MouseEvent evt) {
+//GEN-FIRST:event_tblBenefMouseClicked
+        actSelectBenef();
+    }
+
+//GEN-LAST:event_tblBenefMouseClicked
+    /**
+     * Rev 07/11/2016
+     */
+    private void actSelectBenef() {
+        int fila = tblBenef.getSelectedRow();
+        if (fila < 0) {
+            JOptionPane.showMessageDialog(null, "Debe seleccionar un registro");
+            return;
+        }
+        txtRazonSocial.setText(tblBenef.getValueAt(fila, 0).toString());
+        txtRazonSocial.setCaretPosition(0);
+        txtRIF_CI.setText(tblBenef.getValueAt(fila, 1).toString());
+        UpdateEdo(CapipState.SEL_ITEM);
+    }
+
+    /**
+     * Rev
+     *
+     * @param evt
+     */
+    private void txtFechaFactActionPerformed(java.awt.event.ActionEvent evt) {
+//GEN-FIRST:event_txtFechaFactActionPerformed
+        txtCant.requestFocusInWindow();
+    }
+
+//GEN-LAST:event_txtFechaFactActionPerformed
+    /**
+     * Rev 16/11/2016
+     *
+     * @param evt
+     */
+    private void btnAtrasActionPerformed(java.awt.event.ActionEvent evt) {
+//GEN-FIRST:event_btnAtrasActionPerformed
+        switch (estado) {
+            case SEL_BENEF:
+                break;
+            case SEL_ITEM:
+                UpdateEdo(CapipState.SEL_BENEF);
+                break;
+            case SEL_CUENTA:
+                UpdateEdo(CapipState.SEL_ITEM);
+                break;
+            default:
+                throw new AssertionError();
+        }
+    }
+
+//GEN-LAST:event_btnAtrasActionPerformed
+    /**
+     * Rev
+     *
+     * @return
+     * @throws Exception
+     */
+    private void comprGuardar(final Map<String, Object> inparam) throws Exception {
+        inparam.put("id_compr", 0L);
+    }
+
+    /**
+     * Rev 12/10/2016
+     *
+     * @param inparam
+     * @return
+     */
+    private boolean valComprComp(final Map<String, Object> inparam) {
+        // Verificar si hay items seleccionados
+        // 1.-
+        if (tblItem.getRowCount() <= 0) {
+            JOptionPane.showMessageDialog(null, "Debe incluir al menos un Ítem");
+            java.awt.EventQueue.invokeLater(txtCant::requestFocusInWindow);
+            return false;
+        }
+        // Validación interna, por si acaso falto alguna actualización
+        // 2.-
+        try {
+            if (Format.toLong(txtID_Compr.getText()) <= 0) {
+                JOptionPane.showMessageDialog(this, "Número de compromiso inválido");
+                return false;
+            }
+        } catch (final Exception inex) {
+            JOptionPane.showMessageDialog(this, "Número de compromiso inválido");
+            java.awt.EventQueue.invokeLater(txtID_Compr::requestFocusInWindow);
+            logger.error(inex);
+            return false;
+        }
+        // Verificar el tipo de compromiso
+        // 3.-
+        final TipoCompr tipo_compr = TipoCompr.CO;
+        inparam.put("tipo_compr", tipo_compr);
+        // Verficar la fecha de Compromiso
+        // 4.-
+        final java.sql.Date fecha_compr;
+        try {
+            fecha_compr = Format.toDateSql(txtFecha.getText().trim());
+        } catch (final Exception inex) {
+            JOptionPane.showMessageDialog(null, "Fecha de Compromiso inválida: " + System.getProperty("line.separator") + inex);
+            java.awt.EventQueue.invokeLater(txtFecha::requestFocusInWindow);
+            logger.error(inex);
+            return false;
+        }
+        inparam.put("fecha_compr", fecha_compr);
+        // Verificar el Beneficiario
+        // 5.-
+        final String benef_razonsocial = txtRazonSocial.getText();
+        if (benef_razonsocial.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Beneficiario inválido");
+            java.awt.EventQueue.invokeLater(tblBenef::requestFocusInWindow);
+            return false;
+        }
+        inparam.put("benef_razonsocial", benef_razonsocial);
+        // Verificar el beneficiario, rif_ci
+        // 6.-
+        final String benef_rif_ci = txtRIF_CI.getText();
+        if (benef_rif_ci.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Beneficiario inválido");
+            java.awt.EventQueue.invokeLater(tblBenef::requestFocusInWindow);
+            return false;
+        }
+        inparam.put("benef_rif_ci", benef_rif_ci);
+        // Verificar las observaciones
+        // 7.-
+        final String auxObs = txaConcepto.getText().trim().toUpperCase();
+        if (auxObs.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Concepto de la Orden inválido");
+            java.awt.EventQueue.invokeLater(txaConcepto::requestFocusInWindow);
+            return false;
+        }
+        inparam.put("observacion", auxObs.substring(0, min(auxObs.length(), 512)));
+        // Verificar el número de factura
+        // 8.-
+        final String num_fact = txtNroFact.getText().trim().toUpperCase();
+        inparam.put("num_fact", num_fact.substring(0, min(num_fact.length(), 32)));
+        final String sAuxNumControl = txtNumControl.getText().trim().toUpperCase();
+        final String num_control = sAuxNumControl.substring(0, min(sAuxNumControl.length(), 32));
+        inparam.put("num_control", num_control);
+        // Verificar la fecha de la factura
+        // 9.-
+        final java.sql.Date fecha_fact;
+        try {
+            fecha_fact = Format.toDateSql(txtFechaFact.getText().trim());
+        } catch (final Exception inex) {
+            JOptionPane.showMessageDialog(null, "Fecha de factura inválida");
+            java.awt.EventQueue.invokeLater(txtFechaFact::requestFocusInWindow);
+            logger.error(inex);
+            return false;
+        }
+        // Validar la Fecha, no puede ser mayor a mañana
+        // 10.-
+        Calendar fechaTomorrow = Calendar.getInstance();
+        fechaTomorrow.add(Calendar.DAY_OF_MONTH, 1);
+        if (fecha_fact.compareTo(Format.toDateSql(fechaTomorrow.getTime())) > 0) {
+            JOptionPane.showMessageDialog(null, "Fecha de factura inválida");
+            java.awt.EventQueue.invokeLater(txtFechaFact::requestFocusInWindow);
+            return false;
+        }
+        // Validar la Fecha, no puede tener mas de un año
+        // 11.-
+        Calendar fechaAntAno = Calendar.getInstance();
+        fechaAntAno.add(Calendar.YEAR, -1);
+        if (fecha_fact.compareTo(Format.toDateSql(fechaAntAno.getTime())) <= 0) {
+            JOptionPane.showMessageDialog(null, "Fecha de factura inválida");
+            java.awt.EventQueue.invokeLater(txtFechaFact::requestFocusInWindow);
+            return false;
+        }
+        inparam.put("fecha_fact", fecha_fact);
+        // Validar el Monto
+        // 12.-
+        BigDecimal total_bs;
+        try {
+            total_bs = Format.toBigDec(txtTotalBs.getText().trim());
+        } catch (final Exception ex) {
+            total_bs = BigDecimal.ZERO;
+            logger.error(ex);
+        }
+        if (total_bs.compareTo(BigDecimal.ZERO) <= 0) {
+            JOptionPane.showMessageDialog(null, "Monto total inválido");
+            return false;
+        }
+        // Verificar el monto del IVA
+        // 12.-
+        BigDecimal iva_bs = iva_grav_bs.multiply(IVA_DEC_VALUE).setScale(2, RoundingMode.HALF_UP);
+        if (iva_bs.compareTo(BigDecimal.ZERO) < 0) {
+            JOptionPane.showMessageDialog(null, "Monto del IVA inválido");
+            return false;
+        }
+        // Verificar la base imponible
+        // 13.-
+        final BigDecimal base_imponible_bs = total_bs.subtract(iva_bs).setScale(2, RoundingMode.HALF_UP);
+        if (base_imponible_bs.compareTo(BigDecimal.ZERO) <= 0) {
+            JOptionPane.showMessageDialog(null, "Base imponible inválida");
+            return false;
+        }
+        inparam.put("total_bs", total_bs);
+        inparam.put("iva_porc_aplic", IVA_DEC_VALUE.movePointRight(2));
+        inparam.put("iva_grav_bs", iva_grav_bs);
+        inparam.put("iva_bs", iva_bs);
+        inparam.put("base_imponible_bs", base_imponible_bs);
+        inparam.put("islr_grav_bs", total_bs.subtract(iva_bs).setScale(2, RoundingMode.HALF_UP));
+        // Verificar que para el beneficiario dado, NO se halla procesado la misma factura
+        if (!num_fact.isEmpty()) {
+            final String[] arrTbl = {"compr_compra", "compr_servicio", "compr_otros"};
+            for (String tbl : arrTbl) {
+                try {
+                    final ResultSet rs = ConnCapip.getInstance().executeQuery("SELECT * FROM " + tbl + " WHERE benef_rif_ci='" + benef_rif_ci + "' AND num_fact= '" + num_fact + "'");
+                    if (rs.next()) {
+                        final long lAuxIdCompr = rs.getLong("id_compr");
+                        final String sAuxFechaCompr = Format.toStr(rs.getDate("fecha_compr"));
+                        JOptionPane.showMessageDialog(this, "Este núm. de Factura ya fue procesada (" + tbl + ")" + System.getProperty("line.separator") + "Núm. de Orden: " + lAuxIdCompr + ", de fecha: " + sAuxFechaCompr);
+                        java.awt.EventQueue.invokeLater(txtNroFact::requestFocusInWindow);
+                        return false;
+                    }
+                } catch (final Exception inex) {
+                    JOptionPane.showMessageDialog(this, "No fue posible verificar la validez de la factura" + System.getProperty("line.separator") + inex);
+                    logger.error(inex);
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Rev 14/11/2016
+     *
+     * @param inparam
+     * @return
+     */
+    private boolean valCausadoComp(Map<String, Object> inparam) {
+        // Retornar si no hay ordenes
+        if (tblItem.getRowCount() <= 0) {
+            return false;
+        }
+        final long id_causado;
+        try {
+            id_causado = Long.parseLong(txtNumCausado.getText());
+        } catch (final Exception inex) {
+            JOptionPane.showMessageDialog(null, "Número de causado inválido");
+            logger.error(inex);
+            return false;
+        }
+        if (id_causado <= 0) {
+            JOptionPane.showMessageDialog(null, "Número de causado inválido");
+            return false;
+        }
+        final java.sql.Date fecha_causado;
+        try {
+            fecha_causado = Format.toDateSql(txtFecha.getText().trim());
+        } catch (final Exception inex) {
+            JOptionPane.showMessageDialog(this, "Fecha inválida" + System.getProperty("line.separator") + inex);
+            logger.error(inex);
+            return false;
+        }
+        inparam.put("fecha_causado", fecha_causado);
+        return true;
+    }
+
+    /**
+     * Rev 13/10/2016
+     *
+     * @param inparam
+     * @return
+     */
+    private boolean valIvaComp(final Map<String, Object> inparam) {
+        // Retornar si no se ha calculado el monto del IVA
+        final int selIdx = cmbIvaPorcRet.getSelectedIndex();
+        if (selIdx < 0) {
+            JOptionPane.showMessageDialog(this, "No ha calculado el monto a retener");
+            return false;
+        }
+        final BigDecimal iva_retenido_bs;
+        try {
+            iva_retenido_bs = Format.toBigDec(txtIvaRet.getText());
+        } catch (final Exception inex) {
+            JOptionPane.showMessageDialog(null, inex);
+            logger.error(inex);
+            return false;
+        }
+        if (iva_retenido_bs.compareTo(BigDecimal.ZERO) < 0) {
+            JOptionPane.showMessageDialog(null, "Monto del IVA es menor a cero (0), no se puede generar la operación");
+            return false;
+        }
+        inparam.put("ivaBenef_razonsocial", inparam.get("benef_razonsocial"));
+        inparam.put("ivaBenef_rif_ci", inparam.get("benef_rif_ci"));
+        inparam.put("iva_porc_ret", porcRetIva[selIdx].movePointRight(2).setScale(2, RoundingMode.HALF_UP));
+        inparam.put("iva_retenido_bs", iva_retenido_bs);
+        inparam.put("ejefis", Globales.getEjeFisYear());
+        return true;
+    }
+
+    /**
+     * Rev 23/10/2016
+     *
+     * @param inparam
+     * @return
+     */
+    private boolean valIslrComp(final Map<String, Object> inparam) {
+        // Retornar si no se ha calculado el porcentaje del Islr
+        final int selIdx = cmbIslrPorc.getSelectedIndex();
+        if (selIdx < 0) {
+            JOptionPane.showMessageDialog(this, "No ha calculado el porcentaje del ISLR a retener");
+            return false;
+        }
+        final BigDecimal islr_retenido_bs;
+        try {
+            islr_retenido_bs = Format.toBigDec(txtIslrRet.getText());
+        } catch (final Exception inex) {
+            JOptionPane.showMessageDialog(null, inex);
+            logger.error(inex);
+            return false;
+        }
+        if (islr_retenido_bs.compareTo(BigDecimal.ZERO) < 0) {
+            JOptionPane.showMessageDialog(null, "Monto del monto retenido es menor que cero (0), no se puede generar la operación");
+            return false;
+        }
+        inparam.put("islrBenef_razonsocial", inparam.get("benef_razonsocial"));
+        inparam.put("islrBenef_rif_ci", inparam.get("benef_rif_ci"));
+        inparam.put("islr_porc_ret", porcRetIslr[selIdx].movePointRight(2).setScale(2, RoundingMode.HALF_UP));
+        inparam.put("islr_retenido_bs", islr_retenido_bs);
+        inparam.put("islr_gravable_bs", ((BigDecimal) inparam.get("total_bs")).subtract(iva_grav_bs.multiply(IVA_DEC_VALUE)).setScale(2, RoundingMode.HALF_UP));
+        inparam.put("otras_ret_bs", BigDecimal.ZERO);
+        return true;
+    }
+
+    /**
+     * Rev 11/03/2017
+     *
+     * @param inparam
+     * @return
+     */
+    private boolean valORetComp(final Map<String, Object> inparam) {
+        final BigDecimal oRet_bs;
+        try {
+            oRet_bs = Format.toBigDec(txtOtrasRetenciones.getText());
+        } catch (final Exception inex) {
+            JOptionPane.showMessageDialog(this, "Error, otras retenciones valor inválido" + System.getProperty("line.separator") + inex);
+            logger.error(inex);
+            return false;
+        }
+        if (oRet_bs.compareTo(BigDecimal.ZERO) < 0) {
+            JOptionPane.showMessageDialog(null, "Monto de otras retenciones es menor que cero (0), no se puede generar la operación");
+            return false;
+        }
+        inparam.put("otras_ret_bs", oRet_bs);
+        inparam.put("oretBenef_razonsocial", inparam.get("benef_razonsocial"));
+        inparam.put("oretBenef_rif_ci", inparam.get("benef_rif_ci"));
+        return true;
+    }
+
+    /**
+     * Rev 26/10/2016
+     *
+     * @param param
+     * @return
+     */
+    private boolean valPagoComp(Map<String, Object> inparam) {
+        if (tblItem.getRowCount() <= 0) {
+            return false;
+        }
+        BigDecimal total_bs = (BigDecimal) inparam.get("total_bs");
+        BigDecimal apagar_bs;
+        try {
+            apagar_bs = Format.toBigDec(txtA_Pagar.getText());
+        } catch (final Exception inex) {
+            JOptionPane.showMessageDialog(null, "Cantidad A Pagar inválida");
+            logger.error(inex);
+            return false;
+        }
+        if ((apagar_bs.compareTo(BigDecimal.ZERO) <= 0) || (apagar_bs.compareTo(total_bs) > 0)) {
+            JOptionPane.showMessageDialog(null, "Cantidad A Pagar inválida");
+            return false;
+        }
+        BigDecimal resta_bs;
+        try {
+            resta_bs = Format.toBigDec(txtResta.getText());
+        } catch (final Exception inex) {
+            JOptionPane.showMessageDialog(null, "Cantidad Resta inválida");
+            logger.error(inex);
+            return false;
+        }
+        if ((resta_bs.compareTo(BigDecimal.ZERO) < 0) || (resta_bs.compareTo(total_bs) > 0)) {
+            JOptionPane.showMessageDialog(null, "Cantidad Resta inválida");
+            return false;
+        }
+        final String banco = "SIN REG.BCO.";
+        final String cuenta = "";
+        final String cheque = "";
+        final java.sql.Date fecha_hoy = new java.sql.Date(Globales.getServerTimeStamp().getTime());
+        final java.sql.Date fecha_cheque;
+        try {
+            fecha_cheque = Format.toDateSql(txtFecha.getText().trim());
+        } catch (final Exception inex) {
+            JOptionPane.showMessageDialog(null, "Fecha de Cheque inválida");
+            txtFecha.requestFocusInWindow();
+            logger.error(inex);
+            return false;
+        }
+        final String endosable_sn = "N";
+        inparam.put("banco", banco);
+        inparam.put("cuenta", cuenta);
+        inparam.put("cheque", cheque);
+        inparam.put("a_pagar_bs", apagar_bs);
+        inparam.put("resta_bs", resta_bs);
+        inparam.put("fecha_hoy", fecha_hoy);
+        inparam.put("fecha_cheque", fecha_cheque);
+        inparam.put("endosable_sn", endosable_sn);
+        return true;
+    }
+
+    /**
+     * Rev 16//11/2016
+     *
+     * @return
+     * @throws Exception
+     */
+    private void retencionGuardar(final Map<String, Object> param) throws Exception {
+        BigDecimal aux;
+        try {
+            aux = Format.toBigDec(txtIvaRet.getText());
+        } catch (final Exception inex) {
+            aux = BigDecimal.ZERO;
+            logger.error(inex);
+        }
+        if (aux.compareTo(BigDecimal.ZERO) > 0) {
+            ImpuestoRetencion.genIvaMaster(param);
+            genIvaDetail(param);
+        }
+        try {
+            aux = Format.toBigDec(txtIslrRet.getText());
+        } catch (final Exception inex) {
+            aux = BigDecimal.ZERO;
+            logger.error(inex);
+        }
+        if (aux.compareTo(BigDecimal.ZERO) > 0) {
+            ImpuestoRetencion.genIslrMaster(param);
+            genIslrDetail(param);
+        }
+        try {
+            aux = Format.toBigDec(txtOtrasRetenciones.getText());
+        } catch (final Exception inex) {
+            aux = BigDecimal.ZERO;
+            logger.error(inex);
+        }
+        if (aux.compareTo(BigDecimal.ZERO) > 0) {
+            ImpuestoRetencion.genORetMaster(param);
+            genOtrasRetDetail(param);
+        }
+    }
+
+    /**
+     * Rev 16/11/2016
+     *
+     * @param inparam
+     * @throws Exception
+     */
+    private void genIvaDetail(final Map<String, Object> inparam) throws Exception {
+        final long id_iva_retencion = (long) inparam.get("id_iva_retencion");
+        final long id_causado = (long) inparam.get("id_causado");
+        final java.sql.Date fecha_fact = (java.sql.Date) inparam.get("fecha_fact");
+        final String num_fact = (String) inparam.get("num_fact");
+        final TipoCompr tipo_compr = (TipoCompr) inparam.get("tipo_compr");
+        final long id_compr = (long) inparam.get("id_compr");
+        // num. nota de debito
+        final String ndebito = "";
+        // num nota de credito
+        final String ncredito = "";
+        final String transaccion = "C";
+        // num factura que afecta
+        final String factura_aft = "";
+        final BigDecimal total_fact = (BigDecimal) inparam.get("total_bs");
+        final BigDecimal base_imponible_bs = (BigDecimal) inparam.get("base_imponible_bs");
+        final BigDecimal exento = base_imponible_bs.subtract(iva_grav_bs).setScale(2, RoundingMode.HALF_UP);
+        final BigDecimal iva_retenido_bs = (BigDecimal) inparam.get("iva_retenido_bs");
+        final String obs = (String) inparam.get("observacion");
+        final BigDecimal iva_bs = (BigDecimal) inparam.get("iva_bs");
+        final BigDecimal iva_porc_aplic = (BigDecimal) inparam.get("iva_porc_aplic");
+        final BigDecimal iva_porc_ret = (BigDecimal) inparam.get("iva_porc_ret");
+        if (iva_bs.compareTo(BigDecimal.ZERO) > 0) {
+            final PreparedStatement pst = ConnCapip.getInstance().getConnection().prepareStatement(// 1, 2, 3, 4,
+                    "INSERT INTO iva_retencion_det("
+                    + // 5, 6, 7, 8,
+                    "id_iva_retencion, id_causado, fecha_fact, num_fact, "
+                    + // 9, 10, 11, 12,
+                    "id_compr, ndebito, ncredito, transaccion, "
+                    + // 13, 14, 15, 16, 17
+                    "factura_aft, total_fact, exento, base_imponible, " + "iva_porc_aplic, iva_bs, iva_retenido, observacion, tipo_compr) " + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            pst.setLong(1, id_iva_retencion);
+            // noperacion
+            pst.setLong(2, id_causado);
+            // ffactura
+            pst.setDate(3, fecha_fact);
+            // nfactura
+            pst.setString(4, num_fact);
+            // cfactura, num control
+            pst.setLong(5, id_compr);
+            // ndebito
+            pst.setString(6, ndebito);
+            // ncredito
+            pst.setString(7, ncredito);
+            // transaccion
+            pst.setString(8, transaccion);
+            // factura qe afecta
+            pst.setString(9, factura_aft);
+            //
+            pst.setBigDecimal(10, total_fact);
+            // exento
+            pst.setBigDecimal(11, exento);
+            // bimponible
+            pst.setBigDecimal(12, base_imponible_bs);
+            // elicuota
+            pst.setBigDecimal(13, iva_porc_aplic);
+            // impuesto
+            pst.setBigDecimal(14, iva_bs);
+            // iretenido
+            pst.setBigDecimal(15, iva_retenido_bs);
+            // conceptoret
+            pst.setString(16, obs);
+            // tipo_compr
+            pst.setString(17, tipo_compr.name());
+            if (pst.executeUpdate() != 1) {
+                throw new Exception("Error sl insertar el registro de Detalle");
+            }
+        }
+    }
+
+    /**
+     * Rev 16/11/2016
+     *
+     * @param inparam
+     * @throws Exception
+     */
+    private void genIslrDetail(final Map<String, Object> inparam) throws Exception {
+        final long id_islr_retencion = (long) inparam.get("id_islr_retencion");
+        final long id_causado = (long) inparam.get("id_causado");
+        final java.sql.Date fecha_fact = (java.sql.Date) inparam.get("fecha_fact");
+        final String num_fact = (String) inparam.get("num_fact");
+        final TipoCompr tipo_compr = (TipoCompr) inparam.get("tipo_compr");
+        final long id_compr = (long) inparam.get("id_compr");
+        final BigDecimal total_fact = (BigDecimal) inparam.get("total_bs");
+        final BigDecimal base_imponible_bs = (BigDecimal) inparam.get("base_imponible_bs");
+        final BigDecimal isrl_grav_bs = (BigDecimal) inparam.get("islr_gravable_bs");
+        final BigDecimal islr_porc_ret = (BigDecimal) inparam.get("islr_porc_ret");
+        final BigDecimal islr_retenido_bs = (BigDecimal) inparam.get("islr_retenido_bs");
+        final String obs = (String) inparam.get("observacion");
+        final PreparedStatement pst = ConnCapip.getInstance().getConnection().prepareStatement(// 1, 2, 3, 4,
+                "INSERT INTO islr_retencion_det("
+                + // 5, 6, 7, 8,
+                "id_islr_retencion, id_causado, fecha_fact, num_fact, "
+                + // 9, 10, 11, 12
+                "tipo_compr, id_compr, total_fact, base_imponible, "
+                + // 13, 14, 15
+                "gravable_bs, islr_porc_ret, islr_retenido_bs, observacion, " + "ejefis, benef_razonsocial, benef_rif_ci) " + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        pst.setLong(1, id_islr_retencion);
+        pst.setLong(2, id_causado);
+        pst.setDate(3, fecha_fact);
+        pst.setString(4, num_fact);
+        pst.setString(5, tipo_compr.name());
+        pst.setLong(6, id_compr);
+        pst.setBigDecimal(7, total_fact);
+        pst.setBigDecimal(8, base_imponible_bs);
+        pst.setBigDecimal(9, isrl_grav_bs);
+        pst.setBigDecimal(10, islr_porc_ret);
+        pst.setBigDecimal(11, islr_retenido_bs);
+        pst.setString(12, obs);
+        // ejefis
+        pst.setDate(13, new java.sql.Date(Globales.getServerTimeStamp().getTime()));
+        pst.setString(14, (String) inparam.get("islrBenef_razonsocial"));
+        pst.setString(15, (String) inparam.get("islrBenef_rif_ci"));
+        if (pst.executeUpdate() != 1) {
+            throw new Exception("Error sl insertar el registro de Detalle");
+        }
+    }
+
+    /**
+     * Rev 16/11/2016
+     *
+     * @param inparam
+     * @throws Exception
+     */
+    private void genOtrasRetDetail(final Map<String, Object> inparam) throws Exception {
+        final BigDecimal oret_bs = (BigDecimal) inparam.get("otras_ret_bs");
+        final long id_causado = (long) inparam.get("id_causado");
+        final PreparedStatement pstCau = ConnCapip.getInstance().getConnection().prepareStatement("UPDATE causado SET resta_bs= resta_bs - ?, oret_ret_sn= 'S' WHERE id_causado= ?");
+        pstCau.setBigDecimal(1, oret_bs);
+        pstCau.setLong(2, id_causado);
+        if (pstCau.executeUpdate() != 1) {
+            throw new Exception("Error sl actualizar el impuesto Retenido");
+        }
+        final long id_otras_ret = (long) inparam.get("id_otras_ret");
+        final java.sql.Date fecha_fact = (java.sql.Date) inparam.get("fecha_fact");
+        final String num_fact = (String) inparam.get("num_fact");
+        final TipoCompr tipo_compr = TipoCompr.OC;
+        final long id_compr = (long) inparam.get("id_compr");
+        final BigDecimal total_fact = (BigDecimal) inparam.get("total_bs");
+        final BigDecimal base_imponible = (BigDecimal) inparam.get("base_imponible_bs");
+        final String obs = (String) inparam.get("observacion");
+        final String oretBenef_razonsocial = (String) inparam.get("oretBenef_razonsocial");
+        final String oretBenef_rif_ci = (String) inparam.get("oretBenef_rif_ci");
+        if (oret_bs.compareTo(BigDecimal.ZERO) > 0) {
+            final PreparedStatement pst = ConnCapip.getInstance().getConnection().prepareStatement(// 1, 2, 3, 4,
+                    "INSERT INTO otras_ret_det("
+                    + //  5, 6, 7, 8
+                    "id_otras_ret, id_causado, fecha_fact, num_fact, "
+                    + // 9, 10, 11
+                    "tipo_compr, id_compr, total_fact, base_imponible, "
+                    + // 12, 13, 14
+                    "gravable_bs, retenido_bs, observacion, " + "ejefis, benef_razonsocial, benef_rif_ci) " + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            pst.setLong(1, id_otras_ret);
+            // noperacion
+            pst.setLong(2, id_causado);
+            // ffactura
+            pst.setDate(3, fecha_fact);
+            // nfactura
+            pst.setString(4, num_fact);
+            // tipo_compr
+            pst.setString(5, tipo_compr.name());
+            // cfactura, num control
+            pst.setLong(6, id_compr);
+            //
+            pst.setBigDecimal(7, total_fact);
+            // bimponible
+            pst.setBigDecimal(8, base_imponible);
+            pst.setBigDecimal(9, base_imponible);
+            // iretenido
+            pst.setBigDecimal(10, oret_bs);
+            // conceptoret
+            pst.setString(11, obs);
+            // ejefis
+            pst.setDate(12, new java.sql.Date(Globales.getServerTimeStamp().getTime()));
+            pst.setString(13, oretBenef_razonsocial);
+            pst.setString(14, oretBenef_rif_ci);
+            if (pst.executeUpdate() != 1) {
+                throw new Exception("Error sl insertar el registro de Detalle");
+            }
+            // Actualizar los datos del Compromiso asociado
+            // Aqui NO se debe actualizar el iva_grav_bs, porque esta cantidad es fija, y establecida en el compromiso
+            PreparedStatement pstCompr = ConnCapip.getInstance().getConnection().prepareStatement("UPDATE compr_otros SET oret_grav_bs= ?, oret_bs= ? WHERE id_compr= ?");
+            pstCompr.setBigDecimal(1, base_imponible);
+            pstCompr.setBigDecimal(2, oret_bs);
+            pstCompr.setLong(3, id_compr);
+            if (pstCompr.executeUpdate() != 1) {
+                throw new Exception("Error al actualizar el Compromiso");
+            }
+        }
+    }
+
+    /**
+     * Rev 16/11/2016
+     *
+     * @param inid_cau
+     * @return
+     * @throws SQLException
+     */
+    private void pagoGuardar(final Map<String, Object> inparam) throws Exception {
+        pagNextNum.nextNum(null);
+        inparam.put("num_xPag", pagNextNum.getNum_xPag());
+        inparam.put("num_xCuenta", pagNextNum.getNum_xCuenta());
+        inparam.put("id_cuenta", pagNextNum.getId_cuenta());
+        PagoOrden.genPagoMaster(inparam, false);
+        genPagoDetail(inparam);
+        pagNextNum.update();
+    }
+
+    /**
+     * Rev 26/10/2016
+     *
+     * @param inparam
+     */
+    private void genPagoDetail(Map<String, Object> inparam) throws Exception {
+        // No hay algo que actualizar, ya que no existe causado
+    }
+
+    /**
+     * Rev
+     */
+    private void btnConsultarActionPerformed(java.awt.event.ActionEvent evt) {
+//GEN-FIRST:event_btnConsultarActionPerformed
+        final boolean salir;
+        if (tblItem.getRowCount() > 0) {
+            salir = JOptionPane.showConfirmDialog(this, "¿Hay registros pendientes . ¿ Seguro desea Salir ?", "Confirmar acción", JOptionPane.YES_NO_OPTION) == JOptionPane.OK_OPTION;
+        } else {
+            salir = true;
+        }
+        if (salir) {
+            new CompromisosConsultar(this).setVisible(true);
+            setVisible(false);
+        }
+    }
+
+//GEN-LAST:event_btnConsultarActionPerformed
+    private void txtNroFactActionPerformed(java.awt.event.ActionEvent evt) {
+//GEN-FIRST:event_txtNroFactActionPerformed
+        txtNroFact.transferFocus();
+    }
+
+//GEN-LAST:event_txtNroFactActionPerformed
+    private void txaConceptoKeyTyped(java.awt.event.KeyEvent evt) {
+//GEN-FIRST:event_txaConceptoKeyTyped
+        if (txaConcepto.getText().length() >= 512) {
+            evt.consume();
+        }
+    }
+
+//GEN-LAST:event_txaConceptoKeyTyped
+    private void txtCantActionPerformed(java.awt.event.ActionEvent evt) {
+//GEN-FIRST:event_txtCantActionPerformed
+        txtCant.transferFocus();
+    }
+
+//GEN-LAST:event_txtCantActionPerformed
+    private void txtCantKeyTyped(java.awt.event.KeyEvent evt) {
+//GEN-FIRST:event_txtCantKeyTyped
+        if (!"0123456789.".contains(String.valueOf(evt.getKeyChar())) || txtCant.getText().length() > 32) {
+            evt.consume();
+        }
+    }
+
+//GEN-LAST:event_txtCantKeyTyped
+    private void txtPUnitarioActionPerformed(java.awt.event.ActionEvent evt) {
+//GEN-FIRST:event_txtPUnitarioActionPerformed
+        Compromiso.newSubTotal((JFormattedTextField) txtCant, (JFormattedTextField) txtPUnitario, txtSubTotal);
+        actComprInsertItem(false);
+    }
+
+//GEN-LAST:event_txtPUnitarioActionPerformed
+    private void txtPUnitarioKeyTyped(java.awt.event.KeyEvent evt) {
+//GEN-FIRST:event_txtPUnitarioKeyTyped
+        if (!"0123456789.".contains(String.valueOf(evt.getKeyChar())) || txtPUnitario.getText().length() > 32) {
+            evt.consume();
+        }
+    }
+
+//GEN-LAST:event_txtPUnitarioKeyTyped
+    /**
+     * Rev 10/11/2016
+     *
+     * @param evt
+     */
+    private void cmbIslrPorcItemStateChanged(java.awt.event.ItemEvent evt) {
+//GEN-FIRST:event_cmbIslrPorcItemStateChanged
+        if (evt.getStateChange() == ItemEvent.SELECTED) {
+            if (txaConcepto.getText().trim().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Antes de continuar debe indicar el concepto" + System.getProperty("line.separator") + "");
+                cmbIslrPorc.setSelectedIndex(-1);
+                txaConcepto.requestFocusInWindow();
+                return;
+            }
+            final int selIdx = cmbIslrPorc.getSelectedIndex();
+            if (selIdx >= 0) {
+                try {
+                    final BigDecimal IVA_DEC_VALUE;
+                    if (cmbIva.getSelectedIndex() <= 0) {
+                        IVA_DEC_VALUE = BigDecimal.ZERO;
+                    } else {
+                        final long id_iva_aplicado = Long.valueOf(((String) cmbIva.getSelectedItem()).split("\t")[2].trim());
+                        final IvaAplicModel regIva = CAPIP_IVA_APLICADO.get(id_iva_aplicado);
+                        //
+                        IVA_DEC_VALUE = regIva.getValor_porc().movePointLeft(2);
+                    }
+                    txtIslrRet.setText(Format.toStr(Format.toBigDec(txtTotalBs.getText()).subtract(iva_grav_bs.multiply(IVA_DEC_VALUE)).multiply(porcRetIslr[selIdx])));
+                } catch (final Exception inex) {
+                    JOptionPane.showMessageDialog(this, "Error" + System.getProperty("line.separator") + inex);
+                    txtIslrRet.setText("0.00");
+                    logger.error(inex);
+                }
+                if (conIva) {
+                    if (cmbIvaPorcRet.getSelectedIndex() >= 0) {
+                        UpdateEdo(CapipState.SEL_CUENTA);
+                    }
+                } else {
+                    cmbIvaPorcRet.setSelectedIndex(0);
+                    UpdateEdo(CapipState.SEL_CUENTA);
+                }
+            } else {
+                txtIslrRet.setText("0,00");
+            }
+        } else {
+            txtIslrRet.setText("0,00");
+        }
+        try {
+            final BigDecimal auxRet = Format.toBigDec(txtIvaRet.getText()).add(Format.toBigDec(txtIslrRet.getText()));
+            txtTotalRet.setText(Format.toStr(auxRet));
+            final String saux = Format.toStr(Format.toBigDec(txtTotalBs.getText()).subtract(auxRet));
+            txtSumaTotalCau_menosRet.setText(saux);
+            txtA_Pagar.setText(saux);
+        } catch (final Exception inex) {
+            JOptionPane.showMessageDialog(this, "Error al formatear el Total Retenciones" + System.getProperty("line.separator") + inex);
+            txtTotalRet.setText("0,00");
+            logger.error(inex);
+        }
+    }
+
+//GEN-LAST:event_cmbIslrPorcItemStateChanged
+    /**
+     * Rev 10/11/2016
+     *
+     * @param evt
+     */
+    private void cmbIvaPorcRetItemStateChanged(java.awt.event.ItemEvent evt) {
+//GEN-FIRST:event_cmbIvaPorcRetItemStateChanged
+        if (evt.getStateChange() == ItemEvent.SELECTED) {
+            if (txaConcepto.getText().trim().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Antes de continuar debe indicar el concepto" + System.getProperty("line.separator") + "");
+                cmbIvaPorcRet.setSelectedIndex(-1);
+                txaConcepto.requestFocusInWindow();
+                return;
+            }
+            final int selIdx = cmbIvaPorcRet.getSelectedIndex();
+            if (selIdx >= 0) {
+                try {
+                    final BigDecimal IVA_DEC_VALUE;
+                    if (cmbIva.getSelectedIndex() <= 0) {
+                        IVA_DEC_VALUE = BigDecimal.ZERO;
+                    } else {
+                        final long id_iva_aplicado = Long.valueOf(((String) cmbIva.getSelectedItem()).split("\t")[2].trim());
+                        final IvaAplicModel regIva = CAPIP_IVA_APLICADO.get(id_iva_aplicado);
+                        //
+                        IVA_DEC_VALUE = regIva.getValor_porc().movePointLeft(2);
+                    }
+                    txtIvaRet.setText(Format.toStr(iva_grav_bs.multiply(IVA_DEC_VALUE).multiply(porcRetIva[selIdx])));
+                } catch (final Exception inex) {
+                    JOptionPane.showMessageDialog(this, "Error" + System.getProperty("line.separator") + inex);
+                    txtIslrRet.setText("0.00");
+                    logger.error(inex);
+                }
+                if (cmbIslrPorc.getSelectedIndex() >= 0) {
+                    UpdateEdo(CapipState.SEL_CUENTA);
+                }
+            } else {
+                txtIvaRet.setText("0,00");
+            }
+        } else {
+            txtIvaRet.setText("0,00");
+        }
+        try {
+            final BigDecimal auxRet = Format.toBigDec(txtIvaRet.getText()).add(Format.toBigDec(txtIslrRet.getText()));
+            txtTotalRet.setText(Format.toStr(auxRet));
+            final String saux = Format.toStr(Format.toBigDec(txtTotalBs.getText()).subtract(auxRet));
+            txtSumaTotalCau_menosRet.setText(saux);
+            txtA_Pagar.setText(saux);
+        } catch (final Exception inex) {
+            JOptionPane.showMessageDialog(this, "Error al formatear el Total Retenciones" + System.getProperty("line.separator") + inex);
+            txtTotalRet.setText("0,00");
+            logger.error(inex);
+        }
+    }
+
+//GEN-LAST:event_cmbIvaPorcRetItemStateChanged
+    private void txtNroFactKeyTyped(java.awt.event.KeyEvent evt) {
+//GEN-FIRST:event_txtNroFactKeyTyped
+        if (txtNroFact.getText().length() >= 32) {
+            evt.consume();
+        }
+    }
+
+//GEN-LAST:event_txtNroFactKeyTyped
+    private void btnGuardarFocusGained(java.awt.event.FocusEvent evt) {
+//GEN-FIRST:event_btnGuardarFocusGained
+        getRootPane().setDefaultButton(btnGuardar);
+    }
+
+//GEN-LAST:event_btnGuardarFocusGained
+    private void btnGuardarFocusLost(java.awt.event.FocusEvent evt) {
+//GEN-FIRST:event_btnGuardarFocusLost
+        getRootPane().setDefaultButton(null);
+    }
+
+//GEN-LAST:event_btnGuardarFocusLost
+    private void cmbIvaItemStateChanged(java.awt.event.ItemEvent evt) {
+//GEN-FIRST:event_cmbIvaItemStateChanged
+        if (evt.getStateChange() == ItemEvent.SELECTED) {
+            final int selIdx = cmbIva.getSelectedIndex();
+            if (selIdx >= 0) {
+            }
+        }
+        // TODO add your handling code here:
+    }
+
+//GEN-LAST:event_cmbIvaItemStateChanged
+    private void cmbIvaActionPerformed(java.awt.event.ActionEvent evt) {
+//GEN-FIRST:event_cmbIvaActionPerformed
+        // TODO add your handling code here:
+    }
+
+//GEN-LAST:event_cmbIvaActionPerformed
+    private void txtNumControlActionPerformed(java.awt.event.ActionEvent evt) {
+//GEN-FIRST:event_txtNumControlActionPerformed
+        // TODO add your handling code here:
+    }
+
+//GEN-LAST:event_txtNumControlActionPerformed
+    private void txtNumControlKeyTyped(java.awt.event.KeyEvent evt) {
+//GEN-FIRST:event_txtNumControlKeyTyped
+        // TODO add your handling code here:
+    }
+
+//GEN-LAST:event_txtNumControlKeyTyped
+    /**
+     * Rev
+     */
+    private void UpdateEdo(CapipState inedo) {
+        estado = inedo;
+        switch (estado) {
+            case SEL_BENEF:
+                tblBenef.setEnabled(true);
+                txtNroFact.setEnabled(false);
+                txtFechaFact.setEnabled(false);
+                txtCant.setEnabled(false);
+                txtDesc.setEnabled(false);
+                txtPUnitario.setEnabled(false);
+                tblItem.setEnabled(false);
+                txaConcepto.setEnabled(false);
+                cmbIvaPorcRet.setSelectedIndex(-1);
+                cmbIvaPorcRet.setEnabled(false);
+                cmbIslrPorc.setSelectedIndex(-1);
+                cmbIslrPorc.setEnabled(false);
+                btnInsertar.setEnabled(false);
+                btnEliminar.setEnabled(false);
+                btnIVA.setEnabled(false);
+                btnGuardar.setEnabled(false);
+                btnAtras.setEnabled(false);
+                tblBenef.requestFocusInWindow();
+                if (tblBenef.getRowCount() > 0) {
+                    tblBenef.scrollRectToVisible(tblBenef.getCellRect(0, 0, true));
+                }
+                break;
+            case SEL_ITEM:
+                tblBenef.setEnabled(false);
+                txtNroFact.setEnabled(true);
+                txtFechaFact.setEnabled(true);
+                txtCant.setEnabled(true);
+                txtDesc.setEnabled(true);
+                txtPUnitario.setEnabled(true);
+                tblItem.setEnabled(true);
+                txaConcepto.setEnabled(true);
+                cmbIvaPorcRet.setSelectedIndex(-1);
+                cmbIvaPorcRet.setEnabled(conIva);
+                cmbIslrPorc.setSelectedIndex(-1);
+                cmbIslrPorc.setEnabled(true);
+                btnInsertar.setEnabled(true);
+                btnEliminar.setEnabled(true);
+                btnIVA.setEnabled(!conIva);
+                btnGuardar.setEnabled(false);
+                btnAtras.setEnabled(true);
+                txtCant.requestFocusInWindow();
+                break;
+            case SEL_CUENTA:
+                if (tblItem.getRowCount() <= 0) {
+                    JOptionPane.showMessageDialog(null, "Debe ingresar al menos un Item");
+                    UpdateEdo(CapipState.SEL_ITEM);
+                    return;
+                }
+                tblBenef.setEnabled(false);
+                txtNroFact.setEnabled(false);
+                txtFechaFact.setEnabled(false);
+                txtCant.setEnabled(false);
+                txtDesc.setEnabled(false);
+                txtPUnitario.setEnabled(false);
+                tblItem.setEnabled(false);
+                txaConcepto.setEnabled(false);
+                cmbIvaPorcRet.setEnabled(false);
+                cmbIslrPorc.setEnabled(false);
+                btnInsertar.setEnabled(false);
+                btnEliminar.setEnabled(false);
+                btnIVA.setEnabled(false);
+                btnGuardar.setEnabled(true);
+                btnAtras.setEnabled(true);
+                btnGuardar.requestFocusInWindow();
+                break;
+        }
+    }
+
+    /**
+     * Rev 06/11/2016
+     */
+    private void actSalir() {
+        if (tblItem.getRowCount() > 0) {
+            if (JOptionPane.showConfirmDialog(this, "Hay registros pendientes . ¿ Seguro desea Salir ?", "Confirmar acción", JOptionPane.YES_NO_OPTION) != JOptionPane.OK_OPTION) {
+                return;
+            }
+        }
+        if (parent != null) {
+            java.awt.EventQueue.invokeLater(new Runnable() {
+
+                @Override
+                public void run() {
+                    parent.setVisible(true);
+                    dispose();
+                }
+            });
+        } else {
+            System.exit(0);
+        }
+    }
+
+    private void clearComp() {
+        iva_grav_bs = BigDecimal.ZERO;
+        IVA_DEC_VALUE = BigDecimal.ZERO;
+        conIva = false;
+        txtRazonSocial.setText("");
+        txtRIF_CI.setText("");
+        txtNroFact.setText("");
+        txtNumControl.setText("");
+        final String sfecha = Format.toStr(new java.sql.Date(Globales.getServerTimeStamp().getTime()));
+        txtFechaFact.setText(sfecha);
+        txtFecha.setText(sfecha);
+        try {
+            txtID_Compr.setText(String.valueOf(comprNextNum.checkNum()));
+        } catch (final Exception inex) {
+            JOptionPane.showMessageDialog(null, "Error al generar Num. Compromiso" + System.getProperty("line.separator") + inex);
+            txtID_Compr.setText("0");
+            logger.error(inex);
+        }
+        try {
+            txtNumCausado.setText(String.valueOf(cauNextNum.checkNum()));
+        } catch (final Exception inex) {
+            JOptionPane.showMessageDialog(this, "Error" + System.getProperty("line.separator") + inex);
+            txtNumCausado.setText("1");
+            logger.error(inex);
+        }
+        try {
+            txtOrdPago.setText(String.valueOf(pagNextNum.checkNum(null)));
+        } catch (Exception ex) {
+            txtOrdPago.setText("0");
+            logger.error(ex);
+        }
+        ((JFormattedTextField) txtCant).setValue(BigDecimal.ZERO);
+        txtDesc.setText("");
+        ((JFormattedTextField) txtPUnitario).setValue(BigDecimal.ZERO);
+        txtSubTotal.setText("0,00");
+        cmbIvaPorcRet.setEnabled(false);
+        cmbIvaPorcRet.setSelectedIndex(-1);
+        txtIvaRet.setText("0,00");
+        cmbIslrPorc.setEnabled(false);
+        cmbIslrPorc.setSelectedIndex(-1);
+        txtIslrRet.setText("0,00");
+        txtOtrasRetenciones.setText("0,00");
+        txtTotalRet.setText("0,00");
+        txaConcepto.setText("");
+        txtSumaTotalCau.setText("0,00");
+        txtIva_bs.setText("0,00");
+        txtA_Pagar.setText("0,00");
+        txtSumaTotalCau_menosRet.setText("0,00");
+        txtTotalBs.setText("0,00");
+        btnInsertar.setEnabled(true);
+        btnEliminar.setEnabled(false);
+        btnIVA.setEnabled(true);
+        btnAtras.setEnabled(false);
+        btnGuardar.setEnabled(false);
+        final DefaultTableModel model = (DefaultTableModel) tblItem.getModel();
+        model.getDataVector().removeAllElements();
+        model.fireTableDataChanged();
+        ImpuestoRetencion.checkIvaNextId();
+        ImpuestoRetencion.checkIslrNextId();
+        Compromiso.UpdateTblBenef(tblBenef);
+        tblBenef.requestFocusInWindow();
+        if (tblBenef.getRowCount() > 0) {
+            java.awt.EventQueue.invokeLater(new Runnable() {
+
+                @Override
+                public void run() {
+                    tblBenef.setRowSelectionInterval(0, 0);
+                }
+            });
+        }
+        UpdateEdo(CapipState.SEL_BENEF);
+    }
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        /*
+         * Create and display the form
+         */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                new PagoDirectoSinImpSinReg(null).setVisible(true);
+            }
+        });
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAtras;
+
+    private javax.swing.JButton btnConsultar;
+
+    private javax.swing.JButton btnEliminar;
+
+    private javax.swing.JButton btnGuardar;
+
+    private javax.swing.JButton btnIVA;
+
+    private javax.swing.JButton btnInsertar;
+
+    private javax.swing.ButtonGroup btngPorcIva;
+
+    private javax.swing.JCheckBox chkISLR;
+
+    private javax.swing.JComboBox cmbIslrPorc;
+
+    private javax.swing.JComboBox cmbIva;
+
+    private javax.swing.JComboBox cmbIvaPorcRet;
+
+    private javax.swing.JLabel jLabel1;
+
+    private javax.swing.JLabel jLabel10;
+
+    private javax.swing.JLabel jLabel11;
+
+    private javax.swing.JLabel jLabel118;
+
+    private javax.swing.JLabel jLabel12;
+
+    private javax.swing.JLabel jLabel14;
+
+    private javax.swing.JLabel jLabel17;
+
+    private javax.swing.JLabel jLabel18;
+
+    private javax.swing.JLabel jLabel19;
+
+    private javax.swing.JLabel jLabel20;
+
+    private javax.swing.JLabel jLabel21;
+
+    private javax.swing.JLabel jLabel22;
+
+    private javax.swing.JLabel jLabel23;
+
+    private javax.swing.JLabel jLabel24;
+
+    private javax.swing.JLabel jLabel25;
+
+    private javax.swing.JLabel jLabel26;
+
+    private javax.swing.JLabel jLabel27;
+
+    private javax.swing.JLabel jLabel28;
+
+    private javax.swing.JLabel jLabel29;
+
+    private javax.swing.JLabel jLabel30;
+
+    private javax.swing.JLabel jLabel32;
+
+    private javax.swing.JLabel jLabel34;
+
+    private javax.swing.JLabel jLabel35;
+
+    private javax.swing.JLabel jLabel4;
+
+    private javax.swing.JLabel jLabel7;
+
+    private javax.swing.JLabel jLabel9;
+
+    private javax.swing.JPanel jPanel1;
+
+    private javax.swing.JPanel jPanel2;
+
+    private javax.swing.JPanel jPanel3;
+
+    private javax.swing.JPanel jPanel4;
+
+    private javax.swing.JPanel jPanel5;
+
+    private javax.swing.JPanel jPanel6;
+
+    private javax.swing.JScrollPane jScrollPane2;
+
+    private javax.swing.JScrollPane jScrollPane3;
+
+    private javax.swing.JScrollPane jScrollPane4;
+
+    private javax.swing.JTable tblBenef;
+
+    private javax.swing.JTable tblItem;
+
+    private javax.swing.JTextArea txaConcepto;
+
+    private javax.swing.JFormattedTextField txtA_Pagar;
+
+    private javax.swing.JTextField txtCant;
+
+    private javax.swing.JTextField txtDesc;
+
+    private javax.swing.JFormattedTextField txtFecha;
+
+    private javax.swing.JFormattedTextField txtFechaFact;
+
+    private javax.swing.JFormattedTextField txtID_Compr;
+
+    private javax.swing.JFormattedTextField txtIslrRet;
+
+    private javax.swing.JFormattedTextField txtIvaRet;
+
+    private javax.swing.JFormattedTextField txtIva_bs;
+
+    private javax.swing.JFormattedTextField txtMontoPagado;
+
+    private javax.swing.JTextField txtNroFact;
+
+    private javax.swing.JFormattedTextField txtNumCausado;
+
+    private javax.swing.JTextField txtNumControl;
+
+    private javax.swing.JFormattedTextField txtOrdPago;
+
+    private javax.swing.JFormattedTextField txtOtrasRetenciones;
+
+    private javax.swing.JTextField txtPUnitario;
+
+    private javax.swing.JTextField txtRIF_CI;
+
+    private javax.swing.JTextField txtRazonSocial;
+
+    private javax.swing.JFormattedTextField txtResta;
+
+    private javax.swing.JFormattedTextField txtSubTotal;
+
+    private javax.swing.JFormattedTextField txtSumaTotalCau;
+
+    private javax.swing.JFormattedTextField txtSumaTotalCau_menosRet;
+
+    private javax.swing.JFormattedTextField txtTotalBs;
+
+    private javax.swing.JFormattedTextField txtTotalRet;
+
+    // End of variables declaration//GEN-END:variables
+    Connection cn = ConnCapip.getInstance().getConnection();
+
+    private static final Logger logger = LogManager.getLogger(PagoDirectoSinImpSinReg.class);
+}

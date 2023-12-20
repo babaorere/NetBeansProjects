@@ -1,0 +1,40 @@
+Esta version del sistema debe trabajar SIN la opcion "sql_mode=only_full_group_by"
+
+Asi que hay que borrarla  de la configuracion del servidor MYSQL
+ver: https://github.com/coral-erm/coral/issues/445
+
+Tambien hay que evitar generar un error, cuando se trunca algun dato al INSERT o UPDATE, esto se hace con la opcion "TRADITIONAL"
+
+tambien hay que abrir el archivo de configuracion de mysql, my.ini en Windows, y en Linux "mysql.cnf" y agregar al final lo siguiente:
+[mysqld]  
+sql_mode = "TRADITIONAL,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION"
+
+
+CHAPGPT:
+
+En sistemas Windows, el archivo de configuración `my.ini` (o `my.cnf` en sistemas Unix/Linux) de MySQL generalmente se encuentra en la carpeta de instalación de MySQL. A continuación, te proporciono la ubicación típica del archivo `my.ini` en sistemas Windows:
+
+1. **Instalación estándar de MySQL**: Si has instalado MySQL de acuerdo con la configuración predeterminada, es probable que el archivo `my.ini` se encuentre en la siguiente ubicación:
+
+   ```
+   C:\ProgramData\MySQL\MySQL Server x.x
+   ```
+
+   En esta ruta, `x.x` representa la versión de MySQL instalada. Por ejemplo, para MySQL Server 8.0, la ruta sería:
+
+   ```
+   C:\ProgramData\MySQL\MySQL Server 8.0
+   ```
+
+   Nota: La carpeta `ProgramData` es una carpeta oculta en Windows, por lo que deberás habilitar la visualización de archivos y carpetas ocultas en el Explorador de Windows para acceder a esta ubicación.
+
+2. **Instalación personalizada o no predeterminada**: Si has realizado una instalación personalizada de MySQL y especificaste una ubicación diferente durante la instalación, es posible que el archivo `my.ini` se encuentre en otro directorio. Debes buscar en la ubicación que especificaste durante la instalación.
+
+3. **MySQL en XAMPP o WampServer**: Si estás utilizando un entorno de desarrollo como XAMPP o WampServer que incluye MySQL, el archivo `my.ini` se encuentra en la carpeta de configuración de ese entorno. Por ejemplo:
+
+   - Para XAMPP: `C:\xampp\mysql\bin\my.ini`
+   - Para WampServer: `C:\wamp\bin\mysql\mysqlx.x.x\my.ini` (donde `x.x.x` es la versión de MySQL)
+
+Recuerda que la ubicación exacta del archivo `my.ini` puede variar según la instalación y la versión de MySQL que estés utilizando. Si tienes dificultades para encontrar el archivo de configuración, puedes realizar una búsqueda en tu sistema para encontrarlo.
+
+

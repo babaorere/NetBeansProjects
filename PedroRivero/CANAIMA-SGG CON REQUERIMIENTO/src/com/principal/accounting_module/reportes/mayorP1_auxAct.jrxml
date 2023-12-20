@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="mayorP1_auxAct" language="groovy" pageWidth="100" pageHeight="12" columnWidth="100" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="c67f1486-fc89-41e4-b87c-0133d06fe395">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="emp" class="java.lang.String"/>
+	<parameter name="cuenta" class="java.lang.String"/>
+	<parameter name="inicioFiscal" class="java.lang.String"/>
+	<parameter name="mesActual" class="java.lang.String"/>
+	<parameter name="auxiliar" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT mh_comprobante.cta_id,`mh_comprobante`.`aux_id`,(SUM(`mh_comprobante`.`comp_debe`)-SUM(`mh_comprobante`.`comp_haber`)) AS Saldo
+FROM `mh_comprobante`
+WHERE `mh_comprobante`.`emp_id`=$P{emp} AND mh_comprobante.cta_id= $P{cuenta} AND  `mh_comprobante`.`aux_id`=$P{auxiliar}
+AND `mh_comprobante`.`comp_fecha` BETWEEN $P{inicioFiscal} AND $P{mesActual}
+GROUP BY `mh_comprobante`.`aux_id`]]>
+	</queryString>
+	<field name="cta_id" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="aux_id" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="Saldo" class="java.lang.Double"/>
+	<detail>
+		<band height="12" splitType="Stretch">
+			<textField pattern="#,##0.00;-#,##0.00">
+				<reportElement x="3" y="0" width="90" height="12" isRemoveLineWhenBlank="true" uuid="12b15471-5623-45fa-9600-9dfc91cbde95"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Consolas" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Saldo}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

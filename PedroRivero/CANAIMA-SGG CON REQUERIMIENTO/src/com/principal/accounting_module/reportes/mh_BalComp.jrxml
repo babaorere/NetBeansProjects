@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="mh_BalComp" language="groovy" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="25048770-c377-4031-a9c8-58c9961e002c">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\Users\\Jacc\\Documents\\NetBeansProjects\\SistemaContable\\src\\reportes\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="empresa" class="java.lang.String"/>
+	<parameter name="fecha1" class="java.lang.String"/>
+	<parameter name="fecha2" class="java.lang.String"/>
+	<parameter name="fecha" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT DISTINCT `mh_empresas`.`emp_id`, mh_empresas.emp_nombre,`mh_auxiliar`.`cta_id`,`mh_auxiliar`.`aux_nombreCta`,
+`mh_comprobante`.`comp_fecha`
+FROM `mh_empresas` INNER JOIN `mh_auxiliar` ON `mh_empresas`.`emp_id`=`mh_auxiliar`.`emp_id`
+				LEFT JOIN `mh_comprobante` ON `mh_auxiliar`.`cta_id`=`mh_comprobante`.`cta_id`
+WHERE `mh_empresas`.`emp_id`=$P{empresa}
+GROUP BY `mh_auxiliar`.`cta_id`]]>
+	</queryString>
+	<field name="emp_id" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="emp_nombre" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="cta_id" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="aux_nombreCta" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="comp_fecha" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<group name="cta_id">
+		<groupExpression><![CDATA[$F{cta_id}]]></groupExpression>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="57" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="572" height="23" forecolor="#000000" uuid="08c2aa98-9f4e-4d39-a058-8f8ac36e2238"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="20" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Balance de Comprobacion]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="22" width="572" height="17" forecolor="#000000" uuid="71a1699d-d269-4284-874e-c736a32e5642"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Consolas" size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{emp_nombre}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="38" width="572" height="18" forecolor="#000000" uuid="a9a882de-9dbf-4e62-a968-35a677e355c2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fecha}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="10" splitType="Stretch">
+			<textField>
+				<reportElement x="450" y="0" width="80" height="10" uuid="f236f34b-261d-4a76-ad83-e4ece53d684d"/>
+				<textElement textAlignment="Right">
+					<font fontName="Consolas" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pag "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="530" y="0" width="40" height="10" uuid="ecfad542-6e40-4335-8ebf-45138eb75f6b"/>
+				<textElement>
+					<font fontName="Consolas" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="13" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="75" height="12" uuid="7915e106-8d26-4e9e-b8ad-3638adb655f6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Consolas" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CODIGO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="74" y="0" width="100" height="12" uuid="6c660d6d-986c-4966-a35e-08cf0eea4d4e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Consolas" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CUENTA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="326" y="0" width="100" height="12" uuid="b174fe48-97ea-4125-8efe-86cbf4d85bc3"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Consolas" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DEBE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="426" y="0" width="100" height="12" uuid="d40d13ce-eaf5-4c8f-ada6-6d35b79d036c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Consolas" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[HABER]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="12" width="572" height="1" uuid="1fa9fb4f-d945-4d27-8a08-3bbfbada105e"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="12" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="75" height="12" uuid="a2199f2f-9480-4aa6-9e7f-cd7809d0c943"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font fontName="Consolas" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cta_id}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="74" y="0" width="193" height="12" uuid="eadb2b7e-51ee-43b9-bab4-ccdc81ed506e"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font fontName="Consolas" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{aux_nombreCta}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement x="336" y="0" width="201" height="12" uuid="a10d2fd3-30cc-43ff-93d4-359360dd7ba0"/>
+				<subreportParameter name="empresa">
+					<subreportParameterExpression><![CDATA[$P{empresa}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="cuenta">
+					<subreportParameterExpression><![CDATA[$F{cta_id}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="fecha1">
+					<subreportParameterExpression><![CDATA[$P{fecha1}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="fecha2">
+					<subreportParameterExpression><![CDATA[$P{fecha2}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["mh_BalComp_totCuenta.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<summary>
+		<band height="13" splitType="Stretch">
+			<staticText>
+				<reportElement x="123" y="1" width="100" height="12" uuid="ee5ab8e5-aafb-4de0-9bdc-08b395a6d940"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Consolas" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Totales]]></text>
+			</staticText>
+			<subreport>
+				<reportElement x="296" y="1" width="251" height="12" uuid="c72c449f-0499-4a5d-be1e-5e3da62c91ff"/>
+				<subreportParameter name="empresa">
+					<subreportParameterExpression><![CDATA[$P{empresa}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="fecha1">
+					<subreportParameterExpression><![CDATA[$P{fecha1}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="fecha2">
+					<subreportParameterExpression><![CDATA[$P{fecha2}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["mh_BalComp_subreport1.jasper"]]></subreportExpression>
+			</subreport>
+			<line>
+				<reportElement x="0" y="0" width="572" height="1" uuid="e4c17ca9-a428-42ac-911d-1a0a892f31b4"/>
+			</line>
+		</band>
+	</summary>
+</jasperReport>

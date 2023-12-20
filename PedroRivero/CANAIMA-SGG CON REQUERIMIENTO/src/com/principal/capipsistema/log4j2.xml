@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="CONFIG LOADED">
+    <Appenders>
+        <!-- Appender para la consola -->
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+
+        <!-- Appender para el archivo de registro -->
+        <File name="File" fileName="capip.log">
+            <PatternLayout pattern="%d [%t] %-5level %logger{36} - %msg%n"/>
+        </File>
+
+    </Appenders>
+    <Loggers>
+        <!-- Log a la consola -->
+        <Root level="ALL">
+            <AppenderRef ref="Console"/>
+        </Root>
+
+		<!-- Log al archivo de registro para todas las clases en com.principal -->
+		<Logger name="com.principal" level="ALL">
+		    <AppenderRef ref="File"/>
+		</Logger>
+
+	    <Logger name="org.apache.logging.log4j.config" level="ALL">
+	        <AppenderRef ref="File"/>
+	    </Logger>
+
+    </Loggers>
+</Configuration>
+

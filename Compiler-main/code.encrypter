@@ -1,0 +1,6 @@
+// Código JavaScript para hacer un test
+var x = 5;
+let y = 5
+if (x > 0) {
+    y = 1;
+} 

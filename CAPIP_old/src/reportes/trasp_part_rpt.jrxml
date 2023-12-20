@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="TRASPASO PARTIDA REPORTE" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="15" bottomMargin="10" uuid="962de331-6071-471a-8bed-b36dfff2195e">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="31"/>
+	<property name="ireport.y" value="99"/>
+	<parameter name="ejefis" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ejefismes_hasta" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fechahoy" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="periodo_total" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="ejefismes_desde" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="iduser" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="idsession" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="user" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="rpt_fecha_hora" class="java.sql.Timestamp">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="linea_1" class="java.lang.String"/>
+	<parameter name="linea_2" class="java.lang.String"/>
+	<parameter name="linea_3" class="java.lang.String"/>
+	<parameter name="linea_4" class="java.lang.String"/>
+	<parameter name="aux_1" class="java.lang.String"/>
+	<parameter name="aux_2" class="java.lang.String"/>
+	<parameter name="logo_iz" class="java.io.InputStream"/>
+	<parameter name="logo_der" class="java.io.InputStream"/>
+	<parameter name="fecha" class="java.lang.String"/>
+	<parameter name="referencia" class="java.lang.String"/>
+	<parameter name="monto" class="java.lang.String"/>
+	<parameter name="concepto" class="java.lang.String"/>
+	<parameter name="id_trasp" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="desc_1" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="desc_2" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="desc_3" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="desc_4" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="desc_5" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="desc_6" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="desc_7" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="desc_8" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="func_1" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="func_2" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="func_3" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="func_4" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="func_5" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="func_6" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="func_7" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="func_8" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+     tbl_det.`id_trasp_det` AS id_trasp_det,
+     tbl_det.`id_user` AS id_user,
+     tbl_det.`id_session` AS id_session,
+     tbl_det.`date_session` AS date_session,
+     tbl_det.`id_trasp` AS id_trasp,
+     tbl_det.`ppto_egr_ing` AS ppto_egr_ing,
+     tbl_det.`tipo_ori_dest` AS ori_dest,
+     tbl_det.`codpresu` AS codpresu,
+     tbl_det.`partida` AS partida,
+     tbl_det.`monto` AS monto
+FROM
+     `trasppartidas_det` tbl_det
+WHERE
+     id_trasp = $P{id_trasp}
+ORDER BY
+     ori_dest DESC,
+     codpresu ASC]]>
+	</queryString>
+	<field name="id_trasp_det" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="id_user" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="id_session" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="date_session" class="java.sql.Timestamp">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="id_trasp" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="ppto_egr_ing" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="ori_dest" class="java.lang.String"/>
+	<field name="codpresu" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="partida" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="monto" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<title>
+		<band height="170" splitType="Stretch">
+			<staticText>
+				<reportElement x="5" y="76" width="545" height="23" uuid="2c234b72-ab89-4dcf-b4a5-da41298f611a"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="18" isBold="true" isItalic="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[TRASPASO DE PARTIDAS]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="0" y="71" width="184" height="4" forecolor="#F0F0F0" backcolor="#FF0000" uuid="79741b04-77d7-45ee-95dd-7f21bd634f8a"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="184" y="71" width="371" height="4" forecolor="#F0F0F0" backcolor="#003399" uuid="48cc5ef4-3b38-49c3-bf67-ab79e3a5e5b0"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="370" y="107" width="81" height="15" uuid="a5bb88f8-12bd-4ee8-a10f-38b2d669120f"/>
+				<text><![CDATA[Fecha de Emisión]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="454" y="107" width="95" height="15" uuid="8d23d84d-bc5e-4777-82e1-cb343526f297"/>
+				<textFieldExpression><![CDATA[$P{fechahoy}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="116" y="1" width="250" height="15" uuid="0857cbef-fae0-4d58-b277-1f98645ccf43"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[REPÚBLICA BOLIVARIANA DE VENEZUELA]]></text>
+			</staticText>
+			<textField pattern="dd-MM-yyyy">
+				<reportElement x="446" y="3" width="106" height="20" uuid="b9cfaa0d-0d42-45bb-815a-27e1a16c4aee"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{rpt_fecha_hora}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="116" y="57" width="250" height="13" uuid="f12d42b2-791b-4d14-8852-04ccc1be1e1e"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{linea_4}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="116" y="29" width="250" height="14" uuid="fdcb76d6-82c4-4387-83ff-c6563938a753"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{linea_2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="116" y="15" width="250" height="14" uuid="8139d8ee-9169-4c51-864d-9ce29df19dc8"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{linea_1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="116" y="43" width="250" height="14" uuid="005e9694-0b5e-4b12-af52-5b36c447e96d"/>
+				<textElement textAlignment="Center">
+					<font size="8" isStrikeThrough="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{linea_3}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="80" y="107" width="100" height="20" uuid="cc3d1290-bf4a-43bd-8416-7faddf06d407"/>
+				<textFieldExpression><![CDATA[$P{fecha}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="76" y="127" width="473" height="20" uuid="bb0721c5-2baf-457b-9b8f-78f1e98dbd0d"/>
+				<textFieldExpression><![CDATA[$P{referencia}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="76" y="147" width="473" height="20" uuid="dc8adc22-4a43-45bb-a1e7-5af56b804266"/>
+				<textFieldExpression><![CDATA[$P{concepto}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="5" y="107" width="71" height="20" uuid="a6ef25de-cc84-4048-9c8c-a64bb723f788"/>
+				<text><![CDATA[Fecha del Doc.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="5" y="127" width="71" height="20" uuid="8950b50c-597e-4c48-b261-801b67f3fda0"/>
+				<text><![CDATA[Referencia ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="5" y="147" width="71" height="20" uuid="979574bc-a267-4d20-a303-2b2648126db7"/>
+				<text><![CDATA[Concepto]]></text>
+			</staticText>
+			<image>
+				<reportElement x="371" y="1" width="70" height="70" uuid="b00d7bb8-a404-4f68-93d8-f7f022c34d93"/>
+				<imageExpression><![CDATA[$P{logo_der}]]></imageExpression>
+			</image>
+			<image>
+				<reportElement x="42" y="1" width="70" height="70" uuid="7c8bec29-c390-48dc-a8cb-e870475045c3"/>
+				<imageExpression><![CDATA[$P{logo_iz}]]></imageExpression>
+			</image>
+			<textField pattern="h.mm a">
+				<reportElement x="446" y="23" width="106" height="20" uuid="9a1836ef-9695-4d54-a36e-958d53b9f382"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{rpt_fecha_hora}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement x="1" y="0" width="47" height="20" uuid="96600bec-d145-4131-9538-39ad7fd9866a"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Ori/Dest]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="48" y="0" width="28" height="20" uuid="ba50ea27-6266-4690-8375-07fe55b0cebd"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Ppto.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="76" y="0" width="375" height="20" uuid="925f823e-17fb-483a-9b8e-e49731b4ba69"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Código / Partida]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="453" y="0" width="100" height="20" uuid="750a05e4-2b9d-4465-be23-87fe94ff72e5"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[monto]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="21">
+			<textField>
+				<reportElement x="1" y="1" width="47" height="20" uuid="44ff577c-46fb-424b-9acb-ce3c7acf5ac0"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ori_dest}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="48" y="1" width="28" height="20" uuid="926913bc-c4a5-4541-8dc6-c7f3a3b0fc02"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{ppto_egr_ing}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="200" y="1" width="253" height="20" uuid="6db93d7a-4013-4719-ada2-e017e61adad5"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{partida}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="453" y="0" width="100" height="20" uuid="03d040e1-9fb8-4d7b-9ccc-4cbc130483f3"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{monto}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="76" y="1" width="124" height="20" uuid="bcb513c2-4667-4598-af78-1582e02e6b18"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{codpresu}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="58">
+			<staticText>
+				<reportElement x="1" y="39" width="212" height="17" uuid="80ee73aa-ac8d-4a2c-9573-abc95a05ae69"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font fontName="Arial" size="6" isBold="false" isItalic="true"/>
+				</textElement>
+				<text><![CDATA["CAPIP SISTEMA INTEGRAL" para el control de la Administración pública]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="337" y="39" width="79" height="17" uuid="400c527d-cb5b-4dde-89bd-afa4f0637dfa"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[ELABORADO POR:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="416" y="39" width="139" height="17" uuid="b618d37c-844f-4bbd-80bb-da52c2498552"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{user}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="217" y="39" width="81" height="15" uuid="ee4469a7-0d3b-4a5d-83bd-d2b4574cd5ba"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="false" isItalic="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="298" y="39" width="39" height="15" uuid="86eacce9-2594-4279-8fa4-69807536072e"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="1" y="10" width="548" height="13" uuid="e99eff30-eb5a-4d8f-b2cc-8e6fe82c2496"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{aux_1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="1" y="23" width="549" height="13" uuid="1f13ba93-7ff7-4783-9858-2c6180a7442f"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{aux_2}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="37" splitType="Stretch">
+			<line>
+				<reportElement x="3" y="1" width="547" height="1" uuid="b8074f9a-93cc-4e4d-a4c6-01cbd51ab121"/>
+			</line>
+			<rectangle>
+				<reportElement x="295" y="8" width="108" height="22" uuid="7d489787-9aa2-4196-8932-a5c97dc07470"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="80" y="8" width="214" height="22" backcolor="#F0F0F0" uuid="61c10e2d-1f2e-451a-bdaf-bcf890e1a68d"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="80" y="9" width="210" height="20" uuid="5d0ed8ea-c73c-4a9c-99a5-b423fd8b523e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Monto Total del Traspaso Bs.]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="295" y="8" width="108" height="20" uuid="7f76764c-b833-467f-92aa-1140a3e243b1"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{monto}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

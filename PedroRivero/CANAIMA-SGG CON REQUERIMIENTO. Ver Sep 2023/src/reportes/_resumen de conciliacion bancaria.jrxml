@@ -1,0 +1,499 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="resumen de conciliacion bancaria" language="groovy" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b3636c39-1c1d-42fe-939d-a88bf636d46b">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="213"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="user" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="rpt_fecha_hora" class="java.sql.Timestamp">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+     bancos.`cuenta` AS bancos_cuenta,
+     bancos.`banco` AS bancos_banco,
+     bancos.`saldoi` AS bancos_saldoi,
+     bancos.`saldof` AS bancos_saldof,
+     bancos.`registro` AS bancos_registro,
+     dbancos.`cuenta` AS dbancos_cuenta,
+     dbancos.`banco` AS dbancos_banco,
+     dbancos.`descripcion` AS dbancos_descripcion,
+     dbancos.`fecha` AS dbancos_fecha,
+     dbancos.`tipo` AS dbancos_tipo,
+     dbancos.`soporte` AS dbancos_soporte,
+     dbancos.`conciliado` AS dbancos_conciliado,
+     dbancos.`debe` AS dbancos_debe,
+     dbancos.`haber` AS dbancos_haber,
+     dbancos.`registro` AS dbancos_registro
+FROM
+     `dbancos`bancos_detINNER JOIN `bancos` bancos ON dbancos.`cuenta` = bancos.`cuenta`]]>
+	</queryString>
+	<field name="bancos_cuenta" class="java.lang.String"/>
+	<field name="bancos_banco" class="java.lang.String"/>
+	<field name="bancos_saldoi" class="java.lang.String"/>
+	<field name="bancos_saldof" class="java.lang.String"/>
+	<field name="bancos_registro" class="java.sql.Timestamp"/>
+	<field name="dbancos_cuenta" class="java.lang.String"/>
+	<field name="dbancos_banco" class="java.lang.String"/>
+	<field name="dbancos_descripcion" class="java.lang.String"/>
+	<field name="dbancos_fecha" class="java.lang.String"/>
+	<field name="dbancos_tipo" class="java.lang.String"/>
+	<field name="dbancos_soporte" class="java.lang.String"/>
+	<field name="dbancos_conciliado" class="java.lang.String"/>
+	<field name="dbancos_debe" class="java.lang.String"/>
+	<field name="dbancos_haber" class="java.lang.String"/>
+	<field name="dbancos_registro" class="java.sql.Timestamp"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="82" splitType="Stretch">
+			<staticText>
+				<reportElement x="116" y="1" width="250" height="15" uuid="310d7231-d79d-43ed-94f7-4b6ab321b8d3"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="false" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[REPÚBLICA BOLIVARIANA DE VENEZUELA]]></text>
+			</staticText>
+			<textField pattern="dd-MM-yyyy h.mm a">
+				<reportElement x="423" y="6" width="144" height="20" uuid="3596bddb-3c42-4ee2-9f15-3f26b0f389cf"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{rpt_fecha_hora}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="110" splitType="Stretch">
+			<rectangle>
+				<reportElement x="194" y="-7" width="378" height="4" forecolor="#F0F0F0" backcolor="#000099" uuid="a17b4c9e-c92f-4537-b816-c37ac30397b4"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="0" y="-7" width="194" height="4" forecolor="#F0F0F0" backcolor="#FF0000" uuid="46ad0399-f469-4e30-96db-389d756d1ca1"/>
+			</rectangle>
+			<rectangle radius="5">
+				<reportElement x="96" y="30" width="382" height="24" backcolor="#999999" uuid="95f8d9b3-c111-489f-9423-3754c7059686"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle radius="5">
+				<reportElement x="96" y="54" width="382" height="24" backcolor="#999999" uuid="bdbc9fb5-0933-48ab-a8f0-0a879f92ba16"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle radius="5">
+				<reportElement x="96" y="78" width="195" height="24" backcolor="#999999" uuid="18b2e488-98e5-4620-9df7-97d7b1bad743"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="168" y="35" width="305" height="15" uuid="2eb74e50-2f1a-4cb2-a9f8-6c974a9670ce"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="168" y="58" width="305" height="15" uuid="c88a9650-a98b-4ab8-9442-82766501877f"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="168" y="83" width="118" height="15" uuid="e5ec20b3-b3ac-4471-b22f-525d7491f802"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle radius="5">
+				<reportElement x="291" y="78" width="187" height="24" backcolor="#999999" uuid="c9df5208-2f4f-45c3-aa3b-98030b207772"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="352" y="83" width="121" height="15" uuid="7820ae52-9547-4e3c-9466-c4ff12fe2fc0"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="96" y="36" width="61" height="14" uuid="6528f85c-8959-4733-abaf-18832d393e7b"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[BANCO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="96" y="59" width="61" height="14" uuid="b45b9efa-673e-4f37-9651-070eade803cc"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[CUENTA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="96" y="83" width="61" height="14" uuid="b94fa931-7f1d-44bf-ade9-3ae96788e6e8"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[MES]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="291" y="84" width="49" height="14" uuid="e6d1d0b6-b19a-4fec-b832-f50fc847ab36"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[AÑO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="168" y="5" width="280" height="20" uuid="24105d96-4b33-4241-93f5-95b70286efd3"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[RESÚMEN DE CONCILIACIÓN BANCARIA]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="204" y="35" width="228" height="15" uuid="4393547f-35c6-43d4-aaa0-07555126d4a9"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{bancos_banco}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="204" y="59" width="228" height="14" uuid="1c308bc5-2803-40f7-8f25-57d8b833d787"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{dbancos_cuenta}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<summary>
+		<band height="544" splitType="Stretch">
+			<rectangle>
+				<reportElement x="448" y="141" width="124" height="22" uuid="1894338a-4fff-4375-bc0f-a5152669019d"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="448" y="162" width="124" height="22" uuid="2f63c0de-e5c4-4e14-ab65-e8abcfc6b7e7"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="202" y="55" width="123" height="21" uuid="43b17285-d8ec-4554-8f6c-951768f4881c"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="0" y="13" width="203" height="21" backcolor="#999999" uuid="f6071566-9b2d-410c-8efd-4cd2bd1276c0"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="0" y="34" width="203" height="21" uuid="34cdeae0-5d95-48bc-b869-67888888799b"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="0" y="55" width="203" height="21" uuid="d43bafc1-fe24-4b74-b18e-eaa40f761712"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="0" y="76" width="203" height="21" uuid="740b175a-b7d3-4e2a-bbf6-27ccc405cf85"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="203" y="13" width="123" height="21" backcolor="#999999" uuid="865cca63-2fb0-44c7-9be7-cb8ab37c9e80"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="326" y="13" width="122" height="21" backcolor="#999999" uuid="2dd29c7d-6e07-4e63-a04e-a4ec81aa95a3"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="448" y="13" width="124" height="21" backcolor="#999999" uuid="bc6a269d-0954-4533-a04b-790f22513ca3"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="203" y="34" width="123" height="21" uuid="8f31203e-04c7-4862-afbd-ea0688195f06"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="326" y="34" width="122" height="22" uuid="e7e76e52-055e-4052-9c80-25fc9c866454"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="448" y="34" width="124" height="22" uuid="be2ad201-a4a1-4bc7-8b3f-7c90ab68c201"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="203" y="76" width="123" height="21" uuid="ec6fcca2-f99c-441a-9f03-8598797417f1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="325" y="55" width="123" height="21" uuid="f5b3ee1e-06bf-4909-80a6-83288d4769d7"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="326" y="76" width="122" height="21" uuid="05b7156d-36c4-46ae-8bcb-ac0bfb1e5837"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="448" y="55" width="124" height="22" uuid="acef13d7-66ae-42a7-88ab-8a26f3f6d8df"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="448" y="76" width="124" height="21" uuid="aba60eb1-83aa-4cd6-b717-b14ebd45f281"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="203" y="55" width="123" height="21" uuid="b85d7c25-a492-4df6-bf4c-b980001f9b5e"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="203" y="141" width="122" height="21" uuid="d380a21c-35ce-428a-9854-949fb802645e"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="202" y="162" width="124" height="21" uuid="3e68c802-96f4-47f8-bd75-db24a693e194"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="325" y="120" width="123" height="21" backcolor="#999999" uuid="eac49827-4cca-420a-9ccc-442d59b98745"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="204" y="120" width="122" height="21" backcolor="#999999" uuid="78ecbfd1-93ea-4909-a96a-95caec3df571"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="203" y="183" width="123" height="21" uuid="ab1fed65-733c-4d8c-88a2-260541873947"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="0" y="120" width="204" height="21" backcolor="#999999" uuid="95b361ad-4a56-414d-a085-39db5cb81ba9"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="448" y="120" width="124" height="21" backcolor="#999999" uuid="7204a542-6bb0-4b4e-9d5c-c26aa1a7b8dd"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="448" y="183" width="124" height="21" uuid="23839e3b-2e16-445c-b4ce-5c279b2666c1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="0" y="183" width="204" height="21" uuid="3b55513b-b416-4c85-b758-ac41d5458e63"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="326" y="183" width="122" height="21" uuid="51ca5ebb-26cf-4b62-a565-c943e1c883e4"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="326" y="141" width="122" height="22" uuid="167152e3-c529-4150-aa84-a4d4aba6b6d9"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="0" y="162" width="204" height="21" uuid="74d614a4-57fc-42ca-945d-6e022bc15446"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="204" y="141" width="122" height="21" uuid="96f22e37-a529-4cff-b6f3-9887e0665e96"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="326" y="162" width="122" height="21" uuid="2e12ff7c-0745-4376-b643-f8f1376c1c21"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="0" y="141" width="204" height="21" uuid="99301b05-8aba-49be-bfb6-0d750539f269"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="0" y="229" width="448" height="22" uuid="923fd474-20ef-443d-a9a0-c3fba6bced48"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement x="448" y="229" width="124" height="22" uuid="74f11df4-f7c6-4807-b9c7-f573def90081"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="295" y="524" width="277" height="20" uuid="f90f31d4-326a-43cf-9d75-b66560199233"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA["CAPIP SISTEMA INTEGRAL" para el control de la Administración pública]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="228" y="228" width="220" height="22" uuid="f3f51adb-21c0-4b6a-89d3-949071b4bc46"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Diferencia por transacciones en Transito Bs F]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="74" y="183" width="123" height="21" uuid="1ea7c7f4-d367-4063-b697-acd7a144d475"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<text><![CDATA[Cheques Pagados Bs F]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="74" y="163" width="123" height="21" uuid="21cd3ed2-3f5f-4a39-8c3b-993773947752"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<text><![CDATA[Depósitos Efectuados Bs F]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="74" y="141" width="123" height="21" uuid="fa2e3bd1-8a11-4aec-9576-51b2fc956823"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<text><![CDATA[Saldo Anterior Bs F]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="41" y="120" width="123" height="21" uuid="a1b94746-1a02-4c24-9130-abcbba2cca51"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[SEGÚN BANCO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="41" y="13" width="123" height="21" uuid="d605c802-81f5-499d-bc1d-87b1914d0fc1"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[SEGÚN LIBRO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="233" y="120" width="65" height="21" uuid="0a8de39c-8123-408e-90ff-8a4ef6905925"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[DEBE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="353" y="120" width="65" height="21" uuid="6c285596-5f73-47c9-b012-74bfebcd298d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[HABER]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="479" y="120" width="65" height="21" uuid="239e77b7-4214-4e0d-ba67-c4ae06a18d07"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[SALDO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="233" y="13" width="65" height="21" uuid="897e833c-214c-4aa7-aed3-51c06bef3249"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[DEBE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="354" y="13" width="65" height="21" uuid="daf98cf1-a87a-4e2d-9fda-87c28e40adc6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[HABER]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="478" y="13" width="65" height="21" uuid="a05189e7-620a-4451-8031-2a6c0252f12e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[SALDO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="74" y="76" width="123" height="21" uuid="e2a7ec7b-b073-412f-8ef6-d7ddfee90fa0"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<text><![CDATA[Cheques Pagados Bs F]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="74" y="55" width="123" height="21" uuid="ebd5b505-4ff1-40b4-aac9-e978a269228a"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<text><![CDATA[Depósitos Efectuados Bs F]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="74" y="34" width="123" height="21" uuid="0245c3af-bbb0-4fc5-84ca-46852d4dfb12"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<text><![CDATA[Saldo Anterior Bs F]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="215" y="34" width="100" height="21" uuid="7a162fde-6261-4813-9c1c-96c08fae673f"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{bancos_saldoi}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="337" y="34" width="100" height="21" uuid="01d6eac6-a271-4b90-b909-b24b0e0e98eb"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{dbancos_debe}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

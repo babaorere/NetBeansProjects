@@ -1,0 +1,35 @@
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:tns="http://SoapStringAndFile/"
+             targetNamespace="http://SoapStringAndFile/"
+             name="ExampleService">
+    <message name="RequestMessage">
+        <part name="text" type="xsd:string"/>
+        <part name="file" type="xsd:base64Binary"/>
+    </message>
+    <message name="ResponseMessage">
+        <part name="result" type="xsd:string"/>
+    </message>
+    <portType name="ExamplePortType">
+        <operation name="processData">
+            <input message="tns:RequestMessage"/>
+            <output message="tns:ResponseMessage"/>
+        </operation>
+    </portType>
+    <binding name="ExampleBinding" type="tns:ExamplePortType">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="processData">
+            <soap:operation soapAction=""/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+    </binding>
+    <service name="ExampleService">
+        <port name="ExamplePort" binding="tns:ExampleBinding">
+            <soap:address location="http://localhost:8080/soap-endpoint"/>
+        </port>
+    </service>
+</definitions>
