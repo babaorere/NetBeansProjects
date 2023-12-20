@@ -1,0 +1,7 @@
+01,Simple,100,ocupada
+02,doble,100,ocupada
+03,Suite,1100,Ocupada
+04,simple,100,ocupada
+05,Doble,500,Libre
+06,Suite,1000,Libre
+07,Simple,100,ocupada

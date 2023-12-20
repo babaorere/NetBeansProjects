@@ -1,0 +1,7 @@
+01*Simple*100*ocupada
+02*Doble*500*Libre
+03*Suite*1000*Libre
+04*Simple*100*Libre
+05*Doble*500*Libre
+06*Suite*1000*Libre
+07*Simple*100*ocupada

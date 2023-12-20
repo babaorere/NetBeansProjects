@@ -1,6 +1,6 @@
 package com.isiweekloan.controller;
 
-import com.isiweekloan.entity.Person;
+import com.isiweekloan.entity.PersonEntity;
 import com.isiweekloan.exception.PersonNotFoundException;
 import com.isiweekloan.exception.ResourceNotFoundException;
 import com.isiweekloan.repository.PersonRepository;
@@ -29,8 +29,8 @@ public class PersonController {
     // Get All Persons
     // URL: http://localhost:8080/api/people/1
     @GetMapping("/people")
-    public ResponseEntity<List<Person>> getAllPerson() {
-        List<Person> persons = personRepository.findAll();
+    public ResponseEntity<List<PersonEntity>> getAllPerson() {
+        List<PersonEntity> persons = personRepository.findAll();
         return ResponseEntity.ok(persons);
     }
 
@@ -38,7 +38,7 @@ public class PersonController {
     // URL: http://localhost:8080/api/createPerson
     // Object json: {"name":"Rosa3333","username":"Marfi3333l"}
     @PostMapping("/createPerson")
-    public ResponseEntity<?> createPerson(@Valid @RequestBody Person person) {
+    public ResponseEntity<?> createPerson(@Valid @RequestBody PersonEntity person) {
         try {
             personRepository.save(person);
             return ResponseEntity.ok(person);
@@ -52,7 +52,7 @@ public class PersonController {
     @GetMapping("/person/{id}")
     public ResponseEntity<?> getNoteById(@PathVariable(value = "id") Long id) {
         try {
-            Person person = personRepository.findById(id).orElseThrow(() -> new PersonNotFoundException("ID no encontrado: " + id));
+            PersonEntity person = personRepository.findById(id).orElseThrow(() -> new PersonNotFoundException("ID no encontrado: " + id));
             return ResponseEntity.ok(person);
         } catch (PersonNotFoundException e) {
             return ResponseEntity.notFound().build();
@@ -65,9 +65,9 @@ public class PersonController {
     // URL: http://localhost:8080/api/updatePerson/1
     // Object json: {"name":"RosaUpdate","username":"Marfil"}
     @PutMapping("/updatePerson/{id}")
-    public ResponseEntity<?> updatePerson(@PathVariable(value = "id") Long id, @Valid @RequestBody Person inPerson) {
+    public ResponseEntity<?> updatePerson(@PathVariable(value = "id") Long id, @Valid @RequestBody PersonEntity inPerson) {
         try {
-            Person person = personRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("ID no encontrado: " + id));
+            PersonEntity person = personRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("ID no encontrado: " + id));
 
             person.setFirstName(inPerson.getFirstName());
             person.setLastName(inPerson.getLastName());
@@ -89,7 +89,7 @@ public class PersonController {
     @DeleteMapping("/deletePerson/{id}")
     public ResponseEntity<?> deletePerson(@PathVariable(value = "id") Long id) {
         try {
-            Person person = personRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("ID no encontrado: " + id));
+            PersonEntity person = personRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("ID no encontrado: " + id));
 
             personRepository.delete(person);
             return ResponseEntity.ok().build();

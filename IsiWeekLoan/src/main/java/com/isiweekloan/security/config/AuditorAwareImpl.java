@@ -1,11 +1,12 @@
 package com.isiweekloan.security.config;
 
 import java.util.Optional;
+
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.AuditorAware;
 
 /**
  *
- * @author
  */
 public class AuditorAwareImpl implements AuditorAware<String> {
 

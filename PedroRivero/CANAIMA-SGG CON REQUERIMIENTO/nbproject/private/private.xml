@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/1"/>
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="62">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="65">
         <file>
             <url>src/causados/CausadoReport.java</url>
             <bookmark id="58">
@@ -191,6 +191,19 @@
             </bookmark>
         </file>
         <file>
+            <url>src/com/principal/pagos/PagoDirectoNormal.java</url>
+            <bookmark id="63">
+                <name/>
+                <line>216</line>
+                <key/>
+            </bookmark>
+            <bookmark id="65">
+                <name/>
+                <line>353</line>
+                <key/>
+            </bookmark>
+        </file>
+        <file>
             <url>src/capipsistema/PagoDirectoNormal.java</url>
             <bookmark id="35">
                 <name/>
@@ -205,14 +218,6 @@
             <bookmark id="2">
                 <name/>
                 <line>3761</line>
-                <key/>
-            </bookmark>
-        </file>
-        <file>
-            <url>src/capipsistema/TraspPartReport.java</url>
-            <bookmark id="38">
-                <name/>
-                <line>884</line>
                 <key/>
             </bookmark>
         </file>
@@ -241,6 +246,14 @@
             <bookmark id="27">
                 <name/>
                 <line>1725</line>
+                <key/>
+            </bookmark>
+        </file>
+        <file>
+            <url>src/capipsistema/TraspPartReport.java</url>
+            <bookmark id="38">
+                <name/>
+                <line>884</line>
                 <key/>
             </bookmark>
         </file>
@@ -283,14 +296,6 @@
             <file>file:/C:/Users/Baba/Documents/NetBeansProjects/CAPIP/src/presupuesto/PptoEjecucionMonthReport.java</file>
             <file>file:/C:/Users/Baba/Documents/NetBeansProjects/CAPIP/src/reportes/ReporteSel.java</file>
         </group>
-        <group>
-            <file>file:/home/manager/NetBeansProjects/PedroRivero/CANAIMA-SGG%20CON%20REQUERIMIENTO/src/configuracion/ConfigUser.java</file>
-            <file>file:/home/manager/NetBeansProjects/PedroRivero/CANAIMA-SGG%20CON%20REQUERIMIENTO/src/capip_configurador/FrmConfing.java</file>
-            <file>file:/home/manager/NetBeansProjects/PedroRivero/CANAIMA-SGG%20CON%20REQUERIMIENTO/src/capipsistema/Conn.java</file>
-            <file>file:/home/manager/NetBeansProjects/PedroRivero/CANAIMA-SGG%20CON%20REQUERIMIENTO/src/configuracion/Configuracion.java</file>
-            <file>file:/home/manager/NetBeansProjects/PedroRivero/CANAIMA-SGG%20CON%20REQUERIMIENTO/src/bancos/BancosChequeAvanceCambiar.java</file>
-            <file>file:/home/manager/NetBeansProjects/PedroRivero/CANAIMA-SGG%20CON%20REQUERIMIENTO/src/capip_configurador/DlgAcercaDe.java</file>
-            <file>file:/home/manager/NetBeansProjects/PedroRivero/CANAIMA-SGG%20CON%20REQUERIMIENTO/src/test/SimpleTest.java</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>
