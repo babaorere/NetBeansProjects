@@ -17,12 +17,12 @@ public class DepartamentService {
     @Autowired
     private DepartamentRepository departamentRepository;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<DepartamentEntity> findAllDepartaments() {
         return departamentRepository.findAll();
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Optional<DepartamentEntity> findDepartamentById(Long id) {
         return departamentRepository.findById(id);
     }

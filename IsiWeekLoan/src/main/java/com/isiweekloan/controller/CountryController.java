@@ -1,9 +1,8 @@
 package com.isiweekloan.controller;
 
 import com.isiweekloan.entity.CountryEntity;
-import com.isiweekloan.security.service.CountryService;
+import com.isiweekloan.service.CountryService;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
 import java.util.List;
 import org.slf4j.Logger;
@@ -11,21 +10,22 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/countries")
-public class CountryRestController {
+public class CountryController {
 
-    private final Logger LOGGER = LoggerFactory.getLogger(CountryRestController.class);
+    private final Logger LOGGER = LoggerFactory.getLogger(CountryController.class);
 
     @Autowired
     private CountryService countryService;
 
     @PostMapping
-    public ResponseEntity<CountryEntity> createCountry(@Valid @RequestBody CountryEntity country) {
+    public ResponseEntity<CountryEntity> createCountry(@Validated @RequestBody CountryEntity country) {
         try {
-            return new ResponseEntity<>(countryService.saveCountry(country), HttpStatus.CREATED);
+            return new ResponseEntity<>(countryService.createCountry(country), HttpStatus.CREATED);
         } catch (ValidationException e) {
             LOGGER.error("Validation error while creating country: {}", e.getMessage());
             return ResponseEntity.badRequest().build();
@@ -38,7 +38,7 @@ public class CountryRestController {
     @GetMapping("/{id}")
     public ResponseEntity<CountryEntity> getCountryById(@PathVariable Long id) {
         try {
-            CountryEntity country = countryService.findById(id);
+            CountryEntity country = countryService.getCountryById(id);
             if (country == null) {
                 return ResponseEntity.notFound().build();
             }
@@ -52,7 +52,7 @@ public class CountryRestController {
     @GetMapping
     public ResponseEntity<List<CountryEntity>> getAllCountries() {
         try {
-            List<CountryEntity> countries = countryService.findAllCountries();
+            List<CountryEntity> countries = countryService.getAllCountries();
             if (countries.isEmpty()) {
                 return ResponseEntity.noContent().build();
             }
@@ -64,10 +64,10 @@ public class CountryRestController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CountryEntity> updateCountry(@PathVariable Long id, @Valid @RequestBody CountryEntity country) {
+    public ResponseEntity<CountryEntity> updateCountry(@PathVariable Long id, @Validated @RequestBody CountryEntity country) {
         try {
             country.setId(id);
-            return new ResponseEntity<>(countryService.updateCountry(country), HttpStatus.OK);
+            return new ResponseEntity<>(countryService.updateCountry(id, country), HttpStatus.OK);
         } catch (ValidationException e) {
             LOGGER.error("Validation error while updating country: {}", e.getMessage());
             return ResponseEntity.badRequest().build();

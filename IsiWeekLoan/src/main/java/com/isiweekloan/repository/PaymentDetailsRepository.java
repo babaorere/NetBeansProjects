@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PaymentDatailsRepository extends JpaRepository<PaymentDatailsEntity, Long> {
+public interface PaymentDetailsRepository extends JpaRepository<PaymentDatailsEntity, Long> {
 
     // Optional method to find by payment date
     Optional<PaymentDatailsEntity> findByPaymentDate(Date paymentDate);

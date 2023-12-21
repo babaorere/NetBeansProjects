@@ -8,11 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import jakarta.ws.rs.BadRequestException;
+import com.isiweekloan.exception.BadRequestException;
 
-import jakarta.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/customers")
@@ -41,14 +39,14 @@ public class CustomerController {
     }
 
     @PostMapping
-    public ResponseEntity<CustomerEntity> createCustomer(@Valid @RequestBody CustomerEntity customer) throws com.isiweekloan.exception.BadRequestException {
+    public ResponseEntity<CustomerEntity> createCustomer(@Validated @RequestBody CustomerEntity customer) throws com.isiweekloan.exception.BadRequestException {
         validateRequiredFields(customer);
         CustomerEntity createdCustomer = customerService.createCustomer(customer);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdCustomer);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CustomerEntity> updateCustomer(@PathVariable Long id, @Valid @RequestBody CustomerEntity customer) throws com.isiweekloan.exception.BadRequestException, ResourceNotFoundException {
+    public ResponseEntity<CustomerEntity> updateCustomer(@PathVariable Long id, @Validated @RequestBody CustomerEntity customer) throws com.isiweekloan.exception.BadRequestException, ResourceNotFoundException {
         if (!customer.getId().equals(id)) {
             throw new BadRequestException("ID in request body does not match ID in path variable.");
         }
@@ -76,7 +74,7 @@ public class CustomerController {
         return ResponseEntity.notFound().build();
     }
 
-    private void validateRequiredFields(CustomerEntity customer) {
+    private void validateRequiredFields(CustomerEntity customer) throws BadRequestException {
 
         if (customer.getCreditScore() == null) {
             throw new BadRequestException("The credit score field is required.");

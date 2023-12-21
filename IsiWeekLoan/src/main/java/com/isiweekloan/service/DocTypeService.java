@@ -5,7 +5,6 @@ import com.isiweekloan.exception.BadRequestException;
 import com.isiweekloan.exception.ResourceNotFoundException;
 import com.isiweekloan.repository.DocTypeRepository;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -18,12 +17,12 @@ public class DocTypeService {
     @Autowired
     private DocTypeRepository docTypeRepository;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<DocTypeEntity> findAllDocTypes() {
         return docTypeRepository.findAll();
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Optional<DocTypeEntity> findDocTypeById(Long id) {
         return docTypeRepository.findById(id);
     }
@@ -40,7 +39,7 @@ public class DocTypeService {
 
     @Transactional
     public DocTypeEntity updateDocType(Long id, DocTypeEntity docType) throws ResourceNotFoundException, BadRequestException {
-        if (!Objects.equals(docType.getId(), id)) {
+        if (docType.getId() != id) {
             throw new BadRequestException("ID in request body does not match ID in path variable.");
         }
         validateRequiredFields(docType);

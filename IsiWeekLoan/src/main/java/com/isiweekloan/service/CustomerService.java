@@ -4,11 +4,11 @@ import com.isiweekloan.entity.CustomerEntity;
 import com.isiweekloan.exception.BadRequestException;
 import com.isiweekloan.exception.ResourceNotFoundException;
 import com.isiweekloan.repository.CustomerRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CustomerService {
@@ -16,10 +16,12 @@ public class CustomerService {
     @Autowired
     private CustomerRepository customerRepository;
 
+    @Transactional(readOnly = true)
     public List<CustomerEntity> findAllCustomers() {
         return customerRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public CustomerEntity findCustomerById(Long id) throws ResourceNotFoundException {
         Optional<CustomerEntity> customer = customerRepository.findById(id);
         if (!customer.isPresent()) {
@@ -28,11 +30,13 @@ public class CustomerService {
         return customer.get();
     }
 
+    @Transactional
     public CustomerEntity createCustomer(CustomerEntity customer) throws BadRequestException {
         validateRequiredFields(customer);
         return customerRepository.save(customer);
     }
 
+    @Transactional
     public CustomerEntity updateCustomer(Long id, CustomerEntity customer) throws BadRequestException, ResourceNotFoundException {
 
         if (!customer.getId().equals(id)) {
@@ -54,6 +58,7 @@ public class CustomerService {
         return customerRepository.save(existingCustomer.get());
     }
 
+    @Transactional
     public void deleteCustomer(Long id) throws ResourceNotFoundException {
 
         Optional<CustomerEntity> customer = customerRepository.findById(id);

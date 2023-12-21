@@ -4,12 +4,12 @@ import com.isiweekloan.entity.DepartamentEntity;
 import com.isiweekloan.exception.BadRequestException;
 import com.isiweekloan.exception.ResourceNotFoundException;
 import com.isiweekloan.service.DepartamentService;
-import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -49,14 +49,14 @@ public class DepartamentController {
     }
 
     @PostMapping
-    public ResponseEntity<DepartamentEntity> createDepartament(@Valid @RequestBody DepartamentEntity departament) throws BadRequestException {
+    public ResponseEntity<DepartamentEntity> createDepartament(@Validated @RequestBody DepartamentEntity departament) throws BadRequestException {
         validateRequiredFields(departament);
         DepartamentEntity createdDepartament = departamentService.createDepartament(departament);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdDepartament);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DepartamentEntity> updateDepartament(@PathVariable Long id, @Valid @RequestBody DepartamentEntity departament) throws BadRequestException, ResourceNotFoundException {
+    public ResponseEntity<DepartamentEntity> updateDepartament(@PathVariable Long id, @Validated @RequestBody DepartamentEntity departament) throws BadRequestException, ResourceNotFoundException {
         if (!departament.getId().equals(id)) {
             throw new BadRequestException("ID in request body does not match ID in path variable.");
         }
