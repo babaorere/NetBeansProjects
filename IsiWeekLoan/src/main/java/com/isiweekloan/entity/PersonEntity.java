@@ -34,7 +34,6 @@ public class PersonEntity {
     @Column(name = "photo", nullable = true)
     private String photo; // Include a profile picture field if needed.    
 
-
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "person", fetch = FetchType.LAZY)
     private List<LoanCollectorEntity> loanCollectorEntityCollection;
 
@@ -53,6 +52,10 @@ public class PersonEntity {
     @JoinColumn(name = "country", referencedColumnName = "id")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private CountryEntity country;
+
+    @JoinColumn(name = "company", referencedColumnName = "id")
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    private CompanyEntity company;
 
     @JoinColumn(name = "criminal_record", referencedColumnName = "id")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)

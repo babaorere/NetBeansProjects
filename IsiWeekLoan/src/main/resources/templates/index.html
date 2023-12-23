@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <style>
         /* Estilos adicionales personalizados */
         body {
@@ -27,38 +28,66 @@
             max-width: 100%;
             height: auto;
         }
+
+        .centered-image {
+            text-align: center;
+            vertical-align: middle;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+            margin: 0;
+        }
+
     </style>
     <title>Landing Page - Admin. de Préstamos</title>
 </head>
 <body>
 
 <!-- Barra de navegación -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-    <a class="navbar-brand" href="#">Tu Logo</a>
-    <!-- Agregar otros elementos de la barra de navegación según sea necesario -->
-</nav>
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid align-self-center">
+        <a class="navbar-brand" href="#">
+            <img src="/isiweekloanservices/img/logo64x64.png" alt="Logo" class="d-inline-block align-text-top">
+        </a>
 
-<!-- Sección de Administración de Préstamos -->
-<section class="loan-management-section text-center">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12">
-                <h2 class="section-title">Administración de Préstamos</h2>
-                <p class="section-subtitle">Simplifica el proceso de gestión de préstamos con nuestra plataforma.</p>
-            </div>
-        </div>
-        <div class="row mt-5">
-            <div class="col-lg-6">
-                <img src="link_a_tu_imagen1.jpg" alt="Imagen 1" class="loan-management-image">
-            </div>
-            <div class="col-lg-6">
-                <img src="link_a_tu_imagen2.jpg" alt="Imagen 2" class="loan-management-image">
-            </div>
-        </div>
-        <!-- Agregar más contenido según sea necesario -->
-    </div>
-</section>
+        <a class="navbar-brand" href="#">ISIWEEK Loan Services</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-nowrap" href="#">Central</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-nowrap" href="#">Agente-Financiero</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-nowrap" href="#">Cliente</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Contacto</a>
+                <li class="nav-item">
+                    <a class="nav-link text-nowrap" href="#">Acerca de</a>
+                </li>
+            </ul>
 
+            <form class="container-fluid justify-content-end">
+                <button class="btn btn-outline-success me-2" type="button">Login</button>
+                <button class="btn btn-sm btn-outline-secondary" type="button">Registro</button>
+            </form>
+
+        </div> <!-- <div class="collapse navbar-collapse" id="navbarNav"> -->
+    </div> <!-- B<div class="container-fluid"> -->
+</nav> <!-- Barra de navegación -->
+
+<div class="centered-image ">
+    <img src="/isiweekloanservices/img/logo128x128.png" alt="Logo" class="d-inline-block align-text-top">
+</div>
 <!-- Agregar más secciones según sea necesario -->
 
 <!-- Pie de página -->
@@ -70,6 +99,7 @@
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 
 </body>
 </html>
