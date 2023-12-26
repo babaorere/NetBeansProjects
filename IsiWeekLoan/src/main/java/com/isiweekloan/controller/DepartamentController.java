@@ -1,87 +1,79 @@
 package com.isiweekloan.controller;
 
+import com.isiweekloan.dto.DepartamentDto;
 import com.isiweekloan.entity.DepartamentEntity;
-import com.isiweekloan.exception.BadRequestException;
 import com.isiweekloan.exception.ResourceNotFoundException;
+import com.isiweekloan.mapper.DepartamentMapper;
 import com.isiweekloan.service.DepartamentService;
-import java.util.List;
-import java.util.Optional;
-import org.springframework.beans.factory.annotation.Autowired;
+import io.swagger.annotations.Api;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+@RequestMapping("/departament")
 @RestController
-@RequestMapping("/api/v1/departments")
+@Slf4j
+@Api("departament")
 public class DepartamentController {
+    private final DepartamentService departamentService;
 
-    @Autowired
-    private DepartamentService departamentService;
-
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<String> handleResourceNotFoundException(ResourceNotFoundException e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-    }
-
-    @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<String> handleBadRequestException(BadRequestException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-    }
-
-    @GetMapping
-    public ResponseEntity<List<DepartamentEntity>> getDepartaments() {
-        List<DepartamentEntity> departaments = departamentService.findAllDepartaments();
-        if (departaments.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(departaments);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<DepartamentEntity> getDepartamentById(@PathVariable Long id) throws ResourceNotFoundException {
-        Optional<DepartamentEntity> departament = departamentService.findDepartamentById(id);
-        if (!departament.isPresent()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok(departament.get());
+    public DepartamentController(DepartamentService departamentService) {
+        this.departamentService = departamentService;
     }
 
     @PostMapping
-    public ResponseEntity<DepartamentEntity> createDepartament(@Validated @RequestBody DepartamentEntity departament) throws BadRequestException {
-        validateRequiredFields(departament);
-        DepartamentEntity createdDepartament = departamentService.createDepartament(departament);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdDepartament);
+    public ResponseEntity<Void> save(@RequestBody @Validated DepartamentDto departamentDto) {
+        departamentService.save(departamentDto);
+        return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<DepartamentEntity> updateDepartament(@PathVariable Long id, @Validated @RequestBody DepartamentEntity departament) throws BadRequestException, ResourceNotFoundException {
-        if (!departament.getId().equals(id)) {
-            throw new BadRequestException("ID in request body does not match ID in path variable.");
-        }
-        validateRequiredFields(departament);
-        Optional<DepartamentEntity> existingDepartament = departamentService.findDepartamentById(id);
-        if (!existingDepartament.isPresent()) {
-            throw new ResourceNotFoundException("Departament with ID " + id + " not found.");
-        }
-        existingDepartament.get().setName(departament.getName());
-        existingDepartament.get().setDescription(departament.getDescription());
-        return ResponseEntity.ok(departamentService.updateDepartament(id, existingDepartament.get()));
+    @GetMapping("/{id}")
+    public ResponseEntity<DepartamentDto> findById(@PathVariable("id") Long id) {
+        DepartamentDto departament = departamentService.findById(id);
+        return ResponseEntity.ok(departament);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDepartament(@PathVariable Long id) throws ResourceNotFoundException {
-        departamentService.deleteDepartament(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
+        try {
+            DepartamentDto departamentDto = Optional.ofNullable(departamentService.findById(id))
+                    .orElseThrow(() -> {
+                        log.error("Unable to delete non-existent data with ID {}", id);
+                        return new ResourceNotFoundException("Unable to delete non-existent data with ID " + id);
+                    });
+
+            departamentService.deleteById(id);
+            log.info("Data with ID {} deleted successfully", id);
+
+            return ResponseEntity.ok().build();
+
+        } catch (Exception e) {
+            log.error("Error deleting data with ID {}: {}", id, e.getMessage());
+            // Puedes lanzar una excepción diferente o manejarla de otra manera según tus requisitos.
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
-    private void validateRequiredFields(DepartamentEntity departament) throws BadRequestException {
-        if (departament.getName() == null || departament.getName().isEmpty()) {
-            throw new BadRequestException("The name field is required.");
-        }
-        if (departament.getDescription() == null || departament.getDescription().isEmpty()) {
-            throw new BadRequestException("The description field is required.");
-        }
+    @GetMapping("/page-query")
+    public ResponseEntity<Page<DepartamentDto>> pageQuery(DepartamentDto departamentDto, @PageableDefault(sort = "createAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<DepartamentDto> departamentPage = departamentService.findByCondition(departamentDto, pageable);
+        return ResponseEntity.ok(departamentPage);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> update(@RequestBody @Validated DepartamentDto departamentDto, @PathVariable("id") Long id) {
+        departamentService.update(departamentDto, id);
+        return ResponseEntity.ok().build();
     }
 }

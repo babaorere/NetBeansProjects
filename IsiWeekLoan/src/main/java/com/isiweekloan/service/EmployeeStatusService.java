@@ -1,101 +1,63 @@
 package com.isiweekloan.service;
 
+import com.isiweekloan.dto.EmployeeStatusDto;
+import com.isiweekloan.entity.EmployeeEntity;
 import com.isiweekloan.entity.EmployeeStatusEntity;
+import com.isiweekloan.exception.ResourceNotFoundException;
+import com.isiweekloan.mapper.EmployeeStatusMapper;
 import com.isiweekloan.repository.EmployeeStatusRepository;
-import java.util.List;
-import java.util.Optional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+
+@Slf4j
 @Service
 @Transactional
 public class EmployeeStatusService {
+    private final EmployeeStatusRepository repository;
+    private final EmployeeStatusMapper employeeStatusMapper;
 
-    private final EmployeeStatusRepository employeeStatusRepository;
-
-    @Autowired
-    public EmployeeStatusService(EmployeeStatusRepository employeeStatusRepository) {
-        this.employeeStatusRepository = employeeStatusRepository;
+    public EmployeeStatusService(EmployeeStatusRepository repository, EmployeeStatusMapper employeeStatusMapper) {
+        this.repository = repository;
+        this.employeeStatusMapper = employeeStatusMapper;
     }
 
-    /**
-     * Retrieves all EmployeeStatus entities.
-     *
-     * @return List of EmployeeStatusEntity
-     */
-    @Transactional(readOnly = true)
-    public List<EmployeeStatusEntity> getAllEmployeeStatus() {
-        return employeeStatusRepository.findAll();
+    public EmployeeStatusDto save(EmployeeStatusDto employeeStatusDto) {
+        EmployeeStatusEntity entity = employeeStatusMapper.toEntity(employeeStatusDto);
+        return employeeStatusMapper.toDto(repository.save(entity));
     }
 
-    /**
-     * Retrieves an EmployeeStatus entity by its ID.
-     *
-     * @param id EmployeeStatus ID
-     * @return ResponseEntity with EmployeeStatusEntity if found, or 404 Not Found if not found
-     */
-    @Transactional(readOnly = true)
-    public ResponseEntity<EmployeeStatusEntity> getEmployeeStatusById(Long id) {
-        Optional<EmployeeStatusEntity> optionalEmployeeStatus = employeeStatusRepository.findById(id);
-        return optionalEmployeeStatus.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public void deleteById(Long id) {
+        repository.deleteById(id);
     }
 
-    /**
-     * Creates a new EmployeeStatus entity.
-     *
-     * @param employeeStatusEntity EmployeeStatusEntity to be created
-     * @return ResponseEntity with created EmployeeStatusEntity
-     */
-    @Transactional
-    public ResponseEntity<EmployeeStatusEntity> createEmployeeStatus(EmployeeStatusEntity employeeStatusEntity) {
-        validateEmployeeStatus(employeeStatusEntity);
-        EmployeeStatusEntity createdEmployeeStatus = employeeStatusRepository.save(employeeStatusEntity);
-        return ResponseEntity.status(201).body(createdEmployeeStatus);
-    }
-
-    /**
-     * Updates an existing EmployeeStatus entity by its ID.
-     *
-     * @param id EmployeeStatus ID
-     * @param employeeStatusEntity Updated EmployeeStatusEntity
-     * @return ResponseEntity with updated EmployeeStatusEntity if found, or 404 Not Found if not found
-     */
-    @Transactional
-    public ResponseEntity<EmployeeStatusEntity> updateEmployeeStatus(Long id, EmployeeStatusEntity employeeStatusEntity) {
-        Optional<EmployeeStatusEntity> optionalExistingEmployeeStatus = employeeStatusRepository.findById(id);
-
-        return optionalExistingEmployeeStatus.map(existingEmployeeStatus -> {
-            validateEmployeeStatus(employeeStatusEntity);
-            // Update fields if needed
-            existingEmployeeStatus.setName(employeeStatusEntity.getName());
-            existingEmployeeStatus.setDescription(employeeStatusEntity.getDescription());
-            return ResponseEntity.ok(employeeStatusRepository.save(existingEmployeeStatus));
-        }).orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    /**
-     * Deletes an EmployeeStatus entity by its ID.
-     *
-     * @param id EmployeeStatus ID
-     * @return ResponseEntity with no content if deleted successfully, or 404 Not Found if not found
-     */
-    @Transactional
-    public ResponseEntity<Void> deleteEmployeeStatus(Long id) {
-        if (employeeStatusRepository.existsById(id)) {
-            employeeStatusRepository.deleteById(id);
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
+    public EmployeeStatusDto findById(Long id) {
+        try {
+            return employeeStatusMapper.toDto(repository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Could not find")));
+        } catch (Exception e) {
+            return null;
         }
     }
 
-    private void validateEmployeeStatus(EmployeeStatusEntity employeeStatusEntity) {
-        if (employeeStatusEntity.getName() == null || employeeStatusEntity.getDescription() == null) {
-            throw new IllegalArgumentException("Required attributes cannot be null");
-        }
+    public Page<EmployeeStatusDto> findByCondition(EmployeeStatusDto employeeStatusDto, Pageable pageable) {
+        Page<EmployeeStatusEntity> entityPage = repository.findAll(pageable);
+        List<EmployeeStatusEntity> entities = entityPage.getContent();
+        return new PageImpl<>(employeeStatusMapper.toDto(entities), pageable, entityPage.getTotalElements());
+    }
 
-        // Additional validation if needed
+    public EmployeeStatusDto update(EmployeeStatusDto employeeStatusDto, Long id) {
+        EmployeeStatusDto data = findById(id);
+        EmployeeStatusEntity entity = employeeStatusMapper.toEntity(employeeStatusDto);
+        BeanUtils.copyProperties(data, entity);
+        return save(employeeStatusMapper.toDto(entity));
     }
 }

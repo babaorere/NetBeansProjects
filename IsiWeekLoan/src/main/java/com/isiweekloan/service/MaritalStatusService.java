@@ -1,71 +1,63 @@
 package com.isiweekloan.service;
 
+import com.isiweekloan.dto.MaritalStatusDto;
 import com.isiweekloan.entity.MaritalStatusEntity;
+import com.isiweekloan.entity.PersonEntity;
+import com.isiweekloan.exception.ResourceNotFoundException;
+import com.isiweekloan.mapper.MaritalStatusMapper;
 import com.isiweekloan.repository.MaritalStatusRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
+@Slf4j
 @Service
+@Transactional
 public class MaritalStatusService {
+    private final MaritalStatusRepository repository;
+    private final MaritalStatusMapper maritalStatusMapper;
 
-    private final MaritalStatusRepository maritalStatusRepository;
-
-    @Autowired
-    public MaritalStatusService(MaritalStatusRepository maritalStatusRepository) {
-        this.maritalStatusRepository = maritalStatusRepository;
+    public MaritalStatusService(MaritalStatusRepository repository, MaritalStatusMapper maritalStatusMapper) {
+        this.repository = repository;
+        this.maritalStatusMapper = maritalStatusMapper;
     }
 
-    @Transactional(readOnly = true)
-    public List<MaritalStatusEntity> getAllMaritalStatuses() {
-        return maritalStatusRepository.findAll();
+    public MaritalStatusDto save(MaritalStatusDto maritalStatusDto) {
+        MaritalStatusEntity entity = maritalStatusMapper.toEntity(maritalStatusDto);
+        return maritalStatusMapper.toDto(repository.save(entity));
     }
 
-    @Transactional(readOnly = true)
-    public Optional<MaritalStatusEntity> getMaritalStatusById(Long id) {
-        return maritalStatusRepository.findById(id);
+    public void deleteById(Long id) {
+        repository.deleteById(id);
     }
 
-    @Transactional
-    public MaritalStatusEntity createMaritalStatus(MaritalStatusEntity maritalStatusEntity) {
-        validateMaritalStatus(maritalStatusEntity);
-        return maritalStatusRepository.save(maritalStatusEntity);
-    }
-
-    @Transactional
-    public Optional<MaritalStatusEntity> updateMaritalStatus(Long id, MaritalStatusEntity maritalStatusEntity) {
-        Objects.requireNonNull(id, "Marital Status ID cannot be null");
-        validateMaritalStatus(maritalStatusEntity);
-
-        return maritalStatusRepository.findById(id)
-                .map(existingMaritalStatus -> {
-                    // Update fields as needed
-                    existingMaritalStatus.setName(maritalStatusEntity.getName());
-                    existingMaritalStatus.setDescription(maritalStatusEntity.getDescription());
-                    // Update other fields similarly
-
-                    return maritalStatusRepository.save(existingMaritalStatus);
-                });
-    }
-
-    @Transactional
-    public boolean deleteMaritalStatus(Long id) {
-        Objects.requireNonNull(id, "Marital Status ID cannot be null");
-
-        if (maritalStatusRepository.existsById(id)) {
-            maritalStatusRepository.deleteById(id);
-            return true;
-        } else {
-            return false;
+    public MaritalStatusDto findById(Long id) {
+        try {
+            return maritalStatusMapper.toDto(repository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Could not find")));
+        } catch (Exception e) {
+            return null;
         }
     }
 
-    private void validateMaritalStatus(MaritalStatusEntity maritalStatusEntity) {
-        // Implement validation logic based on your requirements
-        // For example, check for null values, required attributes, etc.
+    public Page<MaritalStatusDto> findByCondition(MaritalStatusDto maritalStatusDto, Pageable pageable) {
+        Page<MaritalStatusEntity> entityPage = repository.findAll(pageable);
+        List<MaritalStatusEntity> entities = entityPage.getContent();
+        return new PageImpl<>(maritalStatusMapper.toDto(entities), pageable, entityPage.getTotalElements());
+    }
+
+    public MaritalStatusDto update(MaritalStatusDto maritalStatusDto, Long id) {
+        MaritalStatusDto data = findById(id);
+        MaritalStatusEntity entity = maritalStatusMapper.toEntity(maritalStatusDto);
+        BeanUtils.copyProperties(data, entity);
+        return save(maritalStatusMapper.toDto(entity));
     }
 }

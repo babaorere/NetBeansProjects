@@ -1,73 +1,63 @@
 package com.isiweekloan.service;
 
+import com.isiweekloan.dto.CriminalRecordDto;
+import com.isiweekloan.entity.PersonEntity;
 import com.isiweekloan.entity.CriminalRecordEntity;
 import com.isiweekloan.exception.ResourceNotFoundException;
+import com.isiweekloan.mapper.CriminalRecordMapper;
 import com.isiweekloan.repository.CriminalRecordRepository;
-import com.isiweekloan.exception.BadRequestException;
-import java.util.List;
-import java.util.Optional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+
+@Slf4j
 @Service
+@Transactional
 public class CriminalRecordService {
+    private final CriminalRecordRepository repository;
+    private final CriminalRecordMapper criminalRecordMapper;
 
-    @Autowired
-    private CriminalRecordRepository criminalRecordRepository;
-
-    public List<CriminalRecordEntity> findAllCriminalRecords() {
-        return criminalRecordRepository.findAll();
+    public CriminalRecordService(CriminalRecordRepository repository, CriminalRecordMapper criminalRecordMapper) {
+        this.repository = repository;
+        this.criminalRecordMapper = criminalRecordMapper;
     }
 
-    @Transactional(readOnly = true)
-    public CriminalRecordEntity findCriminalRecordById(Long id) throws ResourceNotFoundException {
-        Optional<CriminalRecordEntity> criminalRecord = criminalRecordRepository.findById(id);
-        if (!criminalRecord.isPresent()) {
-            throw new ResourceNotFoundException("Criminal record with ID " + id + " not found.");
-        }
-        return criminalRecord.get();
+    public CriminalRecordDto save(CriminalRecordDto criminalRecordDto) {
+        CriminalRecordEntity entity = criminalRecordMapper.toEntity(criminalRecordDto);
+        return criminalRecordMapper.toDto(repository.save(entity));
     }
 
-    @Transactional
-    public CriminalRecordEntity createCriminalRecord(CriminalRecordEntity criminalRecord) throws BadRequestException {
-        validateRequiredFields(criminalRecord);
-        return criminalRecordRepository.save(criminalRecord);
+    public void deleteById(Long id) {
+        repository.deleteById(id);
     }
 
-    @Transactional
-    public CriminalRecordEntity updateCriminalRecord(Long id, CriminalRecordEntity criminalRecord) throws ResourceNotFoundException, BadRequestException {
-        if (!criminalRecord.getId().equals(id)) {
-            throw new BadRequestException("ID in request body does not match ID in path variable.");
+    public CriminalRecordDto findById(Long id) {
+        try {
+            return criminalRecordMapper.toDto(repository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Could not find")));
+        } catch (Exception e) {
+            return null;
         }
-        validateRequiredFields(criminalRecord);
-        Optional<CriminalRecordEntity> existingRecord = criminalRecordRepository.findById(id);
-        if (!existingRecord.isPresent()) {
-            throw new ResourceNotFoundException("Criminal record with ID " + id + " not found.");
-        }
-
-        existingRecord.get().setName(criminalRecord.getName());
-        existingRecord.get().setDescription(criminalRecord.getDescription());
-        return criminalRecordRepository.save(existingRecord.get());
     }
 
-    @Transactional
-    public void deleteCriminalRecord(Long id) throws ResourceNotFoundException {
-        Optional<CriminalRecordEntity> criminalRecord = criminalRecordRepository.findById(id);
-        if (!criminalRecord.isPresent()) {
-            throw new ResourceNotFoundException("Criminal record with ID " + id + " not found.");
-        }
-        criminalRecordRepository.delete(criminalRecord.get());
+    public Page<CriminalRecordDto> findByCondition(CriminalRecordDto criminalRecordDto, Pageable pageable) {
+        Page<CriminalRecordEntity> entityPage = repository.findAll(pageable);
+        List<CriminalRecordEntity> entities = entityPage.getContent();
+        return new PageImpl<>(criminalRecordMapper.toDto(entities), pageable, entityPage.getTotalElements());
     }
 
-    private void validateRequiredFields(CriminalRecordEntity criminalRecord) throws BadRequestException {
-
-        if (criminalRecord.getName() == null || criminalRecord.getName().isEmpty()) {
-            throw new BadRequestException("The name field is required.");
-        }
-
-        if (criminalRecord.getDescription() == null || criminalRecord.getDescription().isEmpty()) {
-            throw new BadRequestException("The description field is required.");
-        }
+    public CriminalRecordDto update(CriminalRecordDto criminalRecordDto, Long id) {
+        CriminalRecordDto data = findById(id);
+        CriminalRecordEntity entity = criminalRecordMapper.toEntity(criminalRecordDto);
+        BeanUtils.copyProperties(data, entity);
+        return save(criminalRecordMapper.toDto(entity));
     }
 }

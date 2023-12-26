@@ -20,7 +20,7 @@ import lombok.Setter;
 @Table(name = "company", schema = "isiweekloanservices", catalog = "")
 public class CompanyEntity {
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idCompany", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "company", fetch = FetchType.LAZY)
     private Collection<PersonEntity> personEntityCollection;
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,7 +36,7 @@ public class CompanyEntity {
     @NotBlank(message = "Tax Identification Number cannot be empty.")
     @Size(max = 32, message = "Tax Identification Number cannot exceed 32 characters.")
     @Column(name = "taxidnumber", nullable = false, length = 32)
-    private String taxidnumber;
+    private String taxidNumber;
 
     @NotBlank(message = "Company description cannot be empty.")
     @Size(max = 512, message = "Company description cannot exceed 512 characters.")
@@ -49,22 +49,22 @@ public class CompanyEntity {
     private String address;
 
     @NotBlank(message = "Phone1 cannot be empty.")
-    @Size(max = 20, message = "Phone1 cannot exceed 20 characters.")
-    @Column(name = "address", nullable = false, length = 20)
+    @Size(max = 32, message = "Phone1 cannot exceed 32 characters.")
+    @Column(name = "phone1", nullable = false, length = 32)
     private String phone1;
 
-    @Size(max = 20, message = "Phone2 cannot exceed 20 characters.")
-    @Column(name = "address", nullable = true, length = 20)
+    @Size(max = 32, message = "Phone2 cannot exceed 32 characters.")
+    @Column(name = "phone2", nullable = true, length = 32)
     private String phone2;
 
     @NotBlank(message = "Email cannot be empty.")
     @Size(max = 32, message = "Email cannot exceed 32 characters.")
-    @Column(name = "address", nullable = false, length = 32)
+    @Column(name = "email", nullable = false, length = 32)
     private String email;
 
     @NotBlank(message = "Primary Contact cannot be empty.")
-    @Size(max = 128, message = "Primary Contact cannot exceed 128 characters.")
-    @Column(name = "primary_contact", nullable = false, length = 128)
+    @Size(max = 256, message = "Primary Contact cannot exceed 256 characters.")
+    @Column(name = "primary_contact", nullable = false, length = 256)
     private String primaryContact;
 
     @Override

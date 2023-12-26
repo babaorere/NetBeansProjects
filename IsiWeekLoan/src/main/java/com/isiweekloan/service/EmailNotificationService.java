@@ -1,102 +1,62 @@
 package com.isiweekloan.service;
 
+import com.isiweekloan.dto.EmailNotificationDto;
 import com.isiweekloan.entity.EmailNotificationEntity;
+import com.isiweekloan.exception.ResourceNotFoundException;
+import com.isiweekloan.mapper.EmailNotificationMapper;
 import com.isiweekloan.repository.EmailNotificationRepository;
-import java.util.List;
-import java.util.Optional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Date;
+import java.util.List;
+import java.util.Optional;
+
+@Slf4j
 @Service
 @Transactional
 public class EmailNotificationService {
+    private final EmailNotificationRepository repository;
+    private final EmailNotificationMapper emailNotificationMapper;
 
-    private final EmailNotificationRepository emailNotificationRepository;
-
-    @Autowired
-    public EmailNotificationService(EmailNotificationRepository emailNotificationRepository) {
-        this.emailNotificationRepository = emailNotificationRepository;
+    public EmailNotificationService(EmailNotificationRepository repository, EmailNotificationMapper emailNotificationMapper) {
+        this.repository = repository;
+        this.emailNotificationMapper = emailNotificationMapper;
     }
 
-    /**
-     * Retrieves all EmailNotification entities.
-     *
-     * @return List of EmailNotificationEntity
-     */
-    @Transactional(readOnly = true)
-    public List<EmailNotificationEntity> getAllEmailNotifications() {
-        return emailNotificationRepository.findAll();
+    public EmailNotificationDto save(EmailNotificationDto emailNotificationDto) {
+        EmailNotificationEntity entity = emailNotificationMapper.toEntity(emailNotificationDto);
+        return emailNotificationMapper.toDto(repository.save(entity));
     }
 
-    /**
-     * Retrieves an EmailNotification entity by its ID.
-     *
-     * @param id EmailNotification ID
-     * @return ResponseEntity with EmailNotificationEntity if found, or 404 Not Found if not found
-     */
-    @Transactional(readOnly = true)
-    public ResponseEntity<EmailNotificationEntity> getEmailNotificationById(Long id) {
-        Optional<EmailNotificationEntity> optionalEmailNotification = emailNotificationRepository.findById(id);
-        return optionalEmailNotification.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public void deleteById(Long id) {
+        repository.deleteById(id);
     }
 
-    /**
-     * Creates a new EmailNotification entity.
-     *
-     * @param emailNotificationEntity EmailNotificationEntity to be created
-     * @return ResponseEntity with created EmailNotificationEntity
-     */
-    @Transactional(readOnly = true)
-    public ResponseEntity<EmailNotificationEntity> createEmailNotification(EmailNotificationEntity emailNotificationEntity) {
-        validateEmailNotification(emailNotificationEntity);
-        EmailNotificationEntity createdEmailNotification = emailNotificationRepository.save(emailNotificationEntity);
-        return ResponseEntity.ok(createdEmailNotification);
-    }
-
-    /**
-     * Updates an existing EmailNotification entity by its ID.
-     *
-     * @param id EmailNotification ID
-     * @param emailNotificationEntity Updated EmailNotificationEntity
-     * @return ResponseEntity with updated EmailNotificationEntity if found, or 404 Not Found if not found
-     */
-    @Transactional
-    public ResponseEntity<EmailNotificationEntity> updateEmailNotification(Long id, EmailNotificationEntity emailNotificationEntity) {
-        Optional<EmailNotificationEntity> optionalExistingEmailNotification = emailNotificationRepository.findById(id);
-
-        return optionalExistingEmailNotification.map(existingEmailNotification -> {
-            validateEmailNotification(emailNotificationEntity);
-            // Update fields if needed
-            existingEmailNotification.setSubject(emailNotificationEntity.getSubject());
-            existingEmailNotification.setSentAt(emailNotificationEntity.getSentAt());
-            existingEmailNotification.setBody(emailNotificationEntity.getBody());
-            return ResponseEntity.ok(emailNotificationRepository.save(existingEmailNotification));
-        }).orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    /**
-     * Deletes an EmailNotification entity by its ID.
-     *
-     * @param id EmailNotification ID
-     * @return ResponseEntity with no content if deleted successfully, or 404 Not Found if not found
-     */
-    @Transactional
-    public ResponseEntity<Void> deleteEmailNotification(Long id) {
-        if (emailNotificationRepository.existsById(id)) {
-            emailNotificationRepository.deleteById(id);
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
+    public EmailNotificationDto findById(Long id) {
+        try {
+            return emailNotificationMapper.toDto(repository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Could not find")));
+        } catch(Exception e) {
+            return null;
         }
     }
 
-    private void validateEmailNotification(EmailNotificationEntity emailNotificationEntity) {
-        if (emailNotificationEntity.getSubject() == null || emailNotificationEntity.getSentAt() == null || emailNotificationEntity.getBody() == null) {
-            throw new IllegalArgumentException("Subject, sentAt, and body cannot be null");
-        }
+    public Page<EmailNotificationDto> findByCondition(EmailNotificationDto emailNotificationDto, Pageable pageable) {
+        Page<EmailNotificationEntity> entityPage = repository.findAll(pageable);
+        List<EmailNotificationEntity> entities = entityPage.getContent();
+        return new PageImpl<>(emailNotificationMapper.toDto(entities), pageable, entityPage.getTotalElements());
+    }
 
-        // Additional validation if needed
+    public EmailNotificationDto update(EmailNotificationDto emailNotificationDto, Long id) {
+        EmailNotificationDto data = findById(id);
+        EmailNotificationEntity entity = emailNotificationMapper.toEntity(emailNotificationDto);
+        BeanUtils.copyProperties(data, entity);
+        return save(emailNotificationMapper.toDto(entity));
     }
 }

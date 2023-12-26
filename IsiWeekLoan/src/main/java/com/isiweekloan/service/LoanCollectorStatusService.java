@@ -1,72 +1,63 @@
 package com.isiweekloan.service;
 
+import com.isiweekloan.dto.LoanCollectorStatusDto;
 import com.isiweekloan.entity.LoanCollectorStatusEntity;
+import com.isiweekloan.entity.LoanCollectorEntity;
+import com.isiweekloan.exception.ResourceNotFoundException;
+import com.isiweekloan.mapper.LoanCollectorStatusMapper;
 import com.isiweekloan.repository.LoanCollectorStatusRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
+@Slf4j
 @Service
+@Transactional
 public class LoanCollectorStatusService {
+    private final LoanCollectorStatusRepository repository;
+    private final LoanCollectorStatusMapper loanCollectorStatusMapper;
 
-    private final LoanCollectorStatusRepository loanCollectorStatusRepository;
-
-    @Autowired
-    public LoanCollectorStatusService(LoanCollectorStatusRepository loanCollectorStatusRepository) {
-        this.loanCollectorStatusRepository = loanCollectorStatusRepository;
+    public LoanCollectorStatusService(LoanCollectorStatusRepository repository, LoanCollectorStatusMapper loanCollectorStatusMapper) {
+        this.repository = repository;
+        this.loanCollectorStatusMapper = loanCollectorStatusMapper;
     }
 
-    @Transactional(readOnly = true)
-    public List<LoanCollectorStatusEntity> getAllLoanCollectorStatus() {
-        return loanCollectorStatusRepository.findAll();
+    public LoanCollectorStatusDto save(LoanCollectorStatusDto loanCollectorStatusDto) {
+        LoanCollectorStatusEntity entity = loanCollectorStatusMapper.toEntity(loanCollectorStatusDto);
+        return loanCollectorStatusMapper.toDto(repository.save(entity));
     }
 
-    @Transactional(readOnly = true)
-    public Optional<LoanCollectorStatusEntity> getLoanCollectorStatusById(Long id) {
-        return loanCollectorStatusRepository.findById(id);
+    public void deleteById(Long id) {
+        repository.deleteById(id);
     }
 
-    @Transactional
-    public LoanCollectorStatusEntity createLoanCollectorStatus(LoanCollectorStatusEntity loanCollectorStatusEntity) {
-        validateLoanCollectorStatus(loanCollectorStatusEntity);
-        return loanCollectorStatusRepository.save(loanCollectorStatusEntity);
-    }
-
-    @Transactional
-    public Optional<LoanCollectorStatusEntity> updateLoanCollectorStatus(Long id, LoanCollectorStatusEntity loanCollectorStatusEntity) {
-        Objects.requireNonNull(id, "Loan Collector Status ID cannot be null");
-        validateLoanCollectorStatus(loanCollectorStatusEntity);
-
-        return loanCollectorStatusRepository.findById(id)
-                .map(existingLoanCollectorStatus -> {
-                    // Update fields as needed
-                    existingLoanCollectorStatus.setName(loanCollectorStatusEntity.getName());
-                    existingLoanCollectorStatus.setDescription(loanCollectorStatusEntity.getDescription());
-
-                    return loanCollectorStatusRepository.save(existingLoanCollectorStatus);
-                });
-    }
-
-    @Transactional
-    public boolean deleteLoanCollectorStatus(Long id) {
-        Objects.requireNonNull(id, "Loan Collector Status ID cannot be null");
-
-        if (loanCollectorStatusRepository.existsById(id)) {
-            loanCollectorStatusRepository.deleteById(id);
-            return true;
-        } else {
-            return false;
+    public LoanCollectorStatusDto findById(Long id) {
+        try {
+            return loanCollectorStatusMapper.toDto(repository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Could not find")));
+        } catch (Exception e) {
+            return null;
         }
     }
 
-    private void validateLoanCollectorStatus(LoanCollectorStatusEntity loanCollectorStatusEntity) {
-        Objects.requireNonNull(loanCollectorStatusEntity.getName(), "Name cannot be null");
-        Objects.requireNonNull(loanCollectorStatusEntity.getDescription(), "Description cannot be null");
+    public Page<LoanCollectorStatusDto> findByCondition(LoanCollectorStatusDto loanCollectorStatusDto, Pageable pageable) {
+        Page<LoanCollectorStatusEntity> entityPage = repository.findAll(pageable);
+        List<LoanCollectorStatusEntity> entities = entityPage.getContent();
+        return new PageImpl<>(loanCollectorStatusMapper.toDto(entities), pageable, entityPage.getTotalElements());
+    }
 
-        // Additional validation if needed
+    public LoanCollectorStatusDto update(LoanCollectorStatusDto loanCollectorStatusDto, Long id) {
+        LoanCollectorStatusDto data = findById(id);
+        LoanCollectorStatusEntity entity = loanCollectorStatusMapper.toEntity(loanCollectorStatusDto);
+        BeanUtils.copyProperties(data, entity);
+        return save(loanCollectorStatusMapper.toDto(entity));
     }
 }

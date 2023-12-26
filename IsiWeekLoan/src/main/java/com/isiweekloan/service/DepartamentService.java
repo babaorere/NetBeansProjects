@@ -1,73 +1,63 @@
 package com.isiweekloan.service;
 
+import com.isiweekloan.dto.DepartamentDto;
 import com.isiweekloan.entity.DepartamentEntity;
-import com.isiweekloan.exception.BadRequestException;
+import com.isiweekloan.entity.EmployeeEntity;
 import com.isiweekloan.exception.ResourceNotFoundException;
+import com.isiweekloan.mapper.DepartamentMapper;
 import com.isiweekloan.repository.DepartamentRepository;
-import java.util.List;
-import java.util.Optional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+
+@Slf4j
 @Service
+@Transactional
 public class DepartamentService {
+    private final DepartamentRepository repository;
+    private final DepartamentMapper departamentMapper;
 
-    @Autowired
-    private DepartamentRepository departamentRepository;
-
-    @Transactional(readOnly = true)
-    public List<DepartamentEntity> findAllDepartaments() {
-        return departamentRepository.findAll();
+    public DepartamentService(DepartamentRepository repository, DepartamentMapper departamentMapper) {
+        this.repository = repository;
+        this.departamentMapper = departamentMapper;
     }
 
-    @Transactional(readOnly = true)
-    public Optional<DepartamentEntity> findDepartamentById(Long id) {
-        return departamentRepository.findById(id);
+    public DepartamentDto save(DepartamentDto departamentDto) {
+        DepartamentEntity entity = departamentMapper.toEntity(departamentDto);
+        return departamentMapper.toDto(repository.save(entity));
     }
 
-    @Transactional
-    public DepartamentEntity createDepartament(DepartamentEntity departament) throws BadRequestException {
-        validateRequiredFields(departament);
+    public void deleteById(Long id) {
+        repository.deleteById(id);
+    }
+
+    public DepartamentDto findById(Long id) {
         try {
-            return departamentRepository.save(departament);
-        } catch (DataIntegrityViolationException e) {
-            throw new BadRequestException("Departament with name '" + departament.getName() + "' already exists.");
-        }
+        return departamentMapper.toDto(repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find")));
+    } catch(Exception e) {
+        return null;
+    }
     }
 
-    @Transactional
-    public DepartamentEntity updateDepartament(Long id, DepartamentEntity departament) throws BadRequestException, ResourceNotFoundException {
-        if (departament.getId() != id) {
-            throw new BadRequestException("ID in request body does not match ID in path variable.");
-        }
-        validateRequiredFields(departament);
-        Optional<DepartamentEntity> existingDepartament = departamentRepository.findById(id);
-        if (!existingDepartament.isPresent()) {
-            throw new ResourceNotFoundException("Departament with ID " + id + " not found.");
-        }
-        existingDepartament.get().setName(departament.getName());
-        existingDepartament.get().setDescription(departament.getDescription());
-        return departamentRepository.save(existingDepartament.get());
+    public Page<DepartamentDto> findByCondition(DepartamentDto departamentDto, Pageable pageable) {
+        Page<DepartamentEntity> entityPage = repository.findAll(pageable);
+        List<DepartamentEntity> entities = entityPage.getContent();
+        return new PageImpl<>(departamentMapper.toDto(entities), pageable, entityPage.getTotalElements());
     }
 
-    @Transactional
-    public void deleteDepartament(Long id) throws ResourceNotFoundException {
-        Optional<DepartamentEntity> departament = findDepartamentById(id);
-        if (!departament.isPresent()) {
-            throw new ResourceNotFoundException("Departament with ID " + id + " not found.");
-        }
-
-        departamentRepository.delete(departament.get());
-    }
-
-    private void validateRequiredFields(DepartamentEntity departament) throws BadRequestException {
-        if (departament.getName() == null || departament.getName().isEmpty()) {
-            throw new BadRequestException("The name field is required.");
-        }
-        if (departament.getDescription() == null || departament.getDescription().isEmpty()) {
-            throw new BadRequestException("The description field is required.");
-        }
+    public DepartamentDto update(DepartamentDto departamentDto, Long id) {
+        DepartamentDto data = findById(id);
+        DepartamentEntity entity = departamentMapper.toEntity(departamentDto);
+        BeanUtils.copyProperties(data, entity);
+        return save(departamentMapper.toDto(entity));
     }
 }

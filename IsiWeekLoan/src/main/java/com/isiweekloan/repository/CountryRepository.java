@@ -1,15 +1,13 @@
 package com.isiweekloan.repository;
 
 import com.isiweekloan.entity.CountryEntity;
-import java.util.Optional;
+import com.isiweekloan.entity.PersonEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
+
 @Repository
-public interface CountryRepository extends JpaRepository<CountryEntity, Long> {
-
-    // Optional method to find country by its name
-    Optional<CountryEntity> findByName(String name);
-
-    // You can add additional custom query methods here based on your specific needs
+public interface CountryRepository extends JpaRepository<CountryEntity, Long>, JpaSpecificationExecutor<CountryEntity> {
 }

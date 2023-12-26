@@ -1,53 +1,79 @@
 package com.isiweekloan.controller;
 
+import com.isiweekloan.dto.PaymentStatusDto;
 import com.isiweekloan.entity.PaymentStatusEntity;
+import com.isiweekloan.exception.ResourceNotFoundException;
+import com.isiweekloan.mapper.PaymentStatusMapper;
 import com.isiweekloan.service.PaymentStatusService;
-import org.springframework.beans.factory.annotation.Autowired;
+import io.swagger.annotations.Api;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import org.springframework.validation.annotation.Validated;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
+@RequestMapping("/payment-status")
 @RestController
-@RequestMapping("/api/payment-status")
+@Slf4j
+@Api("payment-status")
 public class PaymentStatusController {
-
     private final PaymentStatusService paymentStatusService;
 
-    @Autowired
     public PaymentStatusController(PaymentStatusService paymentStatusService) {
         this.paymentStatusService = paymentStatusService;
     }
 
-    @GetMapping
-    public List<PaymentStatusEntity> getAllPaymentStatus() {
-        return paymentStatusService.getAllPaymentStatus();
+    @PostMapping
+    public ResponseEntity<Void> save(@RequestBody @Validated PaymentStatusDto paymentStatusDto) {
+        paymentStatusService.save(paymentStatusDto);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PaymentStatusEntity> getPaymentStatusById(@PathVariable Long id) {
-        return paymentStatusService.getPaymentStatusById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    @PostMapping
-    public ResponseEntity<PaymentStatusEntity> createPaymentStatus(@Validated @RequestBody PaymentStatusEntity paymentStatusEntity) {
-        return ResponseEntity.ok(paymentStatusService.createPaymentStatus(paymentStatusEntity));
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<PaymentStatusEntity> updatePaymentStatus(@PathVariable Long id, @Validated @RequestBody PaymentStatusEntity paymentStatusEntity) {
-        return paymentStatusService.updatePaymentStatus(id, paymentStatusEntity)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<PaymentStatusDto> findById(@PathVariable("id") Long id) {
+        PaymentStatusDto paymentStatus = paymentStatusService.findById(id);
+        return ResponseEntity.ok(paymentStatus);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePaymentStatus(@PathVariable Long id) {
-        return paymentStatusService.deletePaymentStatus(id)
-                ? ResponseEntity.noContent().build()
-                : ResponseEntity.notFound().build();
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
+        try {
+            PaymentStatusDto paymentStatusDto = Optional.ofNullable(paymentStatusService.findById(id))
+                    .orElseThrow(() -> {
+                        log.error("Unable to delete non-existent data with ID {}", id);
+                        return new ResourceNotFoundException("Unable to delete non-existent data with ID " + id);
+                    });
+
+            paymentStatusService.deleteById(id);
+            log.info("Data with ID {} deleted successfully", id);
+
+            return ResponseEntity.ok().build();
+
+        } catch (Exception e) {
+            log.error("Error deleting data with ID {}: {}", id, e.getMessage());
+            // Puedes lanzar una excepción diferente o manejarla de otra manera según tus requisitos.
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping("/page-query")
+    public ResponseEntity<Page<PaymentStatusDto>> pageQuery(PaymentStatusDto paymentStatusDto, @PageableDefault(sort = "createAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<PaymentStatusDto> paymentStatusPage = paymentStatusService.findByCondition(paymentStatusDto, pageable);
+        return ResponseEntity.ok(paymentStatusPage);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> update(@RequestBody @Validated PaymentStatusDto paymentStatusDto, @PathVariable("id") Long id) {
+        paymentStatusService.update(paymentStatusDto, id);
+        return ResponseEntity.ok().build();
     }
 }

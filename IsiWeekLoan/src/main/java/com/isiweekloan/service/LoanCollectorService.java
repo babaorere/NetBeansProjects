@@ -1,72 +1,62 @@
 package com.isiweekloan.service;
 
+import com.isiweekloan.dto.LoanCollectorDto;
 import com.isiweekloan.entity.LoanCollectorEntity;
+import com.isiweekloan.entity.PersonEntity;
+import com.isiweekloan.exception.ResourceNotFoundException;
+import com.isiweekloan.mapper.LoanCollectorMapper;
 import com.isiweekloan.repository.LoanCollectorRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
+@Slf4j
 @Service
+@Transactional
 public class LoanCollectorService {
+    private final LoanCollectorRepository repository;
+    private final LoanCollectorMapper loanCollectorMapper;
 
-    private final LoanCollectorRepository loanCollectorRepository;
-
-    @Autowired
-    public LoanCollectorService(LoanCollectorRepository loanCollectorRepository) {
-        this.loanCollectorRepository = loanCollectorRepository;
+    public LoanCollectorService(LoanCollectorRepository repository, LoanCollectorMapper loanCollectorMapper) {
+        this.repository = repository;
+        this.loanCollectorMapper = loanCollectorMapper;
     }
 
-    @Transactional(readOnly = true)
-    public List<LoanCollectorEntity> getAllLoanCollectors() {
-        return loanCollectorRepository.findAll();
+    public LoanCollectorDto save(LoanCollectorDto loanCollectorDto) {
+        LoanCollectorEntity entity = loanCollectorMapper.toEntity(loanCollectorDto);
+        return loanCollectorMapper.toDto(repository.save(entity));
     }
 
-    @Transactional(readOnly = true)
-    public Optional<LoanCollectorEntity> getLoanCollectorById(Long id) {
-        return loanCollectorRepository.findById(id);
+    public void deleteById(Long id) {
+        repository.deleteById(id);
     }
 
-    @Transactional
-    public LoanCollectorEntity createLoanCollector(LoanCollectorEntity loanCollectorEntity) {
-        validateLoanCollector(loanCollectorEntity);
-        return loanCollectorRepository.save(loanCollectorEntity);
-    }
-
-    @Transactional
-    public Optional<LoanCollectorEntity> updateLoanCollector(Long id, LoanCollectorEntity loanCollectorEntity) {
-        Objects.requireNonNull(id, "Loan Collector ID cannot be null");
-        validateLoanCollector(loanCollectorEntity);
-
-        return loanCollectorRepository.findById(id)
-                .map(existingLoanCollector -> {
-                    // Update fields as needed
-                    existingLoanCollector.setIdPerson(loanCollectorEntity.getIdPerson());
-                    existingLoanCollector.setIdLcStatus(loanCollectorEntity.getIdLcStatus());
-
-                    return loanCollectorRepository.save(existingLoanCollector);
-                });
-    }
-
-    @Transactional
-    public boolean deleteLoanCollector(Long id) {
-        Objects.requireNonNull(id, "Loan Collector ID cannot be null");
-
-        if (loanCollectorRepository.existsById(id)) {
-            loanCollectorRepository.deleteById(id);
-            return true;
-        } else {
-            return false;
+    public LoanCollectorDto findById(Long id) {
+        try {
+            return loanCollectorMapper.toDto(repository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Could not find")));
+        } catch (Exception e) {
+            return null;
         }
     }
 
-    private void validateLoanCollector(LoanCollectorEntity loanCollectorEntity) {
-        Objects.requireNonNull(loanCollectorEntity.getIdPerson(), "Person ID cannot be null");
-        Objects.requireNonNull(loanCollectorEntity.getIdLcStatus(), "Loan Collector Status ID cannot be null");
+    public Page<LoanCollectorDto> findByCondition(LoanCollectorDto loanCollectorDto, Pageable pageable) {
+        Page<LoanCollectorEntity> entityPage = repository.findAll(pageable);
+        List<LoanCollectorEntity> entities = entityPage.getContent();
+        return new PageImpl<>(loanCollectorMapper.toDto(entities), pageable, entityPage.getTotalElements());
+    }
 
-        // Additional validation if needed
+    public LoanCollectorDto update(LoanCollectorDto loanCollectorDto, Long id) {
+        LoanCollectorDto data = findById(id);
+        LoanCollectorEntity entity = loanCollectorMapper.toEntity(loanCollectorDto);
+        BeanUtils.copyProperties(data, entity);
+        return save(loanCollectorMapper.toDto(entity));
     }
 }

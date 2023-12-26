@@ -1,90 +1,61 @@
 package com.isiweekloan.service;
 
+import com.isiweekloan.dto.CustomerDto;
 import com.isiweekloan.entity.CustomerEntity;
-import com.isiweekloan.exception.BadRequestException;
 import com.isiweekloan.exception.ResourceNotFoundException;
+import com.isiweekloan.mapper.CustomerMapper;
 import com.isiweekloan.repository.CustomerRepository;
-import java.util.List;
-import java.util.Optional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Optional;
+
+@Slf4j
 @Service
+@Transactional
 public class CustomerService {
+    private final CustomerRepository repository;
+    private final CustomerMapper customerMapper;
 
-    @Autowired
-    private CustomerRepository customerRepository;
-
-    @Transactional(readOnly = true)
-    public List<CustomerEntity> findAllCustomers() {
-        return customerRepository.findAll();
+    public CustomerService(CustomerRepository repository, CustomerMapper customerMapper) {
+        this.repository = repository;
+        this.customerMapper = customerMapper;
     }
 
-    @Transactional(readOnly = true)
-    public CustomerEntity findCustomerById(Long id) throws ResourceNotFoundException {
-        Optional<CustomerEntity> customer = customerRepository.findById(id);
-        if (!customer.isPresent()) {
-            throw new ResourceNotFoundException("Customer with ID " + id + " not found.");
-        }
-        return customer.get();
+    public CustomerDto save(CustomerDto customerDto) {
+        CustomerEntity entity = customerMapper.toEntity(customerDto);
+        return customerMapper.toDto(repository.save(entity));
     }
 
-    @Transactional
-    public CustomerEntity createCustomer(CustomerEntity customer) throws BadRequestException {
-        validateRequiredFields(customer);
-        return customerRepository.save(customer);
+    public void deleteById(Long id) {
+        repository.deleteById(id);
     }
 
-    @Transactional
-    public CustomerEntity updateCustomer(Long id, CustomerEntity customer) throws BadRequestException, ResourceNotFoundException {
-
-        if (!customer.getId().equals(id)) {
-            throw new BadRequestException("ID in request body does not match ID in path variable.");
+    public CustomerDto findById(Long id) {
+        try {
+            return customerMapper.toDto(repository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Could not find")));
+        } catch (Exception e) {
+            return null;
         }
-
-        validateRequiredFields(customer);
-        Optional<CustomerEntity> existingCustomer = customerRepository.findById(id);
-
-        if (!existingCustomer.isPresent()) {
-            throw new ResourceNotFoundException("Customer with ID " + id + " not found.");
-        }
-
-        existingCustomer.get().setCreditScore(customer.getCreditScore());
-        existingCustomer.get().setIdPerson(customer.getIdPerson());
-        existingCustomer.get().setMaxLoanAmount(customer.getMaxLoanAmount());
-        existingCustomer.get().setObservations(customer.getObservations());
-
-        return customerRepository.save(existingCustomer.get());
     }
 
-    @Transactional
-    public void deleteCustomer(Long id) throws ResourceNotFoundException {
-
-        Optional<CustomerEntity> customer = customerRepository.findById(id);
-        if (!customer.isPresent()) {
-            throw new ResourceNotFoundException("Customer with ID " + id + " not found.");
-        }
-
-        customerRepository.delete(customer.get());
+    public Page<CustomerDto> findByCondition(CustomerDto customerDto, Pageable pageable) {
+        Page<CustomerEntity> entityPage = repository.findAll(pageable);
+        List<CustomerEntity> entities = entityPage.getContent();
+        return new PageImpl<>(customerMapper.toDto(entities), pageable, entityPage.getTotalElements());
     }
 
-    private void validateRequiredFields(CustomerEntity customer) throws BadRequestException {
-
-        if (customer.getCreditScore() == null) {
-            throw new BadRequestException("The credit score field is required.");
-        }
-
-        if (customer.getIdPerson() == null) {
-            throw new BadRequestException("The id person field is required.");
-        }
-
-        if (customer.getMaxLoanAmount() == null) {
-            throw new BadRequestException("The max loan amount field is required.");
-        }
-
-        if (customer.getObservations() == null) {
-            throw new BadRequestException("The observations field is required.");
-        }
+    public CustomerDto update(CustomerDto customerDto, Long id) {
+        CustomerDto data = findById(id);
+        CustomerEntity entity = customerMapper.toEntity(customerDto);
+        BeanUtils.copyProperties(data, entity);
+        return save(customerMapper.toDto(entity));
     }
 }

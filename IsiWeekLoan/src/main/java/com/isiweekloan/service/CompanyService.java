@@ -2,6 +2,8 @@ package com.isiweekloan.service;
 
 import com.isiweekloan.dto.CompanyDto;
 import com.isiweekloan.entity.CompanyEntity;
+import com.isiweekloan.entity.PersonEntity;
+import com.isiweekloan.exception.ResourceNotFoundException;
 import com.isiweekloan.mapper.CompanyMapper;
 import com.isiweekloan.repository.CompanyRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,30 +30,34 @@ public class CompanyService {
         this.companyMapper = companyMapper;
     }
 
-    public CompanyEntityDto save(CompanyEntityDto companyDto) {
-        Company entity = companyMapper.toEntity(companyDto);
+    public CompanyDto save(CompanyDto companyDto) {
+        CompanyEntity entity = companyMapper.toEntity(companyDto);
         return companyMapper.toDto(repository.save(entity));
     }
 
-    public void deleteById(Collection<PersonEntity> id) {
+    public void deleteById(Long id) {
         repository.deleteById(id);
     }
 
-    public CompanyEntityDto findById(Collection<PersonEntity> id) {
+    public CompanyDto findById(Long id) {
+        try {
         return companyMapper.toDto(repository.findById(id)
-                .orElseThrow(ResourceNotFoundException::new));
+                .orElseThrow(() -> new ResourceNotFoundException("Could not find")));
+    } catch (Exception e) {
+        return null;
+    }
     }
 
-    public Page<CompanyEntityDto> findByCondition(CompanyEntityDto companyDto, Pageable pageable) {
+    public Page<CompanyDto> findByCondition(CompanyDto companyDto, Pageable pageable) {
         Page<CompanyEntity> entityPage = repository.findAll(pageable);
         List<CompanyEntity> entities = entityPage.getContent();
         return new PageImpl<>(companyMapper.toDto(entities), pageable, entityPage.getTotalElements());
     }
 
-    public CompanyEntityDto update(CompanyEntityDto companyDto, Collection<PersonEntity> id) {
-        CompanyEntityDto data = findById(id);
-        Company entity = companyMapper.toEntity(companyDto);
-        BeanUtil.copyProperties(data, entity);
+    public CompanyDto update(CompanyDto companyDto, Long id) {
+        CompanyDto data = findById(id);
+        CompanyEntity entity = companyMapper.toEntity(companyDto);
+        BeanUtils.copyProperties(data, entity);
         return save(companyMapper.toDto(entity));
     }
 }

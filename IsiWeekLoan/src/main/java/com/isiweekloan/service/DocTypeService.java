@@ -1,69 +1,63 @@
 package com.isiweekloan.service;
 
-import com.isiweekloan.entity.DocTypeEntity;
-import com.isiweekloan.exception.BadRequestException;
 import com.isiweekloan.exception.ResourceNotFoundException;
+import com.isiweekloan.dto.DocTypeDto;
+import com.isiweekloan.entity.DocTypeEntity;
+import com.isiweekloan.entity.PersonEntity;
+import com.isiweekloan.mapper.DocTypeMapper;
 import com.isiweekloan.repository.DocTypeRepository;
-import java.util.List;
-import java.util.Optional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+
+@Slf4j
 @Service
+@Transactional
 public class DocTypeService {
+    private final DocTypeRepository repository;
+    private final DocTypeMapper docTypeMapper;
 
-    @Autowired
-    private DocTypeRepository docTypeRepository;
-
-    @Transactional(readOnly = true)
-    public List<DocTypeEntity> findAllDocTypes() {
-        return docTypeRepository.findAll();
+    public DocTypeService(DocTypeRepository repository, DocTypeMapper docTypeMapper) {
+        this.repository = repository;
+        this.docTypeMapper = docTypeMapper;
     }
 
-    @Transactional(readOnly = true)
-    public Optional<DocTypeEntity> findDocTypeById(Long id) {
-        return docTypeRepository.findById(id);
+    public DocTypeDto save(DocTypeDto docTypeDto) {
+        DocTypeEntity entity = docTypeMapper.toEntity(docTypeDto);
+        return docTypeMapper.toDto(repository.save(entity));
     }
 
-    @Transactional
-    public DocTypeEntity createDocType(DocTypeEntity docType) throws BadRequestException {
-        validateRequiredFields(docType);
+    public void deleteById(Long id) {
+        repository.deleteById(id);
+    }
+
+    public DocTypeDto findById(Long id) {
         try {
-            return docTypeRepository.save(docType);
-        } catch (DataIntegrityViolationException e) {
-            throw new BadRequestException("DocType with name '" + docType.getName() + "' already exists.");
+            return docTypeMapper.toDto(repository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Could not find")));
+        } catch(Exception e) {
+            return null;
         }
     }
 
-    @Transactional
-    public DocTypeEntity updateDocType(Long id, DocTypeEntity docType) throws ResourceNotFoundException, BadRequestException {
-        if (docType.getId() != id) {
-            throw new BadRequestException("ID in request body does not match ID in path variable.");
-        }
-        validateRequiredFields(docType);
-        Optional<DocTypeEntity> existingDocType = findDocTypeById(id);
-        if (!existingDocType.isPresent()) {
-            throw new ResourceNotFoundException("DocType with ID " + id + " not found.");
-        }
-        existingDocType.get().setName(docType.getName());
-        existingDocType.get().setDescription(docType.getDescription());
-        return docTypeRepository.save(existingDocType.get());
+    public Page<DocTypeDto> findByCondition(DocTypeDto docTypeDto, Pageable pageable) {
+        Page<DocTypeEntity> entityPage = repository.findAll(pageable);
+        List<DocTypeEntity> entities = entityPage.getContent();
+        return new PageImpl<>(docTypeMapper.toDto(entities), pageable, entityPage.getTotalElements());
     }
 
-    @Transactional
-    public void deleteDocType(Long id) throws ResourceNotFoundException {
-        DocTypeEntity docType = findDocTypeById(id).orElseThrow(() -> new ResourceNotFoundException("DocType with ID " + id + " not found."));
-        docTypeRepository.delete(docType);
-    }
-
-    private void validateRequiredFields(DocTypeEntity docType) throws BadRequestException {
-        if (docType.getName() == null || docType.getName().isEmpty()) {
-            throw new BadRequestException("The name field is required.");
-        }
-        if (docType.getDescription() == null || docType.getDescription().isEmpty()) {
-            throw new BadRequestException("The description field is required.");
-        }
+    public DocTypeDto update(DocTypeDto docTypeDto, Long id) {
+        DocTypeDto data = findById(id);
+        DocTypeEntity entity = docTypeMapper.toEntity(docTypeDto);
+        BeanUtils.copyProperties(data, entity);
+        return save(docTypeMapper.toDto(entity));
     }
 }

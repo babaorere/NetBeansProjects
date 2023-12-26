@@ -1,71 +1,79 @@
 package com.isiweekloan.controller;
 
+import com.isiweekloan.dto.JobTitleDto;
 import com.isiweekloan.entity.JobTitleEntity;
-import com.isiweekloan.repository.JobTitleRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.isiweekloan.exception.ResourceNotFoundException;
+import com.isiweekloan.mapper.JobTitleMapper;
+import com.isiweekloan.service.JobTitleService;
+import io.swagger.annotations.Api;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+@RequestMapping("/job-title")
 @RestController
-@RequestMapping("/api/job-titles")
+@Slf4j
+@Api("job-title")
 public class JobTitleController {
+    private final JobTitleService jobTitleService;
 
-    private final JobTitleRepository jobTitleRepository;
-
-    @Autowired
-    public JobTitleController(JobTitleRepository jobTitleRepository) {
-        this.jobTitleRepository = jobTitleRepository;
-    }
-
-    @GetMapping
-    public List<JobTitleEntity> getAllJobTitles() {
-        return jobTitleRepository.findAll();
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<JobTitleEntity> getJobTitleById(@PathVariable Long id) {
-        Optional<JobTitleEntity> optionalJobTitle = jobTitleRepository.findById(id);
-        return optionalJobTitle.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public JobTitleController(JobTitleService jobTitleService) {
+        this.jobTitleService = jobTitleService;
     }
 
     @PostMapping
-    public ResponseEntity<JobTitleEntity> createJobTitle(@RequestBody JobTitleEntity jobTitleEntity) {
-        validateJobTitle(jobTitleEntity);
-        JobTitleEntity createdJobTitle = jobTitleRepository.save(jobTitleEntity);
-        return ResponseEntity.status(201).body(createdJobTitle);
+    public ResponseEntity<Void> save(@RequestBody @Validated JobTitleDto jobTitleDto) {
+        jobTitleService.save(jobTitleDto);
+        return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<JobTitleEntity> updateJobTitle(@PathVariable Long id, @RequestBody JobTitleEntity jobTitleEntity) {
-        Optional<JobTitleEntity> optionalExistingJobTitle = jobTitleRepository.findById(id);
-
-        return optionalExistingJobTitle.map(existingJobTitle -> {
-            validateJobTitle(jobTitleEntity);
-            // Update fields if needed
-            existingJobTitle.setName(jobTitleEntity.getName());
-            existingJobTitle.setDescription(jobTitleEntity.getDescription());
-            return ResponseEntity.ok(jobTitleRepository.save(existingJobTitle));
-        }).orElseGet(() -> ResponseEntity.notFound().build());
+    @GetMapping("/{id}")
+    public ResponseEntity<JobTitleDto> findById(@PathVariable("id") Long id) {
+        JobTitleDto jobTitle = jobTitleService.findById(id);
+        return ResponseEntity.ok(jobTitle);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteJobTitle(@PathVariable Long id) {
-        if (jobTitleRepository.existsById(id)) {
-            jobTitleRepository.deleteById(id);
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
+        try {
+            JobTitleDto existingDto = jobTitleService.findById(id);
+
+            if (existingDto == null) {
+                log.error("Unable to delete non-existent data with ID {}", id);
+                throw new ResourceNotFoundException("Unable to delete non-existent data with ID " + id);
+            }
+
+            jobTitleService.deleteById(id);
+            log.info("Data with ID {} deleted successfully", id);
+
             return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            log.error("Error deleting data with ID {}: {}", id, e.getMessage());
+            // Puedes lanzar una excepción diferente o manejarla de otra manera según tus requisitos.
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-    private void validateJobTitle(JobTitleEntity jobTitleEntity) {
-        if (jobTitleEntity.getName() == null || jobTitleEntity.getDescription() == null) {
-            throw new IllegalArgumentException("Required attributes cannot be null");
-        }
+    @GetMapping("/page-query")
+    public ResponseEntity<Page<JobTitleDto>> pageQuery(JobTitleDto jobTitleDto, @PageableDefault(sort = "createAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<JobTitleDto> jobTitlePage = jobTitleService.findByCondition(jobTitleDto, pageable);
+        return ResponseEntity.ok(jobTitlePage);
+    }
 
-        // Additional validation if needed
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> update(@RequestBody @Validated JobTitleDto jobTitleDto, @PathVariable("id") Long id) {
+        jobTitleService.update(jobTitleDto, id);
+        return ResponseEntity.ok().build();
     }
 }

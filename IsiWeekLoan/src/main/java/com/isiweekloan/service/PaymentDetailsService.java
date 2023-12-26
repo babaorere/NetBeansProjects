@@ -1,73 +1,61 @@
 package com.isiweekloan.service;
 
+import com.isiweekloan.dto.PaymentDetailsDto;
 import com.isiweekloan.entity.PaymentDatailsEntity;
-import com.isiweekloan.repository.PaymentDetailsRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.isiweekloan.exception.ResourceNotFoundException;
+import com.isiweekloan.mapper.PaymentDatailsMapper;
+import com.isiweekloan.repository.PaymentDatailsRepository;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Date;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
+@Slf4j
 @Service
+@Transactional
 public class PaymentDetailsService {
+    private final PaymentDatailsRepository repository;
+    private final PaymentDatailsMapper paymentDatailsMapper;
 
-    private final PaymentDetailsRepository paymentDetailsRepository;
-
-    @Autowired
-    public PaymentDetailsService(PaymentDetailsRepository paymentDetailsRepository) {
-        this.paymentDetailsRepository = paymentDetailsRepository;
+    public PaymentDetailsService(PaymentDatailsRepository repository, PaymentDatailsMapper paymentDatailsMapper) {
+        this.repository = repository;
+        this.paymentDatailsMapper = paymentDatailsMapper;
     }
 
-    @Transactional(readOnly = true)
-    public List<PaymentDatailsEntity> getAllPaymentDetails() {
-        return paymentDetailsRepository.findAll();
+    public PaymentDetailsDto save(PaymentDetailsDto paymentDatailsDto) {
+        PaymentDatailsEntity entity = paymentDatailsMapper.toEntity(paymentDatailsDto);
+        return paymentDatailsMapper.toDto(repository.save(entity));
     }
 
-    @Transactional(readOnly = true)
-    public Optional<PaymentDatailsEntity> getPaymentDetailsById(Long id) {
-        return paymentDetailsRepository.findById(id);
+    public void deleteById(Long id) {
+        repository.deleteById(id);
     }
 
-    @Transactional
-    public PaymentDatailsEntity createPaymentDetails(PaymentDatailsEntity paymentDatailsEntity) {
-        validatePaymentDetails(paymentDatailsEntity);
-        return paymentDetailsRepository.save(paymentDatailsEntity);
-    }
-
-    @Transactional
-    public Optional<PaymentDatailsEntity> updatePaymentDetails(Long id, PaymentDatailsEntity paymentDatailsEntity) {
-        Objects.requireNonNull(id, "Payment Details ID cannot be null");
-        validatePaymentDetails(paymentDatailsEntity);
-
-        return paymentDetailsRepository.findById(id)
-                .map(existingPaymentDetails -> {
-                    // Update fields as needed
-                    existingPaymentDetails.setPaymentDate(paymentDatailsEntity.getPaymentDate());
-                    existingPaymentDetails.setLoanContract(paymentDatailsEntity.getLoanContract());
-                    existingPaymentDetails.setPaymentStatus(paymentDatailsEntity.getPaymentStatus());
-                    existingPaymentDetails.setPaymentType(paymentDatailsEntity.getPaymentType());
-                    // Update other fields similarly
-
-                    return paymentDetailsRepository.save(existingPaymentDetails);
-                });
-    }
-
-    @Transactional
-    public boolean deletePaymentDetails(Long id) {
-        Objects.requireNonNull(id, "Payment Details ID cannot be null");
-
-        if (paymentDetailsRepository.existsById(id)) {
-            paymentDetailsRepository.deleteById(id);
-            return true;
-        } else {
-            return false;
+    public PaymentDetailsDto findById(Long id) {
+        try {
+            return paymentDatailsMapper.toDto(repository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Not found")));
+        } catch (Exception e) {
+            return null;
         }
     }
 
-    private void validatePaymentDetails(PaymentDatailsEntity paymentDatailsEntity) {
-        // Implement validation logic based on your requirements
-        // For example, check for null values, required attributes, etc.
+    public Page<PaymentDetailsDto> findByCondition(PaymentDetailsDto paymentDatailsDto, Pageable pageable) {
+        Page<PaymentDatailsEntity> entityPage = repository.findAll(pageable);
+        List<PaymentDatailsEntity> entities = entityPage.getContent();
+        return new PageImpl<>(paymentDatailsMapper.toDto(entities), pageable, entityPage.getTotalElements());
+    }
+
+    public PaymentDetailsDto update(PaymentDetailsDto paymentDatailsDto, Long id) {
+        PaymentDetailsDto data = findById(id);
+        PaymentDatailsEntity entity = paymentDatailsMapper.toEntity(paymentDatailsDto);
+        BeanUtils.copyProperties(data, entity);
+        return save(paymentDatailsMapper.toDto(entity));
     }
 }

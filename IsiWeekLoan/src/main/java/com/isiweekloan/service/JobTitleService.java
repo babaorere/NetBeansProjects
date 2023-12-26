@@ -1,67 +1,63 @@
 package com.isiweekloan.service;
 
+import com.isiweekloan.dto.JobTitleDto;
+import com.isiweekloan.entity.EmployeeEntity;
 import com.isiweekloan.entity.JobTitleEntity;
+import com.isiweekloan.exception.ResourceNotFoundException;
+import com.isiweekloan.mapper.JobTitleMapper;
 import com.isiweekloan.repository.JobTitleRepository;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+
+@Slf4j
 @Service
+@Transactional
 public class JobTitleService {
+    private final JobTitleRepository repository;
+    private final JobTitleMapper jobTitleMapper;
 
-    private final JobTitleRepository jobTitleRepository;
-
-    @Autowired
-    public JobTitleService(JobTitleRepository jobTitleRepository) {
-        this.jobTitleRepository = jobTitleRepository;
+    public JobTitleService(JobTitleRepository repository, JobTitleMapper jobTitleMapper) {
+        this.repository = repository;
+        this.jobTitleMapper = jobTitleMapper;
     }
 
-    @Transactional(readOnly = true)
-    public List<JobTitleEntity> getAllJobTitles() {
-        return jobTitleRepository.findAll();
+    public JobTitleDto save(JobTitleDto jobTitleDto) {
+        JobTitleEntity entity = jobTitleMapper.toEntity(jobTitleDto);
+        return jobTitleMapper.toDto(repository.save(entity));
     }
 
-    @Transactional(readOnly = true)
-    public Optional<JobTitleEntity> getJobTitleById(Long id) {
-        return jobTitleRepository.findById(id);
+    public void deleteById(Long id) {
+        repository.deleteById(id);
     }
 
-    @Transactional
-    public JobTitleEntity createJobTitle(JobTitleEntity jobTitleEntity) {
-        validateJobTitle(jobTitleEntity);
-        return jobTitleRepository.save(jobTitleEntity);
-    }
-
-    @Transactional
-    public Optional<JobTitleEntity> updateJobTitle(Long id, JobTitleEntity jobTitleEntity) {
-        Optional<JobTitleEntity> optionalExistingJobTitle = jobTitleRepository.findById(id);
-
-        return optionalExistingJobTitle.map(existingJobTitle -> {
-            validateJobTitle(jobTitleEntity);
-            // Update fields if needed
-            existingJobTitle.setName(jobTitleEntity.getName());
-            existingJobTitle.setDescription(jobTitleEntity.getDescription());
-            return Optional.of(jobTitleRepository.save(existingJobTitle));
-        }).orElse(Optional.empty());
-    }
-
-    @Transactional
-    public boolean deleteJobTitle(Long id) {
-        if (jobTitleRepository.existsById(id)) {
-            jobTitleRepository.deleteById(id);
-            return true;
-        } else {
-            return false;
+    public JobTitleDto findById(Long id) {
+        try {
+            return jobTitleMapper.toDto(repository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Could not find")));
+        } catch (Exception e) {
+            return null;
         }
     }
 
-    private void validateJobTitle(JobTitleEntity jobTitleEntity) {
-        Objects.requireNonNull(jobTitleEntity.getName(), "Name cannot be null");
-        Objects.requireNonNull(jobTitleEntity.getDescription(), "Description cannot be null");
+    public Page<JobTitleDto> findByCondition(JobTitleDto jobTitleDto, Pageable pageable) {
+        Page<JobTitleEntity> entityPage = repository.findAll(pageable);
+        List<JobTitleEntity> entities = entityPage.getContent();
+        return new PageImpl<>(jobTitleMapper.toDto(entities), pageable, entityPage.getTotalElements());
+    }
 
-        // Additional validation if needed
+    public JobTitleDto update(JobTitleDto jobTitleDto, Long id) {
+        JobTitleDto data = findById(id);
+        JobTitleEntity entity = jobTitleMapper.toEntity(jobTitleDto);
+        BeanUtils.copyProperties(data, entity);
+        return save(jobTitleMapper.toDto(entity));
     }
 }

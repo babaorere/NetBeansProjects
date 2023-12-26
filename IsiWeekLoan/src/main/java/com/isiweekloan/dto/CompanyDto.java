@@ -1,8 +1,13 @@
 package com.isiweekloan.dto;
 
+import com.isiweekloan.annotation.CheckEmail;
+import com.isiweekloan.entity.PersonEntity;
+import io.swagger.annotations.ApiModel;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+
+import java.util.Collection;
 
 @ApiModel()
 public class CompanyDto extends AbstractDto<Collection<PersonEntity>> {

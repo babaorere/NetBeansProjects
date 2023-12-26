@@ -1,71 +1,63 @@
 package com.isiweekloan.service;
 
+import com.isiweekloan.entity.LoanContractEntity;
+import com.isiweekloan.exception.ResourceNotFoundException;
+import com.isiweekloan.dto.LoanStatusDto;
 import com.isiweekloan.entity.LoanStatusEntity;
+import com.isiweekloan.mapper.LoanStatusMapper;
 import com.isiweekloan.repository.LoanStatusRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
+@Slf4j
 @Service
+@Transactional
 public class LoanStatusService {
+    private final LoanStatusRepository repository;
+    private final LoanStatusMapper loanStatusMapper;
 
-    private final LoanStatusRepository loanStatusRepository;
-
-    @Autowired
-    public LoanStatusService(LoanStatusRepository loanStatusRepository) {
-        this.loanStatusRepository = loanStatusRepository;
+    public LoanStatusService(LoanStatusRepository repository, LoanStatusMapper loanStatusMapper) {
+        this.repository = repository;
+        this.loanStatusMapper = loanStatusMapper;
     }
 
-    @Transactional(readOnly = true)
-    public List<LoanStatusEntity> getAllLoanStatuses() {
-        return loanStatusRepository.findAll();
+    public LoanStatusDto save(LoanStatusDto loanStatusDto) {
+        LoanStatusEntity entity = loanStatusMapper.toEntity(loanStatusDto);
+        return loanStatusMapper.toDto(repository.save(entity));
     }
 
-    @Transactional(readOnly = true)
-    public Optional<LoanStatusEntity> getLoanStatusById(Long id) {
-        return loanStatusRepository.findById(id);
+    public void deleteById(Long id) {
+        repository.deleteById(id);
     }
 
-    @Transactional
-    public LoanStatusEntity createLoanStatus(LoanStatusEntity loanStatusEntity) {
-        validateLoanStatus(loanStatusEntity);
-        return loanStatusRepository.save(loanStatusEntity);
-    }
-
-    @Transactional
-    public Optional<LoanStatusEntity> updateLoanStatus(Long id, LoanStatusEntity loanStatusEntity) {
-        Objects.requireNonNull(id, "Loan Status ID cannot be null");
-        validateLoanStatus(loanStatusEntity);
-
-        return loanStatusRepository.findById(id)
-                .map(existingLoanStatus -> {
-                    // Update fields as needed
-                    existingLoanStatus.setName(loanStatusEntity.getName());
-                    existingLoanStatus.setDescription(loanStatusEntity.getDescription());
-                    // Update other fields similarly
-
-                    return loanStatusRepository.save(existingLoanStatus);
-                });
-    }
-
-    @Transactional
-    public boolean deleteLoanStatus(Long id) {
-        Objects.requireNonNull(id, "Loan Status ID cannot be null");
-
-        if (loanStatusRepository.existsById(id)) {
-            loanStatusRepository.deleteById(id);
-            return true;
-        } else {
-            return false;
+    public LoanStatusDto findById(Long id) {
+        try {
+            return loanStatusMapper.toDto(repository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Could not find")));
+        } catch(Exception e) {
+            return null;
         }
     }
 
-    private void validateLoanStatus(LoanStatusEntity loanStatusEntity) {
-        // Implement validation logic based on your requirements
-        // For example, check for null values, required attributes, etc.
+    public Page<LoanStatusDto> findByCondition(LoanStatusDto loanStatusDto, Pageable pageable) {
+        Page<LoanStatusEntity> entityPage = repository.findAll(pageable);
+        List<LoanStatusEntity> entities = entityPage.getContent();
+        return new PageImpl<>(loanStatusMapper.toDto(entities), pageable, entityPage.getTotalElements());
+    }
+
+    public LoanStatusDto update(LoanStatusDto loanStatusDto, Long id) {
+        LoanStatusDto data = findById(id);
+        LoanStatusEntity entity = loanStatusMapper.toEntity(loanStatusDto);
+        BeanUtils.copyProperties(data, entity);
+        return save(loanStatusMapper.toDto(entity));
     }
 }

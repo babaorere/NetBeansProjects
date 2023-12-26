@@ -1,72 +1,62 @@
 package com.isiweekloan.service;
 
+import com.isiweekloan.dto.LoanContractDto;
 import com.isiweekloan.entity.LoanContractEntity;
+import com.isiweekloan.exception.ResourceNotFoundException;
+import com.isiweekloan.mapper.LoanContractMapper;
 import com.isiweekloan.repository.LoanContractRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
+@Slf4j
 @Service
+@Transactional
 public class LoanContractService {
+    private final LoanContractRepository repository;
+    private final LoanContractMapper loanContractMapper;
 
-    private final LoanContractRepository loanContractRepository;
-
-    @Autowired
-    public LoanContractService(LoanContractRepository loanContractRepository) {
-        this.loanContractRepository = loanContractRepository;
+    public LoanContractService(LoanContractRepository repository, LoanContractMapper loanContractMapper) {
+        this.repository = repository;
+        this.loanContractMapper = loanContractMapper;
     }
 
-    @Transactional(readOnly = true)
-    public List<LoanContractEntity> getAllLoanContracts() {
-        return loanContractRepository.findAll();
+    public LoanContractDto save(LoanContractDto loanContractDto) {
+        LoanContractEntity entity = loanContractMapper.toEntity(loanContractDto);
+        return loanContractMapper.toDto(repository.save(entity));
     }
 
-    @Transactional(readOnly = true)
-    public Optional<LoanContractEntity> getLoanContractById(Long id) {
-        return loanContractRepository.findById(id);
+    public void deleteById(long id) {
+        repository.deleteById(id);
     }
 
-    @Transactional
-    public LoanContractEntity createLoanContract(LoanContractEntity loanContractEntity) {
-        validateLoanContract(loanContractEntity);
-        return loanContractRepository.save(loanContractEntity);
+    public LoanContractDto findById(long id) {
+        try {
+        return loanContractMapper.toDto(repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Not found")));
+    } catch (Exception e) {
+        return null;
     }
 
-    @Transactional
-    public Optional<LoanContractEntity> updateLoanContract(Long id, LoanContractEntity loanContractEntity) {
-        Objects.requireNonNull(id, "Loan Contract ID cannot be null");
-        validateLoanContract(loanContractEntity);
+}
 
-        return loanContractRepository.findById(id)
-                .map(existingLoanContract -> {
-                    // Update fields as needed
-                    existingLoanContract.setLoanTerm(loanContractEntity.getLoanTerm());
-                    existingLoanContract.setDate(loanContractEntity.getDate());
-                    existingLoanContract.setDateOfMaturity(loanContractEntity.getDateOfMaturity());
-                    // Update other fields similarly
-
-                    return loanContractRepository.save(existingLoanContract);
-                });
+    public Page<LoanContractDto> findByCondition(LoanContractDto loanContractDto, Pageable pageable) {
+        Page<LoanContractEntity> entityPage = repository.findAll(pageable);
+        List<LoanContractEntity> entities = entityPage.getContent();
+        return new PageImpl<>(loanContractMapper.toDto(entities), pageable, entityPage.getTotalElements());
     }
 
-    @Transactional
-    public boolean deleteLoanContract(Long id) {
-        Objects.requireNonNull(id, "Loan Contract ID cannot be null");
-
-        if (loanContractRepository.existsById(id)) {
-            loanContractRepository.deleteById(id);
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    private void validateLoanContract(LoanContractEntity loanContractEntity) {
-        // Implement validation logic based on your requirements
-        // For example, check for null values, required attributes, etc.
+    public LoanContractDto update(LoanContractDto loanContractDto, long id) {
+        LoanContractDto data = findById(id);
+        LoanContractEntity entity = loanContractMapper.toEntity(loanContractDto);
+        BeanUtils.copyProperties(data, entity);
+        return save(loanContractMapper.toDto(entity));
     }
 }

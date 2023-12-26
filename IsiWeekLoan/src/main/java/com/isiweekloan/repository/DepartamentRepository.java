@@ -1,15 +1,13 @@
 package com.isiweekloan.repository;
 
 import com.isiweekloan.entity.DepartamentEntity;
-import java.util.Optional;
+import com.isiweekloan.entity.EmployeeEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
+
 @Repository
-public interface DepartamentRepository extends JpaRepository<DepartamentEntity, Long> {
-
-    // Optional method to find by name (example)
-    Optional<DepartamentEntity> findByName(String name);
-
-    // You can add additional custom query methods here based on your needs
+public interface DepartamentRepository extends JpaRepository<DepartamentEntity, Long>, JpaSpecificationExecutor<DepartamentEntity> {
 }

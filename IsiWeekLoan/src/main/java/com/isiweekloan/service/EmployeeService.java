@@ -1,109 +1,62 @@
 package com.isiweekloan.service;
 
+import com.isiweekloan.dto.EmployeeDto;
 import com.isiweekloan.entity.EmployeeEntity;
+import com.isiweekloan.exception.ResourceNotFoundException;
+import com.isiweekloan.mapper.EmployeeMapper;
 import com.isiweekloan.repository.EmployeeRepository;
-import java.util.List;
-import java.util.Optional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Date;
+import java.util.List;
+import java.util.Optional;
+
+@Slf4j
 @Service
 @Transactional
 public class EmployeeService {
+    private final EmployeeRepository repository;
+    private final EmployeeMapper employeeMapper;
 
-    private final EmployeeRepository employeeRepository;
-
-    @Autowired
-    public EmployeeService(EmployeeRepository employeeRepository) {
-        this.employeeRepository = employeeRepository;
+    public EmployeeService(EmployeeRepository repository, EmployeeMapper employeeMapper) {
+        this.repository = repository;
+        this.employeeMapper = employeeMapper;
     }
 
-    /**
-     * Retrieves all Employee entities.
-     *
-     * @return List of EmployeeEntity
-     */
-    @Transactional(readOnly = true)
-    public List<EmployeeEntity> getAllEmployees() {
-        return employeeRepository.findAll();
+    public EmployeeDto save(EmployeeDto employeeDto) {
+        EmployeeEntity entity = employeeMapper.toEntity(employeeDto);
+        return employeeMapper.toDto(repository.save(entity));
     }
 
-    /**
-     * Retrieves an Employee entity by its ID.
-     *
-     * @param id Employee ID
-     * @return ResponseEntity with EmployeeEntity if found, or 404 Not Found if not found
-     */
-    @Transactional(readOnly = true)
-    public ResponseEntity<EmployeeEntity> getEmployeeById(Long id) {
-        Optional<EmployeeEntity> optionalEmployee = employeeRepository.findById(id);
-        return optionalEmployee.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public void deleteById(Long id) {
+        repository.deleteById(id);
     }
 
-    /**
-     * Creates a new Employee entity.
-     *
-     * @param employeeEntity EmployeeEntity to be created
-     * @return ResponseEntity with created EmployeeEntity
-     */
-    @Transactional
-    public ResponseEntity<EmployeeEntity> createEmployee(EmployeeEntity employeeEntity) {
-        validateEmployee(employeeEntity);
-        EmployeeEntity createdEmployee = employeeRepository.save(employeeEntity);
-        return ResponseEntity.status(201).body(createdEmployee);
-    }
-
-    /**
-     * Updates an existing Employee entity by its ID.
-     *
-     * @param id Employee ID
-     * @param employeeEntity Updated EmployeeEntity
-     * @return ResponseEntity with updated EmployeeEntity if found, or 404 Not Found if not found
-     */
-    @Transactional
-    public ResponseEntity<EmployeeEntity> updateEmployee(Long id, EmployeeEntity employeeEntity) {
-        Optional<EmployeeEntity> optionalExistingEmployee = employeeRepository.findById(id);
-
-        return optionalExistingEmployee.map(existingEmployee -> {
-            validateEmployee(employeeEntity);
-            // Update fields if needed
-            existingEmployee.setDateOfHire(employeeEntity.getDateOfHire());
-            existingEmployee.setSalary(employeeEntity.getSalary());
-            existingEmployee.setBenefits(employeeEntity.getBenefits());
-            existingEmployee.setContactInformation(employeeEntity.getContactInformation());
-            existingEmployee.setEducation(employeeEntity.getEducation());
-            existingEmployee.setSkills(employeeEntity.getSkills());
-            existingEmployee.setPerformanceReviews(employeeEntity.getPerformanceReviews());
-            return ResponseEntity.ok(employeeRepository.save(existingEmployee));
-        }).orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    /**
-     * Deletes an Employee entity by its ID.
-     *
-     * @param id Employee ID
-     * @return ResponseEntity with no content if deleted successfully, or 404 Not Found if not found
-     */
-    @Transactional
-    public ResponseEntity<Void> deleteEmployee(Long id) {
-        if (employeeRepository.existsById(id)) {
-            employeeRepository.deleteById(id);
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
+    public EmployeeDto findById(Long id) {
+        try {
+            return employeeMapper.toDto(repository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Could not find")));
+        } catch (Exception e) {
+            return null;
         }
     }
 
-    private void validateEmployee(EmployeeEntity employeeEntity) {
-        if (employeeEntity.getDateOfHire() == null || employeeEntity.getSalary() == null
-                || employeeEntity.getBenefits() == null || employeeEntity.getContactInformation() == null
-                || employeeEntity.getEducation() == null || employeeEntity.getSkills() == null
-                || employeeEntity.getPerformanceReviews() == null) {
-            throw new IllegalArgumentException("Required attributes cannot be null");
-        }
+    public Page<EmployeeDto> findByCondition(EmployeeDto employeeDto, Pageable pageable) {
+        Page<EmployeeEntity> entityPage = repository.findAll(pageable);
+        List<EmployeeEntity> entities = entityPage.getContent();
+        return new PageImpl<>(employeeMapper.toDto(entities), pageable, entityPage.getTotalElements());
+    }
 
-        // Additional validation if needed
+    public EmployeeDto update(EmployeeDto employeeDto, Long id) {
+        EmployeeDto data = findById(id);
+        EmployeeEntity entity = employeeMapper.toEntity(employeeDto);
+        BeanUtils.copyProperties(data, entity);
+        return save(employeeMapper.toDto(entity));
     }
 }

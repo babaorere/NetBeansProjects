@@ -1,71 +1,63 @@
 package com.isiweekloan.service;
 
+import com.isiweekloan.dto.LoanTypeDto;
+import com.isiweekloan.entity.LoanContractEntity;
 import com.isiweekloan.entity.LoanTypeEntity;
+import com.isiweekloan.exception.ResourceNotFoundException;
+import com.isiweekloan.mapper.LoanTypeMapper;
 import com.isiweekloan.repository.LoanTypeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
+@Slf4j
 @Service
+@Transactional
 public class LoanTypeService {
+    private final LoanTypeRepository repository;
+    private final LoanTypeMapper loanTypeMapper;
 
-    private final LoanTypeRepository loanTypeRepository;
-
-    @Autowired
-    public LoanTypeService(LoanTypeRepository loanTypeRepository) {
-        this.loanTypeRepository = loanTypeRepository;
+    public LoanTypeService(LoanTypeRepository repository, LoanTypeMapper loanTypeMapper) {
+        this.repository = repository;
+        this.loanTypeMapper = loanTypeMapper;
     }
 
-    @Transactional(readOnly = true)
-    public List<LoanTypeEntity> getAllLoanTypes() {
-        return loanTypeRepository.findAll();
+    public LoanTypeDto save(LoanTypeDto loanTypeDto) {
+        LoanTypeEntity entity = loanTypeMapper.toEntity(loanTypeDto);
+        return loanTypeMapper.toDto(repository.save(entity));
     }
 
-    @Transactional(readOnly = true)
-    public Optional<LoanTypeEntity> getLoanTypeById(Long id) {
-        return loanTypeRepository.findById(id);
+    public void deleteById(Long id) {
+        repository.deleteById(id);
     }
 
-    @Transactional
-    public LoanTypeEntity createLoanType(LoanTypeEntity loanTypeEntity) {
-        validateLoanType(loanTypeEntity);
-        return loanTypeRepository.save(loanTypeEntity);
-    }
-
-    @Transactional
-    public Optional<LoanTypeEntity> updateLoanType(Long id, LoanTypeEntity loanTypeEntity) {
-        Objects.requireNonNull(id, "Loan Type ID cannot be null");
-        validateLoanType(loanTypeEntity);
-
-        return loanTypeRepository.findById(id)
-                .map(existingLoanType -> {
-                    // Update fields as needed
-                    existingLoanType.setName(loanTypeEntity.getName());
-                    existingLoanType.setDescription(loanTypeEntity.getDescription());
-                    // Update other fields similarly
-
-                    return loanTypeRepository.save(existingLoanType);
-                });
-    }
-
-    @Transactional
-    public boolean deleteLoanType(Long id) {
-        Objects.requireNonNull(id, "Loan Type ID cannot be null");
-
-        if (loanTypeRepository.existsById(id)) {
-            loanTypeRepository.deleteById(id);
-            return true;
-        } else {
-            return false;
+    public LoanTypeDto findById(Long id) {
+        try {
+            return loanTypeMapper.toDto(repository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Could not find")));
+        } catch (Exception e) {
+            return null;
         }
     }
 
-    private void validateLoanType(LoanTypeEntity loanTypeEntity) {
-        // Implement validation logic based on your requirements
-        // For example, check for null values, required attributes, etc.
+    public Page<LoanTypeDto> findByCondition(LoanTypeDto loanTypeDto, Pageable pageable) {
+        Page<LoanTypeEntity> entityPage = repository.findAll(pageable);
+        List<LoanTypeEntity> entities = entityPage.getContent();
+        return new PageImpl<>(loanTypeMapper.toDto(entities), pageable, entityPage.getTotalElements());
+    }
+
+    public LoanTypeDto update(LoanTypeDto loanTypeDto, Long id) {
+        LoanTypeDto data = findById(id);
+        LoanTypeEntity entity = loanTypeMapper.toEntity(loanTypeDto);
+        BeanUtils.copyProperties(data, entity);
+        return save(loanTypeMapper.toDto(entity));
     }
 }

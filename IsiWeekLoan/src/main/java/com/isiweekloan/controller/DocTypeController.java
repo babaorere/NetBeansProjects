@@ -1,105 +1,79 @@
 package com.isiweekloan.controller;
 
+import com.isiweekloan.dto.DocTypeDto;
 import com.isiweekloan.entity.DocTypeEntity;
-import com.isiweekloan.repository.DocTypeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.isiweekloan.exception.ResourceNotFoundException;
+import com.isiweekloan.mapper.DocTypeMapper;
+import com.isiweekloan.service.DocTypeService;
+import io.swagger.annotations.Api;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+@RequestMapping("/doc-type")
 @RestController
-@RequestMapping("/api/doc-types")
+@Slf4j
+@Api("doc-type")
 public class DocTypeController {
+    private final DocTypeService docTypeService;
 
-    private final DocTypeRepository docTypeRepository;
-
-    @Autowired
-    public DocTypeController(DocTypeRepository docTypeRepository) {
-        this.docTypeRepository = docTypeRepository;
+    public DocTypeController(DocTypeService docTypeService) {
+        this.docTypeService = docTypeService;
     }
 
-    /**
-     * Retrieves all DocType entities.
-     *
-     * @return List of DocTypeEntity
-     */
-    @GetMapping
-    public ResponseEntity<List<DocTypeEntity>> getAllDocTypes() {
-        List<DocTypeEntity> docTypes = docTypeRepository.findAll();
-        return ResponseEntity.ok(docTypes);
-    }
-
-    /**
-     * Retrieves a DocType entity by its ID.
-     *
-     * @param id DocType ID
-     * @return ResponseEntity with DocTypeEntity if found, or 404 Not Found if not found
-     */
-    @GetMapping("/{id}")
-    public ResponseEntity<DocTypeEntity> getDocTypeById(@PathVariable Long id) {
-        Optional<DocTypeEntity> optionalDocType = docTypeRepository.findById(id);
-        return optionalDocType.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    /**
-     * Creates a new DocType entity.
-     *
-     * @param docTypeEntity DocTypeEntity to be created
-     * @return ResponseEntity with created DocTypeEntity
-     */
     @PostMapping
-    public ResponseEntity<DocTypeEntity> createDocType(@RequestBody DocTypeEntity docTypeEntity) {
-        Objects.requireNonNull(docTypeEntity.getName(), "Name cannot be null");
-        Objects.requireNonNull(docTypeEntity.getDescription(), "Description cannot be null");
-
-        // Additional validation if needed
-        DocTypeEntity createdDocType = docTypeRepository.save(docTypeEntity);
-        return ResponseEntity.ok(createdDocType);
+    public ResponseEntity<Void> save(@RequestBody @Validated DocTypeDto docTypeDto) {
+        docTypeService.save(docTypeDto);
+        return ResponseEntity.ok().build();
     }
 
-    /**
-     * Updates an existing DocType entity by its ID.
-     *
-     * @param id DocType ID
-     * @param docTypeEntity Updated DocTypeEntity
-     * @return ResponseEntity with updated DocTypeEntity if found, or 404 Not Found if not found
-     */
-    @PutMapping("/{id}")
-    public ResponseEntity<DocTypeEntity> updateDocType(@PathVariable Long id, @RequestBody DocTypeEntity docTypeEntity) {
-        Optional<DocTypeEntity> optionalExistingDocType = docTypeRepository.findById(id);
-
-        if (optionalExistingDocType.isPresent()) {
-            DocTypeEntity existingDocType = optionalExistingDocType.get();
-
-            // Update fields if needed
-            existingDocType.setName(docTypeEntity.getName());
-            existingDocType.setDescription(docTypeEntity.getDescription());
-
-            DocTypeEntity updatedDocType = docTypeRepository.save(existingDocType);
-            return ResponseEntity.ok(updatedDocType);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    @GetMapping("/{id}")
+    public ResponseEntity<DocTypeDto> findById(@PathVariable("id") Long id) {
+        DocTypeDto docType = docTypeService.findById(id);
+        return ResponseEntity.ok(docType);
     }
 
-    /**
-     * Deletes a DocType entity by its ID.
-     *
-     * @param id DocType ID
-     * @return ResponseEntity with no content if deleted successfully, or 404 Not Found if not found
-     */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDocType(@PathVariable Long id) {
-        if (docTypeRepository.existsById(id)) {
-            docTypeRepository.deleteById(id);
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
+        try {
+            DocTypeDto docTypeDto = Optional.ofNullable(docTypeService.findById(id))
+                    .orElseThrow(() -> {
+                        log.error("Unable to delete non-existent data with ID {}", id);
+                        return new ResourceNotFoundException("Unable to delete non-existent data with ID " + id);
+                    });
+
+            docTypeService.deleteById(id);
+            log.info("Data with ID {} deleted successfully", id);
+
+            return ResponseEntity.ok().build();
+
+        } catch (Exception e) {
+            log.error("Error deleting data with ID {}: {}", id, e.getMessage());
+            // Puedes lanzar una excepción diferente o manejarla de otra manera según tus requisitos.
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
-    // Add @ExceptionHandler and additional methods as needed for error handling
+    @GetMapping("/page-query")
+    public ResponseEntity<Page<DocTypeDto>> pageQuery(DocTypeDto docTypeDto, @PageableDefault(sort = "createAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<DocTypeDto> docTypePage = docTypeService.findByCondition(docTypeDto, pageable);
+        return ResponseEntity.ok(docTypePage);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> update(@RequestBody @Validated DocTypeDto docTypeDto, @PathVariable("id") Long id) {
+        docTypeService.update(docTypeDto, id);
+        return ResponseEntity.ok().build();
+    }
 }

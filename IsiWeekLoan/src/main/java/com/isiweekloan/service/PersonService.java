@@ -1,71 +1,62 @@
 package com.isiweekloan.service;
 
+import com.isiweekloan.dto.PersonDto;
 import com.isiweekloan.entity.PersonEntity;
+import com.isiweekloan.exception.ResourceNotFoundException;
+import com.isiweekloan.mapper.PersonMapper;
 import com.isiweekloan.repository.PersonRepository;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Date;
+import java.util.List;
+import java.util.Optional;
+
+@Slf4j
 @Service
+@Transactional
 public class PersonService {
+    private final PersonRepository repository;
+    private final PersonMapper personMapper;
 
-    private final PersonRepository personRepository;
-
-    @Autowired
-    public PersonService(PersonRepository personRepository) {
-        this.personRepository = personRepository;
+    public PersonService(PersonRepository repository, PersonMapper personMapper) {
+        this.repository = repository;
+        this.personMapper = personMapper;
     }
 
-    @Transactional(readOnly = true)
-    public List<PersonEntity> getAllPeople() {
-        return personRepository.findAll();
+    public PersonDto save(PersonDto personDto) {
+        PersonEntity entity = personMapper.toEntity(personDto);
+        return personMapper.toDto(repository.save(entity));
     }
 
-    @Transactional(readOnly = true)
-    public Optional<PersonEntity> getPersonById(Long id) {
-        return personRepository.findById(id);
+    public void deleteById(Long id) {
+        repository.deleteById(id);
     }
 
-    @Transactional
-    public PersonEntity createPerson(PersonEntity personEntity) {
-        validatePerson(personEntity);
-        return personRepository.save(personEntity);
-    }
-
-    @Transactional
-    public Optional<PersonEntity> updatePerson(Long id, PersonEntity personEntity) {
-        Objects.requireNonNull(id, "Person ID cannot be null");
-        validatePerson(personEntity);
-
-        return personRepository.findById(id)
-                .map(existingPerson -> {
-                    // Update fields as needed
-                    existingPerson.setFirstName(personEntity.getFirstName());
-                    existingPerson.setLastName(personEntity.getLastName());
-                    existingPerson.setEmail(personEntity.getEmail());
-                    // Update other fields similarly
-
-                    return personRepository.save(existingPerson);
-                });
-    }
-
-    @Transactional
-    public boolean deletePerson(Long id) {
-        Objects.requireNonNull(id, "Person ID cannot be null");
-
-        if (personRepository.existsById(id)) {
-            personRepository.deleteById(id);
-            return true;
-        } else {
-            return false;
+    public PersonDto findById(Long id) {
+        try {
+            return personMapper.toDto(repository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Could not find")));
+        } catch (Exception e) {
+            return null;
         }
     }
 
-    private void validatePerson(PersonEntity personEntity) {
-        // Implement validation logic based on your requirements
-        // For example, check for null values, required attributes, etc.
+    public Page<PersonDto> findByCondition(PersonDto personDto, Pageable pageable) {
+        Page<PersonEntity> entityPage = repository.findAll(pageable);
+        List<PersonEntity> entities = entityPage.getContent();
+        return new PageImpl<>(personMapper.toDto(entities), pageable, entityPage.getTotalElements());
+    }
+
+    public PersonDto update(PersonDto personDto, Long id) {
+        PersonDto data = findById(id);
+        PersonEntity entity = personMapper.toEntity(personDto);
+        BeanUtils.copyProperties(data, entity);
+        return save(personMapper.toDto(entity));
     }
 }

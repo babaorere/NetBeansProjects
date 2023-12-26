@@ -1,70 +1,62 @@
 package com.isiweekloan.service;
 
+import com.isiweekloan.dto.PhoneNotificationDto;
 import com.isiweekloan.entity.PhoneNotificationEntity;
+import com.isiweekloan.exception.ResourceNotFoundException;
+import com.isiweekloan.mapper.PhoneNotificationMapper;
 import com.isiweekloan.repository.PhoneNotificationRepository;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Date;
+import java.util.List;
+import java.util.Optional;
+
+@Slf4j
 @Service
+@Transactional
 public class PhoneNotificationService {
+    private final PhoneNotificationRepository repository;
+    private final PhoneNotificationMapper phoneNotificationMapper;
 
-    private final PhoneNotificationRepository phoneNotificationRepository;
-
-    @Autowired
-    public PhoneNotificationService(PhoneNotificationRepository phoneNotificationRepository) {
-        this.phoneNotificationRepository = phoneNotificationRepository;
+    public PhoneNotificationService(PhoneNotificationRepository repository, PhoneNotificationMapper phoneNotificationMapper) {
+        this.repository = repository;
+        this.phoneNotificationMapper = phoneNotificationMapper;
     }
 
-    @Transactional(readOnly = true)
-    public List<PhoneNotificationEntity> getAllPhoneNotifications() {
-        return phoneNotificationRepository.findAll();
+    public PhoneNotificationDto save(PhoneNotificationDto phoneNotificationDto) {
+        PhoneNotificationEntity entity = phoneNotificationMapper.toEntity(phoneNotificationDto);
+        return phoneNotificationMapper.toDto(repository.save(entity));
     }
 
-    @Transactional(readOnly = true)
-    public Optional<PhoneNotificationEntity> getPhoneNotificationById(Long id) {
-        return phoneNotificationRepository.findById(id);
+    public void deleteById(Long id) {
+        repository.deleteById(id);
     }
 
-    @Transactional
-    public PhoneNotificationEntity createPhoneNotification(PhoneNotificationEntity phoneNotificationEntity) {
-        validatePhoneNotification(phoneNotificationEntity);
-        return phoneNotificationRepository.save(phoneNotificationEntity);
-    }
-
-    @Transactional
-    public Optional<PhoneNotificationEntity> updatePhoneNotification(Long id, PhoneNotificationEntity phoneNotificationEntity) {
-        Objects.requireNonNull(id, "Phone Notification ID cannot be null");
-        validatePhoneNotification(phoneNotificationEntity);
-
-        return phoneNotificationRepository.findById(id)
-                .map(existingPhoneNotification -> {
-                    // Update fields as needed
-                    existingPhoneNotification.setSubject(phoneNotificationEntity.getSubject());
-                    existingPhoneNotification.setBody(phoneNotificationEntity.getBody());
-                    // Update other fields similarly
-
-                    return phoneNotificationRepository.save(existingPhoneNotification);
-                });
-    }
-
-    @Transactional
-    public boolean deletePhoneNotification(Long id) {
-        Objects.requireNonNull(id, "Phone Notification ID cannot be null");
-
-        if (phoneNotificationRepository.existsById(id)) {
-            phoneNotificationRepository.deleteById(id);
-            return true;
-        } else {
-            return false;
+    public PhoneNotificationDto findById(Long id) {
+        try {
+            return phoneNotificationMapper.toDto(repository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Could not find")));
+        } catch (Exception e) {
+            return null;
         }
     }
 
-    private void validatePhoneNotification(PhoneNotificationEntity phoneNotificationEntity) {
-        // Implement validation logic based on your requirements
-        // For example, check for null values, required attributes, etc.
+    public Page<PhoneNotificationDto> findByCondition(PhoneNotificationDto phoneNotificationDto, Pageable pageable) {
+        Page<PhoneNotificationEntity> entityPage = repository.findAll(pageable);
+        List<PhoneNotificationEntity> entities = entityPage.getContent();
+        return new PageImpl<>(phoneNotificationMapper.toDto(entities), pageable, entityPage.getTotalElements());
+    }
+
+    public PhoneNotificationDto update(PhoneNotificationDto phoneNotificationDto, Long id) {
+        PhoneNotificationDto data = findById(id);
+        PhoneNotificationEntity entity = phoneNotificationMapper.toEntity(phoneNotificationDto);
+        BeanUtils.copyProperties(data, entity);
+        return save(phoneNotificationMapper.toDto(entity));
     }
 }

@@ -1,63 +1,65 @@
 package com.isiweekloan.service;
 
+import com.isiweekloan.dto.CountryDto;
 import com.isiweekloan.entity.CountryEntity;
+import com.isiweekloan.entity.PersonEntity;
 import com.isiweekloan.exception.ResourceNotFoundException;
+import com.isiweekloan.mapper.CountryMapper;
 import com.isiweekloan.repository.CountryRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @Transactional
 public class CountryService {
+    private final CountryRepository repository;
+    private final CountryMapper countryMapper;
 
-    private final CountryRepository countryRepository;
-
-    @Autowired
-    public CountryService(CountryRepository countryRepository) {
-        this.countryRepository = countryRepository;
+    public CountryService(CountryRepository repository, CountryMapper countryMapper) {
+        this.repository = repository;
+        this.countryMapper = countryMapper;
     }
 
-    public List<CountryEntity> getAllCountries() {
-        return countryRepository.findAll();
+    public CountryDto save(CountryDto countryDto) {
+        CountryEntity entity = countryMapper.toEntity(countryDto);
+        return countryMapper.toDto(repository.save(entity));
     }
 
-    public CountryEntity getCountryById(Long id) throws ResourceNotFoundException {
-        return countryRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Country not found with ID: " + id));
+    public void deleteById(Long id) {
+        repository.deleteById(id);
     }
-
-    public CountryEntity createCountry(CountryEntity country) {
-        Objects.requireNonNull(country.getName(), "Country name cannot be null");
-        Objects.requireNonNull(country.getDescription(), "Country description cannot be null");
-
-        return countryRepository.save(country);
-    }
-
-    public CountryEntity updateCountry(Long id, CountryEntity country) throws ResourceNotFoundException {
-        Optional<CountryEntity> optionalExistingCountry = countryRepository.findById(id);
-
-        if (optionalExistingCountry.isPresent()) {
-            CountryEntity existingCountry = optionalExistingCountry.get();
-            existingCountry.setName(country.getName());
-            existingCountry.setDescription(country.getDescription());
-
-            return countryRepository.save(existingCountry);
-        } else {
-            throw new ResourceNotFoundException("Country not found with ID: " + id);
+    public CountryDto findById(Long id) {
+        try {
+            // Suponiendo que id ya es el ID del país y no necesitas iterar sobre él.
+            return countryMapper.toDto(repository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Could not find country with ID: " + id)));
+        } catch (Exception e) {
+            log.error("Error finding country with ID {}: {}", id, e.getMessage());
+            return null;
         }
     }
 
-    public void deleteCountry(Long id) throws ResourceNotFoundException {
-        if (countryRepository.existsById(id)) {
-            countryRepository.deleteById(id);
-        } else {
-            throw new ResourceNotFoundException("Country not found with ID: " + id);
-        }
+
+    public Page<CountryDto> findByCondition(CountryDto countryDto, Pageable pageable) {
+        Page<CountryEntity> entityPage = repository.findAll(pageable);
+        List<CountryEntity> entities = entityPage.getContent();
+        return new PageImpl<>(countryMapper.toDto(entities), pageable, entityPage.getTotalElements());
+    }
+
+    public CountryDto update(CountryDto countryDto, Long id) {
+        CountryDto data = findById(id);
+        CountryEntity entity = countryMapper.toEntity(countryDto);
+        BeanUtils.copyProperties(data, entity);
+        return save(countryMapper.toDto(entity));
     }
 }
-
