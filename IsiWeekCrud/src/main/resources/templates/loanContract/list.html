@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+  
+<html lang="en" 
+      xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+    
+    <head>
+        <title>[[#{loanContract.list.headline}]]</title>
+    </head>
+    <body>
+        <div layout:fragment="content">
+            <div class="d-flex flex-wrap mb-4">
+                <h1 class="flex-grow-1">[[#{loanContract.list.headline}]]</h1>
+                <div>
+                    <a th:href="@{/loanContracts/add}" class="btn btn-primary ms-2">[[#{loanContract.list.createNew}]]</a>
+                </div>
+            </div>
+            <div th:if="${loanContracts.empty}">[[#{loanContract.list.empty}]]</div>
+            <div th:if="${!loanContracts.empty}" class="table-responsive">
+                <table class="table table-striped table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col">[[#{loanContract.id.label}]]</th>
+                            <th scope="col">[[#{loanContract.loanAmount.label}]]</th>
+                            <th scope="col">[[#{loanContract.interestRate.label}]]</th>
+                            <th scope="col">[[#{loanContract.loanTerm.label}]]</th>
+                            <th scope="col">[[#{loanContract.payment.label}]]</th>
+                            <th scope="col">[[#{loanContract.date.label}]]</th>
+                            <th scope="col">[[#{loanContract.dateOfMaturity.label}]]</th>
+                            <th scope="col">[[#{loanContract.loanPurpose.label}]]</th>
+                            <th><!-- --></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="loanContract : ${loanContracts}">
+                            <td>[[${loanContract.id}]]</td>
+                            <td>[[${loanContract.loanAmount}]]</td>
+                            <td>[[${loanContract.interestRate}]]</td>
+                            <td>[[${loanContract.loanTerm}]]</td>
+                            <td>[[${loanContract.payment}]]</td>
+                            <td>[[${loanContract.date}]]</td>
+                            <td>[[${loanContract.dateOfMaturity}]]</td>
+                            <td>[[${loanContract.loanPurpose}]]</td>
+                            <td>
+                                <div class="float-end text-nowrap">
+                                    <a th:href="@{/loanContracts/edit/{id}(id=${loanContract.id})}" class="btn btn-sm btn-secondary">[[#{loanContract.list.edit}]]</a>
+                                    <form th:action="@{/loanContracts/delete/{id}(id=${loanContract.id})}"
+                                            th:data-confirm-message="#{delete.confirm}" method="post" class="js-submit-confirm d-inline">
+                                        <div><button type="submit" class="btn btn-sm btn-secondary">[[#{loanContract.list.delete}]]</button></div>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </body>
+</html>

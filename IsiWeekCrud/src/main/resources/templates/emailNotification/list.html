@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+  
+<html lang="en" 
+      xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+    <head>
+        <title>[[#{emailNotification.list.headline}]]</title>
+    </head>
+    <body>
+        <div layout:fragment="content">
+            <div class="d-flex flex-wrap mb-4">
+                <h1 class="flex-grow-1">[[#{emailNotification.list.headline}]]</h1>
+                <div>
+                    <a th:href="@{/emailNotifications/add}" class="btn btn-primary ms-2">[[#{emailNotification.list.createNew}]]</a>
+                </div>
+            </div>
+            <div th:if="${emailNotifications.empty}">[[#{emailNotification.list.empty}]]</div>
+            <div th:if="${!emailNotifications.empty}" class="table-responsive">
+                <table class="table table-striped table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col">[[#{emailNotification.id.label}]]</th>
+                            <th scope="col">[[#{emailNotification.subject.label}]]</th>
+                            <th scope="col">[[#{emailNotification.sentAt.label}]]</th>
+                            <th scope="col">[[#{emailNotification.body.label}]]</th>
+                            <th scope="col">[[#{emailNotification.dateSent.label}]]</th>
+                            <th scope="col">[[#{emailNotification.person.label}]]</th>
+                            <th scope="col">[[#{emailNotification.loanContract.label}]]</th>
+                            <th scope="col">[[#{emailNotification.person.label}]]</th>
+                            <th><!-- --></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="emailNotification : ${emailNotifications}">
+                            <td>[[${emailNotification.id}]]</td>
+                            <td>[[${emailNotification.subject}]]</td>
+                            <td>[[${emailNotification.sentAt}]]</td>
+                            <td>[[${emailNotification.body}]]</td>
+                            <td>[[${emailNotification.dateSent}]]</td>
+                            <td>[[${emailNotification.person}]]</td>
+                            <td>[[${emailNotification.loanContract}]]</td>
+                            <td>[[${emailNotification.person}]]</td>
+                            <td>
+                                <div class="float-end text-nowrap">
+                                    <a th:href="@{/emailNotifications/edit/{id}(id=${emailNotification.id})}" class="btn btn-sm btn-secondary">[[#{emailNotification.list.edit}]]</a>
+                                    <form th:action="@{/emailNotifications/delete/{id}(id=${emailNotification.id})}"
+                                            th:data-confirm-message="#{delete.confirm}" method="post" class="js-submit-confirm d-inline">
+                                        <div><button type="submit" class="btn btn-sm btn-secondary">[[#{emailNotification.list.delete}]]</button></div>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </body>
+</html>

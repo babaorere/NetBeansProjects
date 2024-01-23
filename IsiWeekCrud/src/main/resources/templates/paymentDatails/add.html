@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+  
+<html lang="en" 
+      xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+    
+    <head>
+        <title>[[#{paymentDatails.add.headline}]]</title>
+    </head>
+    <body>
+        <div layout:fragment="content">
+            <div class="d-flex flex-wrap mb-4">
+                <h1 class="flex-grow-1">[[#{paymentDatails.add.headline}]]</h1>
+                <div>
+                    <a th:href="@{/paymentDatailss}" class="btn btn-secondary">[[#{paymentDatails.add.back}]]</a>
+                </div>
+            </div>
+            <div th:replace="~{fragments/forms::globalErrors('paymentDatails')}" />
+            <form th:action="${requestUri}" method="post">
+                <div th:replace="~{fragments/forms::inputRow(object='paymentDatails', field='paymentDate', inputClass='js-datepicker')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='paymentDatails', field='paymentAmount')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='paymentDatails', field='notes')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='paymentDatails', field='loanContract', type='select')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='paymentDatails', field='paymentType', type='select')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='paymentDatails', field='paymentStatus', type='select')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='paymentDatails', field='loanContract', type='select')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='paymentDatails', field='paymentType', type='select')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='paymentDatails', field='paymentStatus', type='select')}" />
+                <div><input type="submit" th:value="#{paymentDatails.add.headline}" class="btn btn-primary mt-4" /></div>
+            </form>
+        </div>
+    </body>
+</html>

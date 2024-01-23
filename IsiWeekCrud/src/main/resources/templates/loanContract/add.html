@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+  
+<html lang="en" 
+      xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+    
+    <head>
+        <title>[[#{loanContract.add.headline}]]</title>
+    </head>
+    <body>
+        <div layout:fragment="content">
+            <div class="d-flex flex-wrap mb-4">
+                <h1 class="flex-grow-1">[[#{loanContract.add.headline}]]</h1>
+                <div>
+                    <a th:href="@{/loanContracts}" class="btn btn-secondary">[[#{loanContract.add.back}]]</a>
+                </div>
+            </div>
+            <div th:replace="~{fragments/forms::globalErrors('loanContract')}" />
+            <form th:action="${requestUri}" method="post">
+                <div th:replace="~{fragments/forms::inputRow(object='loanContract', field='loanAmount')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='loanContract', field='interestRate')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='loanContract', field='loanTerm', type='number')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='loanContract', field='payment')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='loanContract', field='date', inputClass='js-datepicker')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='loanContract', field='dateOfMaturity', inputClass='js-datepicker')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='loanContract', field='loanPurpose', type='number')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='loanContract', field='collateral')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='loanContract', field='prepaymentPenalty')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='loanContract', field='defaultInterestRate')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='loanContract', field='loanType', type='select')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='loanContract', field='loanStatus', type='select')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='loanContract', field='customer', type='select')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='loanContract', field='customer', type='select')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='loanContract', field='loanStatus', type='select')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='loanContract', field='loanType', type='select')}" />
+                <div><input type="submit" th:value="#{loanContract.add.headline}" class="btn btn-primary mt-4" /></div>
+            </form>
+        </div>
+    </body>
+</html>

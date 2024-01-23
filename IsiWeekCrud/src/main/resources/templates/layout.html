@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+  
+<html lang="en" 
+      xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+    <head>
+        <title layout:title-pattern="$CONTENT_TITLE | $LAYOUT_TITLE">[[#{app.title}]]</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <link th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}" rel="stylesheet" />
+        <link th:href="@{/webjars/flatpickr/4.6.13/dist/flatpickr.min.css}" rel="stylesheet" />
+        <link th:href="@{/css/app.css}" rel="stylesheet" />
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous"/>
+        <script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}" th:defer="defer"></script>
+        <script th:src="@{/webjars/flatpickr/4.6.13/dist/flatpickr.min.js}" th:defer="defer"></script>
+        <script th:src="@{/js/app.js}" th:defer="defer"></script>
+    </head>
+    <body>
+        <header class="bg-light">
+            <div class="container">
+                <nav class="navbar navbar-light navbar-expand-md">
+                    <a th:href="@{/}" class="navbar-brand">
+                        <img th:src="@{/images/logo.png}" th:alt="#{app.title}" width="30" height="30" class="d-inline-block align-top"/>
+                        <span class="ps-1">[[#{app.title}]]</span>
+                    </a>
+                    <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarToggle"
+                            th:aria-label="#{navigation.toggle}" aria-controls="navbarToggle" aria-expanded="false">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarToggle">
+                        <ul class="navbar-nav ms-auto">
+                            <li class="navbar-item">
+                                <a th:href="@{/}" class="nav-link">[[#{navigation.home}]]</a>
+                            </li>
+                            <li class="navbar-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarEntitiesLink" role="button"
+                                        data-bs-toggle="dropdown" aria-expanded="false">[[#{navigation.entities}]]</a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarEntitiesLink">
+                                    <li><a th:href="@{/companies}" class="dropdown-item">[[#{company.list.headline}]]</a></li>
+                                    <li><a th:href="@{/countries}" class="dropdown-item">[[#{country.list.headline}]]</a></li>
+                                    <li><a th:href="@{/criminalRecords}" class="dropdown-item">[[#{criminalRecord.list.headline}]]</a></li>
+                                    <li><a th:href="@{/customers}" class="dropdown-item">[[#{customer.list.headline}]]</a></li>
+                                    <li><a th:href="@{/departaments}" class="dropdown-item">[[#{departament.list.headline}]]</a></li>
+                                    <li><a th:href="@{/docTypes}" class="dropdown-item">[[#{docType.list.headline}]]</a></li>
+                                    <li><a th:href="@{/emailNotifications}" class="dropdown-item">[[#{emailNotification.list.headline}]]</a></li>
+                                    <li><a th:href="@{/employees}" class="dropdown-item">[[#{employee.list.headline}]]</a></li>
+                                    <li><a th:href="@{/employeeStatuses}" class="dropdown-item">[[#{employeeStatus.list.headline}]]</a></li>
+                                    <li><a th:href="@{/jobTitles}" class="dropdown-item">[[#{jobTitle.list.headline}]]</a></li>
+                                    <li><a th:href="@{/loanCollectors}" class="dropdown-item">[[#{loanCollector.list.headline}]]</a></li>
+                                    <li><a th:href="@{/loanCollectorStatuses}" class="dropdown-item">[[#{loanCollectorStatus.list.headline}]]</a></li>
+                                    <li><a th:href="@{/loanContracts}" class="dropdown-item">[[#{loanContract.list.headline}]]</a></li>
+                                    <li><a th:href="@{/loanStatuses}" class="dropdown-item">[[#{loanStatus.list.headline}]]</a></li>
+                                    <li><a th:href="@{/loanTypes}" class="dropdown-item">[[#{loanType.list.headline}]]</a></li>
+                                    <li><a th:href="@{/maritalStatuses}" class="dropdown-item">[[#{maritalStatus.list.headline}]]</a></li>
+                                    <li><a th:href="@{/paymentDatailss}" class="dropdown-item">[[#{paymentDatails.list.headline}]]</a></li>
+                                    <li><a th:href="@{/paymentStatuses}" class="dropdown-item">[[#{paymentStatus.list.headline}]]</a></li>
+                                    <li><a th:href="@{/paymentTypes}" class="dropdown-item">[[#{paymentType.list.headline}]]</a></li>
+                                    <li><a th:href="@{/people}" class="dropdown-item">[[#{person.list.headline}]]</a></li>
+                                    <li><a th:href="@{/phoneNotifications}" class="dropdown-item">[[#{phoneNotification.list.headline}]]</a></li>
+                                    <li><a th:href="@{/whatsappNotifications}" class="dropdown-item">[[#{whatsappNotification.list.headline}]]</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </header>
+        <main class="my-5">
+            <div class="container">
+                <p th:if="${MSG_SUCCESS}" class="alert alert-success mb-4" role="alert">[[${MSG_SUCCESS}]]</p>
+                <p th:if="${MSG_INFO}" class="alert alert-info mb-4" role="alert">[[${MSG_INFO}]]</p>
+                <p th:if="${MSG_ERROR}" class="alert alert-danger mb-4" role="alert">[[${MSG_ERROR}]]</p>
+                <div layout:fragment="content" />
+            </div>
+        </main>
+    </body>
+</html>

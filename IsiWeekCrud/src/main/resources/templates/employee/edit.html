@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+  
+<html lang="en" 
+      xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+    <head>
+        <title>[[#{employee.edit.headline}]]</title>
+    </head>
+    <body>
+        <div layout:fragment="content">
+            <div class="d-flex flex-wrap mb-4">
+                <h1 class="flex-grow-1">[[#{employee.edit.headline}]]</h1>
+                <div>
+                    <a th:href="@{/employees}" class="btn btn-secondary">[[#{employee.edit.back}]]</a>
+                </div>
+            </div>
+            <div th:replace="~{fragments/forms::globalErrors('employee')}" />
+            <form th:action="${requestUri}" method="post">
+                <input type="submit" th:value="#{employee.edit.headline}" class="btn btn-primary mt-4 mb-4" />
+                <div th:replace="~{fragments/forms::inputRow(object='employee', field='id', disabled=true, type='number')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='employee', field='dateOfHire', inputClass='js-datepicker')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='employee', field='salary')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='employee', field='benefits')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='employee', field='contactInformation')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='employee', field='education')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='employee', field='skills')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='employee', field='performanceReviews')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='employee', field='person', type='select')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='employee', field='employeeStatus', type='select')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='employee', field='jobTitle', type='select')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='employee', field='department', type='select')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='employee', field='manager', type='select')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='employee', field='manager', type='select')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='employee', field='employeeStatus', type='select')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='employee', field='department', type='select')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='employee', field='jobTitle', type='select')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='employee', field='person', type='select')}" />
+                <div><input type="submit" th:value="#{employee.edit.headline}" class="btn btn-primary mt-4" /></div>
+            </form>
+        </div>
+    </body>
+</html>

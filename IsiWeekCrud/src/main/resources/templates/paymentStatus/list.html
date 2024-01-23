@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+  
+<html lang="en" 
+      xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+    
+    <head>
+        <title>[[#{paymentStatus.list.headline}]]</title>
+    </head>
+    <body>
+        <div layout:fragment="content">
+            <div class="d-flex flex-wrap mb-4">
+                <h1 class="flex-grow-1">[[#{paymentStatus.list.headline}]]</h1>
+                <div>
+                    <a th:href="@{/paymentStatuses/add}" class="btn btn-primary ms-2">[[#{paymentStatus.list.createNew}]]</a>
+                </div>
+            </div>
+            <div th:if="${paymentStatuses.empty}">[[#{paymentStatus.list.empty}]]</div>
+            <div th:if="${!paymentStatuses.empty}" class="table-responsive">
+                <table class="table table-striped table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col">[[#{paymentStatus.id.label}]]</th>
+                            <th scope="col">[[#{paymentStatus.name.label}]]</th>
+                            <th scope="col">[[#{paymentStatus.description.label}]]</th>
+                            <th><!-- --></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="paymentStatus : ${paymentStatuses}">
+                            <td>[[${paymentStatus.id}]]</td>
+                            <td>[[${paymentStatus.name}]]</td>
+                            <td>[[${paymentStatus.description}]]</td>
+                            <td>
+                                <div class="float-end text-nowrap">
+                                    <a th:href="@{/paymentStatuses/edit/{id}(id=${paymentStatus.id})}" class="btn btn-sm btn-secondary">[[#{paymentStatus.list.edit}]]</a>
+                                    <form th:action="@{/paymentStatuses/delete/{id}(id=${paymentStatus.id})}"
+                                            th:data-confirm-message="#{delete.confirm}" method="post" class="js-submit-confirm d-inline">
+                                        <div><button type="submit" class="btn btn-sm btn-secondary">[[#{paymentStatus.list.delete}]]</button></div>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </body>
+</html>

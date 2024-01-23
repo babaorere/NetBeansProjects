@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+  
+<html lang="en" 
+      xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+    
+    <head>
+        <title>[[#{loanCollectorStatus.list.headline}]]</title>
+    </head>
+    <body>
+        <div layout:fragment="content">
+            <div class="d-flex flex-wrap mb-4">
+                <h1 class="flex-grow-1">[[#{loanCollectorStatus.list.headline}]]</h1>
+                <div>
+                    <a th:href="@{/loanCollectorStatuses/add}" class="btn btn-primary ms-2">[[#{loanCollectorStatus.list.createNew}]]</a>
+                </div>
+            </div>
+            <div th:if="${loanCollectorStatuses.empty}">[[#{loanCollectorStatus.list.empty}]]</div>
+            <div th:if="${!loanCollectorStatuses.empty}" class="table-responsive">
+                <table class="table table-striped table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col">[[#{loanCollectorStatus.id.label}]]</th>
+                            <th scope="col">[[#{loanCollectorStatus.name.label}]]</th>
+                            <th scope="col">[[#{loanCollectorStatus.description.label}]]</th>
+                            <th><!-- --></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="loanCollectorStatus : ${loanCollectorStatuses}">
+                            <td>[[${loanCollectorStatus.id}]]</td>
+                            <td>[[${loanCollectorStatus.name}]]</td>
+                            <td>[[${loanCollectorStatus.description}]]</td>
+                            <td>
+                                <div class="float-end text-nowrap">
+                                    <a th:href="@{/loanCollectorStatuses/edit/{id}(id=${loanCollectorStatus.id})}" class="btn btn-sm btn-secondary">[[#{loanCollectorStatus.list.edit}]]</a>
+                                    <form th:action="@{/loanCollectorStatuses/delete/{id}(id=${loanCollectorStatus.id})}"
+                                            th:data-confirm-message="#{delete.confirm}" method="post" class="js-submit-confirm d-inline">
+                                        <div><button type="submit" class="btn btn-sm btn-secondary">[[#{loanCollectorStatus.list.delete}]]</button></div>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </body>
+</html>

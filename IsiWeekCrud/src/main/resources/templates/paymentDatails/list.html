@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+  
+<html lang="en" 
+      xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+    
+    <head>
+        <title>[[#{paymentDatails.list.headline}]]</title>
+    </head>
+    <body>
+        <div layout:fragment="content">
+            <div class="d-flex flex-wrap mb-4">
+                <h1 class="flex-grow-1">[[#{paymentDatails.list.headline}]]</h1>
+                <div>
+                    <a th:href="@{/paymentDatailss/add}" class="btn btn-primary ms-2">[[#{paymentDatails.list.createNew}]]</a>
+                </div>
+            </div>
+            <div th:if="${paymentDatailses.empty}">[[#{paymentDatails.list.empty}]]</div>
+            <div th:if="${!paymentDatailses.empty}" class="table-responsive">
+                <table class="table table-striped table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col">[[#{paymentDatails.id.label}]]</th>
+                            <th scope="col">[[#{paymentDatails.paymentDate.label}]]</th>
+                            <th scope="col">[[#{paymentDatails.paymentAmount.label}]]</th>
+                            <th scope="col">[[#{paymentDatails.notes.label}]]</th>
+                            <th scope="col">[[#{paymentDatails.loanContract.label}]]</th>
+                            <th scope="col">[[#{paymentDatails.paymentType.label}]]</th>
+                            <th scope="col">[[#{paymentDatails.paymentStatus.label}]]</th>
+                            <th scope="col">[[#{paymentDatails.loanContract.label}]]</th>
+                            <th><!-- --></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="paymentDatails : ${paymentDatailses}">
+                            <td>[[${paymentDatails.id}]]</td>
+                            <td>[[${paymentDatails.paymentDate}]]</td>
+                            <td>[[${paymentDatails.paymentAmount}]]</td>
+                            <td>[[${paymentDatails.notes}]]</td>
+                            <td>[[${paymentDatails.loanContract}]]</td>
+                            <td>[[${paymentDatails.paymentType}]]</td>
+                            <td>[[${paymentDatails.paymentStatus}]]</td>
+                            <td>[[${paymentDatails.loanContract}]]</td>
+                            <td>
+                                <div class="float-end text-nowrap">
+                                    <a th:href="@{/paymentDatailss/edit/{id}(id=${paymentDatails.id})}" class="btn btn-sm btn-secondary">[[#{paymentDatails.list.edit}]]</a>
+                                    <form th:action="@{/paymentDatailss/delete/{id}(id=${paymentDatails.id})}"
+                                            th:data-confirm-message="#{delete.confirm}" method="post" class="js-submit-confirm d-inline">
+                                        <div><button type="submit" class="btn btn-sm btn-secondary">[[#{paymentDatails.list.delete}]]</button></div>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </body>
+</html>

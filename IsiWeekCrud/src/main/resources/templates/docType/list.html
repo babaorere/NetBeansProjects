@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+  
+<html lang="en" 
+      xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+    <head>
+        <title>[[#{docType.list.headline}]]</title>
+    </head>
+    <body>
+        <div layout:fragment="content">
+            <div class="d-flex flex-wrap mb-4">
+                <h1 class="flex-grow-1">[[#{docType.list.headline}]]</h1>
+                <div>
+                    <a th:href="@{/docTypes/add}" class="btn btn-primary ms-2">[[#{docType.list.createNew}]]</a>
+                </div>
+            </div>
+            <div th:if="${docTypes.empty}">[[#{docType.list.empty}]]</div>
+            <div th:if="${!docTypes.empty}" class="table-responsive">
+                <table class="table table-striped table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col">[[#{docType.id.label}]]</th>
+                            <th scope="col">[[#{docType.name.label}]]</th>
+                            <th scope="col">[[#{docType.description.label}]]</th>
+                            <th><!-- --></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="docType : ${docTypes}">
+                            <td>[[${docType.id}]]</td>
+                            <td>[[${docType.name}]]</td>
+                            <td>[[${docType.description}]]</td>
+                            <td>
+                                <div class="float-end text-nowrap">
+                                    <a th:href="@{/docTypes/edit/{id}(id=${docType.id})}" class="btn btn-sm btn-secondary">[[#{docType.list.edit}]]</a>
+                                    <form th:action="@{/docTypes/delete/{id}(id=${docType.id})}"
+                                            th:data-confirm-message="#{delete.confirm}" method="post" class="js-submit-confirm d-inline">
+                                        <div><button type="submit" class="btn btn-sm btn-secondary">[[#{docType.list.delete}]]</button></div>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </body>
+</html>

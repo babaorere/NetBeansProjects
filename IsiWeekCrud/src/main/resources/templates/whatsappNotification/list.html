@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+  
+<html lang="en" 
+      xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+    
+    <head>
+        <title>[[#{whatsappNotification.list.headline}]]</title>
+    </head>
+    <body>
+        <div layout:fragment="content">
+            <div class="d-flex flex-wrap mb-4">
+                <h1 class="flex-grow-1">[[#{whatsappNotification.list.headline}]]</h1>
+                <div>
+                    <a th:href="@{/whatsappNotifications/add}" class="btn btn-primary ms-2">[[#{whatsappNotification.list.createNew}]]</a>
+                </div>
+            </div>
+            <div th:if="${whatsappNotifications.empty}">[[#{whatsappNotification.list.empty}]]</div>
+            <div th:if="${!whatsappNotifications.empty}" class="table-responsive">
+                <table class="table table-striped table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col">[[#{whatsappNotification.id.label}]]</th>
+                            <th scope="col">[[#{whatsappNotification.subject.label}]]</th>
+                            <th scope="col">[[#{whatsappNotification.sentAt.label}]]</th>
+                            <th scope="col">[[#{whatsappNotification.body.label}]]</th>
+                            <th scope="col">[[#{whatsappNotification.dateSent.label}]]</th>
+                            <th scope="col">[[#{whatsappNotification.person.label}]]</th>
+                            <th scope="col">[[#{whatsappNotification.loanContract.label}]]</th>
+                            <th scope="col">[[#{whatsappNotification.person.label}]]</th>
+                            <th><!-- --></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="whatsappNotification : ${whatsappNotifications}">
+                            <td>[[${whatsappNotification.id}]]</td>
+                            <td>[[${whatsappNotification.subject}]]</td>
+                            <td>[[${whatsappNotification.sentAt}]]</td>
+                            <td>[[${whatsappNotification.body}]]</td>
+                            <td>[[${whatsappNotification.dateSent}]]</td>
+                            <td>[[${whatsappNotification.person}]]</td>
+                            <td>[[${whatsappNotification.loanContract}]]</td>
+                            <td>[[${whatsappNotification.person}]]</td>
+                            <td>
+                                <div class="float-end text-nowrap">
+                                    <a th:href="@{/whatsappNotifications/edit/{id}(id=${whatsappNotification.id})}" class="btn btn-sm btn-secondary">[[#{whatsappNotification.list.edit}]]</a>
+                                    <form th:action="@{/whatsappNotifications/delete/{id}(id=${whatsappNotification.id})}"
+                                            th:data-confirm-message="#{delete.confirm}" method="post" class="js-submit-confirm d-inline">
+                                        <div><button type="submit" class="btn btn-sm btn-secondary">[[#{whatsappNotification.list.delete}]]</button></div>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+  
+<html lang="en" 
+      xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+    <head>
+        <title>[[#{employeeStatus.list.headline}]]</title>
+    </head>
+    <body>
+        <div layout:fragment="content">
+            <div class="d-flex flex-wrap mb-4">
+                <h1 class="flex-grow-1">[[#{employeeStatus.list.headline}]]</h1>
+                <div>
+                    <a th:href="@{/employeeStatuses/add}" class="btn btn-primary ms-2">[[#{employeeStatus.list.createNew}]]</a>
+                </div>
+            </div>
+            <div th:if="${employeeStatuses.empty}">[[#{employeeStatus.list.empty}]]</div>
+            <div th:if="${!employeeStatuses.empty}" class="table-responsive">
+                <table class="table table-striped table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col">[[#{employeeStatus.id.label}]]</th>
+                            <th scope="col">[[#{employeeStatus.name.label}]]</th>
+                            <th scope="col">[[#{employeeStatus.description.label}]]</th>
+                            <th><!-- --></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="employeeStatus : ${employeeStatuses}">
+                            <td>[[${employeeStatus.id}]]</td>
+                            <td>[[${employeeStatus.name}]]</td>
+                            <td>[[${employeeStatus.description}]]</td>
+                            <td>
+                                <div class="float-end text-nowrap">
+                                    <a th:href="@{/employeeStatuses/edit/{id}(id=${employeeStatus.id})}" class="btn btn-sm btn-secondary">[[#{employeeStatus.list.edit}]]</a>
+                                    <form th:action="@{/employeeStatuses/delete/{id}(id=${employeeStatus.id})}"
+                                            th:data-confirm-message="#{delete.confirm}" method="post" class="js-submit-confirm d-inline">
+                                        <div><button type="submit" class="btn btn-sm btn-secondary">[[#{employeeStatus.list.delete}]]</button></div>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </body>
+</html>
