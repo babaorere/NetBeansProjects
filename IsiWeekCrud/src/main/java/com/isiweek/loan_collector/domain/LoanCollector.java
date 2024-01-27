@@ -1,7 +1,7 @@
 package com.isiweek.loan_collector.domain;
 
 import com.isiweek.loan_collector_status.domain.LoanCollectorStatus;
-import com.isiweek.person.domain.Person;
+import com.isiweek.person.Person;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;

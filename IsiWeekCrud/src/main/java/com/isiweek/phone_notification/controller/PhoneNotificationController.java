@@ -2,8 +2,8 @@ package com.isiweek.phone_notification.controller;
 
 import com.isiweek.loan_contract.domain.LoanContract;
 import com.isiweek.loan_contract.repos.LoanContractRepository;
-import com.isiweek.person.domain.Person;
-import com.isiweek.person.repos.PersonRepository;
+import com.isiweek.person.Person;
+import com.isiweek.person.PersonRepository;
 import com.isiweek.phone_notification.model.PhoneNotificationDTO;
 import com.isiweek.phone_notification.service.PhoneNotificationService;
 import com.isiweek.util.CustomCollectors;

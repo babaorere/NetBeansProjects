@@ -29,12 +29,12 @@ public class CompanyController {
     }
 
     @GetMapping("/add")
-    public String add(@ModelAttribute("company") final CompanyDTO companyDTO) {
+    public String add(@ModelAttribute("company") final Company company) {
         return "company/add";
     }
 
     @PostMapping("/add")
-    public String add(@ModelAttribute("company") @Valid final CompanyDTO companyDTO,
+    public String add(@ModelAttribute("company") @Valid final Company companyDTO,
         final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
         if (!bindingResult.hasFieldErrors("email") && companyService.emailExists(companyDTO.getEmail())) {
             bindingResult.rejectValue("email", "Exists.company.email");
@@ -62,9 +62,9 @@ public class CompanyController {
 
     @PostMapping("/edit/{id}")
     public String edit(@PathVariable(name = "id") final Long id,
-        @ModelAttribute("company") @Valid final CompanyDTO companyDTO,
+        @ModelAttribute("company") @Valid final Company companyDTO,
         final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
-        final CompanyDTO currentCompanyDTO = companyService.get(id);
+        final Company currentCompanyDTO = companyService.get(id);
         if (!bindingResult.hasFieldErrors("email")
             && !companyDTO.getEmail().equalsIgnoreCase(currentCompanyDTO.getEmail())
             && companyService.emailExists(companyDTO.getEmail())) {

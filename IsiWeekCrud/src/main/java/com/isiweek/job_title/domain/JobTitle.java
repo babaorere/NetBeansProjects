@@ -1,6 +1,6 @@
 package com.isiweek.job_title.domain;
 
-import com.isiweek.employee.domain.Employee;
+import com.isiweek.employee.Employee;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;

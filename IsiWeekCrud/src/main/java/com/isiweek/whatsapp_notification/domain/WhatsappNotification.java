@@ -1,7 +1,7 @@
 package com.isiweek.whatsapp_notification.domain;
 
 import com.isiweek.loan_contract.domain.LoanContract;
-import com.isiweek.person.domain.Person;
+import com.isiweek.person.Person;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;

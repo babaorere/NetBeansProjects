@@ -2,8 +2,8 @@ package com.isiweek.whatsapp_notification.service;
 
 import com.isiweek.loan_contract.domain.LoanContract;
 import com.isiweek.loan_contract.repos.LoanContractRepository;
-import com.isiweek.person.domain.Person;
-import com.isiweek.person.repos.PersonRepository;
+import com.isiweek.person.Person;
+import com.isiweek.person.PersonRepository;
 import com.isiweek.util.NotFoundException;
 import com.isiweek.whatsapp_notification.domain.WhatsappNotification;
 import com.isiweek.whatsapp_notification.model.WhatsappNotificationDTO;

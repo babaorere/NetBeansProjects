@@ -1,7 +1,7 @@
 package com.isiweek.company;
 
-import com.isiweek.person.domain.Person;
-import com.isiweek.person.repos.PersonRepository;
+import com.isiweek.person.Person;
+import com.isiweek.person.PersonRepository;
 import com.isiweek.util.NotFoundException;
 import com.isiweek.util.WebUtils;
 import java.util.List;
@@ -17,34 +17,24 @@ public class CompanyService {
 
     @Autowired
     public CompanyService(CompanyRepository companyRepository,
-        PersonRepository personRepository) {
+            PersonRepository personRepository) {
         this.companyRepository = companyRepository;
         this.personRepository = personRepository;
     }
 
-    public List<CompanyDTO> findAll() {
-        final List<Company> companies = companyRepository.findAll(Sort.by("id"));
-        return companies.stream()
-            .map(company -> mapToDTO(company, new CompanyDTO()))
-            .toList();
+    public List<Company> findAll() {
+        return companyRepository.findAll(Sort.by("id"));
     }
 
-    public CompanyDTO get(final Long id) {
-        return companyRepository.findById(id)
-            .map(company -> mapToDTO(company, new CompanyDTO()))
-            .orElseThrow(NotFoundException::new);
+    public Company get(final Long id) {
+        return companyRepository.findById(id).orElseThrow(NotFoundException::new);
     }
 
-    public Long create(final CompanyDTO companyDTO) {
-        final Company company = new Company();
-        mapToEntity(companyDTO, company);
-        return companyRepository.save(company).getId();
+    public Company create(final Company inCompany) {
+        return companyRepository.save(inCompany);
     }
 
-    public void update(final Long id, final CompanyDTO companyDTO) {
-        final Company company = companyRepository.findById(id)
-            .orElseThrow(NotFoundException::new);
-        mapToEntity(companyDTO, company);
+    public void update(final Long id, final Company company) {
         companyRepository.save(company);
     }
 
@@ -66,7 +56,7 @@ public class CompanyService {
 
     public String getReferencedWarning(final Long id) {
         final Company company = companyRepository.findById(id)
-            .orElseThrow(NotFoundException::new);
+                .orElseThrow(NotFoundException::new);
         final Person companyPerson = personRepository.findFirstByCompanies(company);
         if (companyPerson != null) {
             return WebUtils.getMessage("company.person.company.referenced", companyPerson.getId());

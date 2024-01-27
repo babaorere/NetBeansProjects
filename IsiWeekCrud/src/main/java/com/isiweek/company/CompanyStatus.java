@@ -1,5 +1,6 @@
 package com.isiweek.company;
 
+import com.github.javafaker.Faker;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -7,7 +8,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
 import java.util.Objects;
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,8 +23,14 @@ import org.springframework.beans.BeanUtils;
 @Setter
 public class CompanyStatus {
 
-    public static CompanyStatus genRandom() {
-        return new CompanyStatus(null, UUID.randomUUID() + " NONE");
+    public static CompanyStatus generateRandom() {
+        CompanyStatus companyStatus = new CompanyStatus();
+        Faker faker = new Faker();
+
+        companyStatus.setName(faker.company().industry() + " NONE");
+        // Puedes ajustar según sea necesario para otros campos
+
+        return companyStatus;
     }
 
     @Id
@@ -36,13 +42,10 @@ public class CompanyStatus {
     private String name;
 
     // DTO copy constructor
-    public CompanyStatus(CompanyStatusDTO inDTO) {
-
-        // Transforma el parametro, a una clase entity
-        CompanyStatus entity = CompanyStatusMapper.INSTANCE.mapToEntity(inDTO);
+    public CompanyStatus(CompanyStatus inOther) {
 
         // Copia los valores mapeados a la instancia actual
-        BeanUtils.copyProperties(entity, this);
+        BeanUtils.copyProperties(inOther, this);
     }
 
     // Otros campos relacionados con el estado de la compañía
@@ -69,10 +72,6 @@ public class CompanyStatus {
     @Override
     public int hashCode() {
         return Objects.hash(getId(), getName());
-    }
-
-    public CompanyStatusDTO mapToDTO() {
-        return CompanyStatusMapper.INSTANCE.mapToDTO(this);
     }
 
 }

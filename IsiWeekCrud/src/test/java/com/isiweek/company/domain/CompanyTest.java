@@ -6,12 +6,11 @@ import com.isiweek.company.Company;
 import com.isiweek.company.CompanyRepository;
 import com.isiweek.company.CompanyStatus;
 import com.isiweek.company.CompanyStatusRepository;
-import com.isiweek.person.domain.Person;
+import com.isiweek.person.Person;
 import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.UUID;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,11 +33,13 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ContextConfiguration(classes = AppConfig.class)
 class CompanyTest {
 
-    @Autowired
+    @Autowired(required = true)
     private CompanyStatusRepository companyStatusRepository;
+    private CompanyStatus status;
 
-    @Autowired
+    @Autowired(required = true)
     private CompanyRepository companyRepository;
+    Company company;
 
     public CompanyTest() {
     }
@@ -54,38 +55,13 @@ class CompanyTest {
     @BeforeEach
     public void setUp() {
 
-        CompanyStatus status = CompanyStatus.genRandom();
-        companyStatusRepository.save(status);
-
-        String address = "Test Company Address";
-        String description = "Test Company Description";
-        String email = UUID.randomUUID() + "test_company@example.com";
-        String name = UUID.randomUUID() + "Test Company Name";
-        String phone1 = "123456789";
-        String primaryContact = "Test Primary Contact";
-        String taxidnumber = UUID.randomUUID() + "ABC123";
-        Set<Person> companyPersons = new HashSet<>();
-        OffsetDateTime dateCreated = OffsetDateTime.now();
-
-        // Crear instancia utilizando el builder de Lombok
-        Company company = Company.builder()
-            .address(address)
-            .description(description)
-            .email(email)
-            .name(name)
-            .phone1(phone1)
-            .primaryContact(primaryContact)
-            .taxidnumber(taxidnumber)
-            .persons(companyPersons)
-            .dateCreated(dateCreated)
-            .status(status)
-            .build();
-
-        Company save = companyRepository.save(company);
+        status = companyStatusRepository.save(CompanyStatus.generateRandom());
     }
 
     @AfterEach
     public void tearDown() {
+        companyRepository.deleteAll();
+        companyStatusRepository.deleteAll();
     }
 
     @Test
@@ -127,11 +103,10 @@ class CompanyTest {
         Set<Person> persons = new HashSet<>();
         OffsetDateTime dateCreated = OffsetDateTime.now();
         OffsetDateTime lastUpdated = OffsetDateTime.now();
-        CompanyStatus status = new CompanyStatus(1L, "NONE");
 
         // Crear instancia utilizando el constructor con todos los argumentos
         Company company = new Company(id, name, description, taxidnumber, address, email, phone1, phone2,
-            primaryContact, dateCreated, lastUpdated, persons, status);
+                primaryContact, dateCreated, lastUpdated, persons, status);
 
         // Verificar que la instancia no sea nula
         assertNotNull(company);
@@ -155,6 +130,8 @@ class CompanyTest {
     @Test
     void testCreateCompany() {
         Company company = new Company();
+        company.setStatus(status);
+
         assertNotNull(company);
     }
 
@@ -175,21 +152,21 @@ class CompanyTest {
         CompanyStatus status = new CompanyStatus(1L, "NONE");
 
         // Crear instancia utilizando el builder de Lombok
-        Company company = Company.builder()
-            .id(id)
-            .address(address)
-            .description(description)
-            .email(email)
-            .name(name)
-            .phone1(phone1)
-            .phone2(phone2)
-            .primaryContact(primaryContact)
-            .taxidnumber(taxidnumber)
-            .persons(persons)
-            .dateCreated(dateCreated)
-            .lastUpdated(lastUpdated)
-            .status(status)
-            .build();
+        company = Company.builder()
+                .id(id)
+                .address(address)
+                .description(description)
+                .email(email)
+                .name(name)
+                .phone1(phone1)
+                .phone2(phone2)
+                .primaryContact(primaryContact)
+                .taxidnumber(taxidnumber)
+                .persons(persons)
+                .dateCreated(dateCreated)
+                .lastUpdated(lastUpdated)
+                .status(status)
+                .build();
 
         // Verificar que la instancia no sea nula
         assertNotNull(company);
@@ -216,7 +193,7 @@ class CompanyTest {
 //        );
 
         assertThrows(Exception.class, ()
-            -> Company.builder().build()
+                -> Company.builder().build()
         );
     }
 
@@ -239,7 +216,7 @@ class CompanyTest {
         OffsetDateTime now = OffsetDateTime.now();
         company.setDateCreated(now);
         company.setLastUpdated(now);
-        CompanyStatus status = new CompanyStatus(1L, "NONE");
+        company.setStatus(status);
 
         // Verificar los valores a través de los getters
         assertEquals(1L, company.getId());
@@ -260,9 +237,9 @@ class CompanyTest {
     @Test
     void testEqualsAndHashCode() {
 
-        CompanyStatus status1 = new CompanyStatus(1L, "NONE");
-        CompanyStatus status2 = new CompanyStatus(1L, "NONE");
-        CompanyStatus status3 = new CompanyStatus(1L, "NONE");
+        CompanyStatus status1 = status;
+        CompanyStatus status2 = status;
+        CompanyStatus status3 = status;
 
         Set<Person> persons1 = new HashSet<>();
         Set<Person> persons2 = new HashSet<>();
@@ -270,54 +247,54 @@ class CompanyTest {
 
         // Crear instancia utilizando el builder de Lombok
         Company company1 = Company.builder()
-            .id(1L)
-            .address("Company Address")
-            .description("Company Description")
-            .email("company@example.com")
-            .name("Company Name")
-            .phone1("123456789")
-            .phone2("987654321")
-            .primaryContact("Primary Contact")
-            .taxidnumber("ABC123")
-            .persons(persons1)
-            .dateCreated(OffsetDateTime.now())
-            .lastUpdated(OffsetDateTime.now())
-            .status(status1)
-            .build();
+                .id(1L)
+                .address("Company Address")
+                .description("Company Description")
+                .email("company@example.com")
+                .name("Company Name")
+                .phone1("123456789")
+                .phone2("987654321")
+                .primaryContact("Primary Contact")
+                .taxidnumber("ABC123")
+                .persons(persons1)
+                .dateCreated(OffsetDateTime.now())
+                .lastUpdated(OffsetDateTime.now())
+                .status(status1)
+                .build();
 
         // Crear instancia utilizando el builder de Lombok
         Company company2 = Company.builder()
-            .id(1L)
-            .address("Company Address")
-            .description("Company Description")
-            .email("company@example.com")
-            .name("Company Name")
-            .phone1("123456789")
-            .phone2("987654321")
-            .primaryContact("Primary Contact")
-            .taxidnumber("ABC123")
-            .persons(persons2)
-            .dateCreated(OffsetDateTime.now())
-            .lastUpdated(OffsetDateTime.now())
-            .status(status2)
-            .build();
+                .id(1L)
+                .address("Company Address")
+                .description("Company Description")
+                .email("company@example.com")
+                .name("Company Name")
+                .phone1("123456789")
+                .phone2("987654321")
+                .primaryContact("Primary Contact")
+                .taxidnumber("ABC123")
+                .persons(persons2)
+                .dateCreated(OffsetDateTime.now())
+                .lastUpdated(OffsetDateTime.now())
+                .status(status2)
+                .build();
 
         // Crear instancia utilizando el builder de Lombok
         Company company3 = Company.builder()
-            .id(2L)
-            .address("Company Address")
-            .description("Company Description")
-            .email("company@example.com")
-            .name("Company Name")
-            .phone1("123456789")
-            .phone2("987654321")
-            .primaryContact("Primary Contact")
-            .taxidnumber("ABC123")
-            .persons(persons3)
-            .dateCreated(OffsetDateTime.now())
-            .lastUpdated(OffsetDateTime.now())
-            .status(status3)
-            .build();
+                .id(2L)
+                .address("Company Address")
+                .description("Company Description")
+                .email("company@example.com")
+                .name("Company Name")
+                .phone1("123456789")
+                .phone2("987654321")
+                .primaryContact("Primary Contact")
+                .taxidnumber("ABC123")
+                .persons(persons3)
+                .dateCreated(OffsetDateTime.now())
+                .lastUpdated(OffsetDateTime.now())
+                .status(status3)
+                .build();
 
         assertEquals(company1, company2);
         assertNotEquals(company1, company3);
@@ -327,26 +304,25 @@ class CompanyTest {
 
     @Test
     void testAddPersonToCompany() {
-        CompanyStatus status = new CompanyStatus(1L, "NONE");
 
         // Crear instancia utilizando el builder de Lombok
         Company company = Company.builder()
-            .id(1L)
-            .address("Company Address")
-            .description("Company Description")
-            .email("company@example.com")
-            .name("Company Name")
-            .phone1("123456789")
-            .phone2("987654321")
-            .primaryContact("Primary Contact")
-            .taxidnumber("ABC123")
-            .persons(new HashSet<>())
-            .dateCreated(OffsetDateTime.now())
-            .lastUpdated(OffsetDateTime.now())
-            .status(status)
-            .build();
+                .id(1L)
+                .address("Company Address")
+                .description("Company Description")
+                .email("company@example.com")
+                .name("Company Name")
+                .phone1("123456789")
+                .phone2("987654321")
+                .primaryContact("Primary Contact")
+                .taxidnumber("ABC123")
+                .persons(new HashSet<>())
+                .dateCreated(OffsetDateTime.now())
+                .lastUpdated(OffsetDateTime.now())
+                .status(status)
+                .build();
 
-        Person person = Person.builder().build();
+        Person person = Person.generateRandom();
 
         company.addPerson(person);
 
@@ -356,8 +332,8 @@ class CompanyTest {
 
     @Test
     void testUtilityMethods() {
-        CompanyStatus status1 = new CompanyStatus(1L, "NONE");
-        CompanyStatus status2 = new CompanyStatus(1L, "NONE");
+        CompanyStatus status1 = status;
+        CompanyStatus status2 = status;
 
         Set<Person> persons1 = new HashSet<>();
         Set<Person> persons2 = new HashSet<>();
@@ -365,34 +341,34 @@ class CompanyTest {
         final String name = "MyCompany";
         // Crear instancia utilizando el builder de Lombok
         Company company1 = Company.builder()
-            .address("Company Address")
-            .description("Company Description")
-            .email("company@example.com")
-            .name(name)
-            .phone1("123456789")
-            .phone2("987654321")
-            .primaryContact("Primary Contact")
-            .taxidnumber("ABC123")
-            .persons(persons1)
-            .dateCreated(OffsetDateTime.now())
-            .lastUpdated(OffsetDateTime.now())
-            .status(status1)
-            .build();
+                .address("Company Address")
+                .description("Company Description")
+                .email("company@example.com")
+                .name(name)
+                .phone1("123456789")
+                .phone2("987654321")
+                .primaryContact("Primary Contact")
+                .taxidnumber("ABC123")
+                .persons(persons1)
+                .dateCreated(OffsetDateTime.now())
+                .lastUpdated(OffsetDateTime.now())
+                .status(status1)
+                .build();
 
         Company company2 = Company.builder()
-            .address("Company Address")
-            .description("Company Description")
-            .email("company@example.com")
-            .name(name)
-            .phone1("123456789")
-            .phone2("987654321")
-            .primaryContact("Primary Contact")
-            .taxidnumber("ABC123")
-            .persons(persons2)
-            .dateCreated(OffsetDateTime.now())
-            .lastUpdated(OffsetDateTime.now())
-            .status(status2)
-            .build();
+                .address("Company Address")
+                .description("Company Description")
+                .email("company@example.com")
+                .name(name)
+                .phone1("123456789")
+                .phone2("987654321")
+                .primaryContact("Primary Contact")
+                .taxidnumber("ABC123")
+                .persons(persons2)
+                .dateCreated(OffsetDateTime.now())
+                .lastUpdated(OffsetDateTime.now())
+                .status(status2)
+                .build();
 
         assertEquals("[\"id\": " + null + ", \"name\": " + name + "]", company1.toString());
 

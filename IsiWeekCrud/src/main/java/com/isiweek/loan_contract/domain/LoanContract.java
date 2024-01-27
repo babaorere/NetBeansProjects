@@ -1,7 +1,7 @@
 package com.isiweek.loan_contract.domain;
 
-import com.isiweek.customer.domain.Customer;
-import com.isiweek.email_notification.domain.EmailNotification;
+import com.isiweek.customer.Customer;
+import com.isiweek.email_notification.EmailNotification;
 import com.isiweek.loan_status.domain.LoanStatus;
 import com.isiweek.loan_type.domain.LoanType;
 import com.isiweek.payment_datails.domain.PaymentDatails;

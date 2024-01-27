@@ -1,0 +1,58 @@
+package com.isiweek.person;
+
+import com.isiweek.person.Person;
+import com.isiweek.person.PersonService;
+import jakarta.validation.Valid;
+import java.util.List;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping(value = "/api/people", produces = MediaType.APPLICATION_JSON_VALUE)
+public class PersonResource {
+
+    private final PersonService personService;
+
+    public PersonResource(final PersonService personService) {
+        this.personService = personService;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Person>> getAllPeople() {
+        return ResponseEntity.ok(personService.findAll());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Person> getPerson(@PathVariable(name = "id") final Long id) {
+        return ResponseEntity.ok(personService.get(id));
+    }
+
+    @PostMapping
+    public ResponseEntity<Long> createPerson(@RequestBody @Valid final Person inEntity) {
+        final Long createdId = personService.create(inEntity);
+        return new ResponseEntity<>(createdId, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Long> updatePerson(@PathVariable(name = "id") final Long id,
+        @RequestBody @Valid final Person inEntity) {
+        personService.update(id, inEntity);
+        return ResponseEntity.ok(id);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletePerson(@PathVariable(name = "id") final Long id) {
+        personService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+}

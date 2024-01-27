@@ -1,7 +1,7 @@
 package com.isiweek.job_title.service;
 
-import com.isiweek.employee.domain.Employee;
-import com.isiweek.employee.repos.EmployeeRepository;
+import com.isiweek.employee.Employee;
+import com.isiweek.employee.EmployeeRepository;
 import com.isiweek.job_title.domain.JobTitle;
 import com.isiweek.job_title.model.JobTitleDTO;
 import com.isiweek.job_title.repos.JobTitleRepository;

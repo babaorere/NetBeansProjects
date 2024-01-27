@@ -1,7 +1,7 @@
 package com.isiweek.loan_contract.controller;
 
-import com.isiweek.customer.domain.Customer;
-import com.isiweek.customer.repos.CustomerRepository;
+import com.isiweek.customer.Customer;
+import com.isiweek.customer.CustomerRepository;
 import com.isiweek.loan_contract.model.LoanContractDTO;
 import com.isiweek.loan_contract.service.LoanContractService;
 import com.isiweek.loan_status.domain.LoanStatus;

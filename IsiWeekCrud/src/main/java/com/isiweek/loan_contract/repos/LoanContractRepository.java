@@ -1,6 +1,6 @@
 package com.isiweek.loan_contract.repos;
 
-import com.isiweek.customer.domain.Customer;
+import com.isiweek.customer.Customer;
 import com.isiweek.loan_contract.domain.LoanContract;
 import com.isiweek.loan_status.domain.LoanStatus;
 import com.isiweek.loan_type.domain.LoanType;

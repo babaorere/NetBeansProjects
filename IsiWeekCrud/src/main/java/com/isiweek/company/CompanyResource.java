@@ -25,25 +25,25 @@ public class CompanyResource {
     }
 
     @GetMapping
-    public ResponseEntity<List<CompanyDTO>> getAllCompanies() {
+    public ResponseEntity<List<Company>> getAllCompanies() {
         return ResponseEntity.ok(companyService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CompanyDTO> getCompany(@PathVariable(name = "id") final Long id) {
+    public ResponseEntity<Company> getCompany(@PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(companyService.get(id));
     }
 
     @PostMapping
-    public ResponseEntity<Long> createCompany(@RequestBody @Valid final CompanyDTO companyDTO) {
-        final Long createdId = companyService.create(companyDTO);
+    public ResponseEntity<Long> createCompany(@RequestBody @Valid final Company company) {
+        final Long createdId = companyService.create(company).getId();
         return new ResponseEntity<>(createdId, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Long> updateCompany(@PathVariable(name = "id") final Long id,
-        @RequestBody @Valid final CompanyDTO companyDTO) {
-        companyService.update(id, companyDTO);
+            @RequestBody @Valid final Company company) {
+        companyService.update(id, company);
         return ResponseEntity.ok(id);
     }
 

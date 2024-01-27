@@ -1,6 +1,7 @@
 package com.isiweek.company;
 
-import com.isiweek.person.domain.Person;
+import com.github.javafaker.Faker;
+import com.isiweek.person.Person;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -15,7 +16,6 @@ import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,6 +36,23 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Setter
 public class Company {
 
+    public static Company generateRandom() {
+        Faker faker = new Faker();
+
+        return Company.builder()
+                .name(faker.company().name())
+                .description(faker.lorem().sentence())
+                .taxidnumber(faker.number().digits(8))
+                .address(faker.address().streetAddress())
+                .email(faker.internet().emailAddress())
+                .phone1(faker.phoneNumber().phoneNumber())
+                .phone2(faker.phoneNumber().phoneNumber())
+                .primaryContact(faker.name().fullName())
+                .persons(new HashSet<>())
+                .status(CompanyStatus.generateRandom())
+                .build();
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -47,7 +64,7 @@ public class Company {
 
     @NonNull
     @NotNull(message = "Field is required")
-    @Column(nullable = false, name = "\"description\"", length = 512)
+    @Column(nullable = false, name = "description", length = 512)
     private String description;
 
     @NonNull
@@ -103,16 +120,6 @@ public class Company {
         BeanUtils.copyProperties(inEntity, this);
     }
 
-    // DTO copy constructor
-    public Company(CompanyDTO inDTO) {
-
-        // Transforma el parametro, a una clase entity
-        Company entity = CompanyMapper.INSTANCE.mapToEntity(inDTO);
-
-        // Copia los valores mapeados a la instancia actual
-        BeanUtils.copyProperties(entity, this);
-    }
-
     @Override
     public String toString() {
         return "[\"id\": " + id + ", \"name\": " + name + "]";
@@ -138,29 +145,6 @@ public class Company {
     public void addPerson(Person inPerson) {
         persons.add(inPerson);
         inPerson.getCompanies().add(this);
-    }
-
-    public static Company genRandom() {
-        Long id = 1L;
-        String address = "Company Address " + UUID.randomUUID();
-        String description = "Company Description " + UUID.randomUUID();
-        String email = UUID.randomUUID() + "@example.com";
-        String name = "Company Name " + UUID.randomUUID();
-        String phone1 = "Phone1 " + UUID.randomUUID().toString();
-        String phone2 = "Phone2 " + UUID.randomUUID().toString();
-        String primaryContact = "Primary Contact" + UUID.randomUUID();
-        String taxidnumber = "TaxIDnumber" + UUID.randomUUID().toString();
-        Set<Person> persons = new HashSet<>();
-        CompanyStatus status = new CompanyStatus(1L, "NONE");
-
-        // Crear instancia utilizando el constructor con todos los argumentos
-        return new Company(id, name, description, taxidnumber, address, email, phone1, phone2,
-            primaryContact, null, null, persons, status);
-
-    }
-
-    public CompanyDTO toDTO() {
-        return CompanyMapper.INSTANCE.mapToDTO(this);
     }
 
 }

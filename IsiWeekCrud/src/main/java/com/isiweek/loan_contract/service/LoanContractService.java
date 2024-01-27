@@ -1,9 +1,9 @@
 package com.isiweek.loan_contract.service;
 
-import com.isiweek.customer.domain.Customer;
-import com.isiweek.customer.repos.CustomerRepository;
-import com.isiweek.email_notification.domain.EmailNotification;
-import com.isiweek.email_notification.repos.EmailNotificationRepository;
+import com.isiweek.customer.Customer;
+import com.isiweek.customer.CustomerRepository;
+import com.isiweek.email_notification.EmailNotification;
+import com.isiweek.email_notification.EmailNotificationRepository;
 import com.isiweek.loan_contract.domain.LoanContract;
 import com.isiweek.loan_contract.model.LoanContractDTO;
 import com.isiweek.loan_contract.repos.LoanContractRepository;
