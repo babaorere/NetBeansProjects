@@ -5,6 +5,8 @@ import com.isiweek.person.PersonRepository;
 import com.isiweek.util.NotFoundException;
 import com.isiweek.util.WebUtils;
 import java.util.List;
+import java.util.Optional;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -34,12 +36,29 @@ public class CompanyService {
         return companyRepository.save(inCompany);
     }
 
-    public void update(final Long id, final Company company) {
-        companyRepository.save(company);
+    public Company update(final Long inId, final Company inCompany) {
+
+        Optional<Company> existingCompanyOptional = companyRepository.findById(inId);
+
+        if (existingCompanyOptional.isPresent()) {
+            Company existingCompany = existingCompanyOptional.get();
+
+            // Copia todos los campos de la entidad proporcionada a la entidad existente
+            BeanUtils.copyProperties(inCompany, existingCompany);
+
+            // Guarda el registro actualizado
+            return companyRepository.save(existingCompany);
+        } else {
+            throw new NotFoundException("Company with ID " + inId + " not found");
+        }
     }
 
     public void delete(final Long id) {
         companyRepository.deleteById(id);
+    }
+
+    public void deleteAll() {
+        companyRepository.deleteAll();
     }
 
     public boolean emailExists(final String email) {
@@ -82,5 +101,9 @@ public class CompanyService {
             person.addCompany(company);
             personRepository.save(person); // Guarda la persona con la nueva relación
         }
+    }
+
+    public Optional<Company> findById(Long inId) {
+        return companyRepository.findById(inId);
     }
 }

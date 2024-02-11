@@ -1,10 +1,11 @@
 package com.isiweek.company;
 
-import com.github.javafaker.Faker;
 import com.isiweek.person.Person;
+import com.isiweek.status.Status;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -22,6 +23,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
+import net.datafaker.Faker;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -49,50 +51,59 @@ public class Company {
                 .phone2(faker.phoneNumber().phoneNumber())
                 .primaryContact(faker.name().fullName())
                 .persons(new HashSet<>())
-                .status(CompanyStatus.generateRandom())
+                .status(Status.generateRandom())
                 .build();
     }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Builder.Default
+    private Long id = 0L;
 
     @NonNull
     @NotNull(message = "Name is required")
     @Column(nullable = false, unique = true, length = 128)
-    private String name;
+    @Builder.Default
+    private String name = "";
 
     @NonNull
     @NotNull(message = "Field is required")
     @Column(nullable = false, name = "description", length = 512)
-    private String description;
+    @Builder.Default
+    private String description = "";
 
     @NonNull
     @Column(nullable = false, unique = true, length = 64)
-    private String taxidnumber;
+    @Builder.Default
+    private String taxidnumber = "";
 
     @NonNull
     @NotNull(message = "Address is required")
     @Column(nullable = false, length = 256)
-    private String address;
+    @Builder.Default
+    private String address = "";
 
     @NonNull
     @NotNull(message = "Email is required")
     @Column(nullable = false, unique = true, length = 64)
-    private String email;
+    @Builder.Default
+    private String email = "";
 
     @NonNull
     @NotNull(message = "Phone1 is required")
     @Column(nullable = false, length = 32)
-    private String phone1;
+    @Builder.Default
+    private String phone1 = "";
 
-    @Column(length = 32)
-    private String phone2;
+    @Column(nullable = false, length = 32)
+    @Builder.Default
+    private String phone2 = "";
 
     @NonNull
     @NotNull(message = "Primary Contact is required")
     @Column(nullable = false, length = 256)
-    private String primaryContact;
+    @Builder.Default
+    private String primaryContact = "";
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
@@ -105,14 +116,18 @@ public class Company {
     @NonNull
     @NotNull(message = "Persons is required")
     @Builder.Default
-    @ManyToMany(mappedBy = "companies")
+    @ManyToMany(mappedBy = "companies", fetch = FetchType.LAZY)
     private Set<Person> persons = new HashSet<>();
+
+    @Column
+    private Long statusId;
 
     @NonNull
     @NotNull(message = "Status is required")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "status_id", nullable = false)
-    private CompanyStatus status;
+    @Builder.Default
+    private Status status = Status.generateRandom();
 
     // Soft copy contructor
     public Company(Company inEntity) {

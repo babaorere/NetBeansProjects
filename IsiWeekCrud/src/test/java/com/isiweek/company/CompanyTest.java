@@ -1,10 +1,10 @@
-package com.isiweek.company.domain;
+package com.isiweek.company;
 
 import com.isiweek.AppConfig;
 import com.isiweek.LoanAppApplication;
 import com.isiweek.company.Company;
 import com.isiweek.company.CompanyRepository;
-import com.isiweek.company.CompanyStatus;
+import com.isiweek.status.Status;
 import com.isiweek.company.CompanyStatusRepository;
 import com.isiweek.person.Person;
 import java.time.OffsetDateTime;
@@ -35,7 +35,7 @@ class CompanyTest {
 
     @Autowired(required = true)
     private CompanyStatusRepository companyStatusRepository;
-    private CompanyStatus status;
+    private Status status;
 
     @Autowired(required = true)
     private CompanyRepository companyRepository;
@@ -55,7 +55,7 @@ class CompanyTest {
     @BeforeEach
     public void setUp() {
 
-        status = companyStatusRepository.save(CompanyStatus.generateRandom());
+        status = companyStatusRepository.save(Status.generateRandom());
     }
 
     @AfterEach
@@ -149,7 +149,7 @@ class CompanyTest {
         Set<Person> persons = new HashSet<>();
         OffsetDateTime dateCreated = OffsetDateTime.now();
         OffsetDateTime lastUpdated = OffsetDateTime.now();
-        CompanyStatus status = new CompanyStatus(1L, "NONE");
+        Status status = new Status(1L, "NONE");
 
         // Crear instancia utilizando el builder de Lombok
         company = Company.builder()
@@ -237,9 +237,9 @@ class CompanyTest {
     @Test
     void testEqualsAndHashCode() {
 
-        CompanyStatus status1 = status;
-        CompanyStatus status2 = status;
-        CompanyStatus status3 = status;
+        Status status1 = status;
+        Status status2 = status;
+        Status status3 = status;
 
         Set<Person> persons1 = new HashSet<>();
         Set<Person> persons2 = new HashSet<>();
@@ -332,8 +332,8 @@ class CompanyTest {
 
     @Test
     void testUtilityMethods() {
-        CompanyStatus status1 = status;
-        CompanyStatus status2 = status;
+        Status status1 = status;
+        Status status2 = status;
 
         Set<Person> persons1 = new HashSet<>();
         Set<Person> persons2 = new HashSet<>();

@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html lang="en" 
+      xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+    <head>
+        <title>[[#{home.index.headline}]]</title>
+    </head>
+    <body>
+        <div layout:fragment="content">
+            <h1 class="mb-4">[[#{home.index.headline}]]</h1>
+            <p class="mb-5">[(#{home.index.text})]</p> 
+            <div class="col-md-4 mb-5">
+                <h4 class="mb-3">[[#{home.index.exploreEntities}]]</h4>
+                <div class="list-group">
+                    <a th:href="@{/companies}" class="list-group-item list-group-item-action">[[#{company.list.headline}]]</a>
+                    <a th:href="@{/countries}" class="list-group-item list-group-item-action">[[#{country.list.headline}]]</a>
+                    <a th:href="@{/criminalRecords}" class="list-group-item list-group-item-action">[[#{criminalRecord.list.headline}]]</a>
+                    <a th:href="@{/customers}" class="list-group-item list-group-item-action">[[#{customer.list.headline}]]</a>
+                    <a th:href="@{/departaments}" class="list-group-item list-group-item-action">[[#{departament.list.headline}]]</a>
+                    <a th:href="@{/docTypes}" class="list-group-item list-group-item-action">[[#{docType.list.headline}]]</a>
+                    <a th:href="@{/emailNotifications}" class="list-group-item list-group-item-action">[[#{emailNotification.list.headline}]]</a>
+                    <a th:href="@{/employees}" class="list-group-item list-group-item-action">[[#{employee.list.headline}]]</a>
+                    <a th:href="@{/employeeStatuses}" class="list-group-item list-group-item-action">[[#{employeeStatus.list.headline}]]</a>
+                    <a th:href="@{/jobTitles}" class="list-group-item list-group-item-action">[[#{jobTitle.list.headline}]]</a>
+                    <a th:href="@{/loanCollectors}" class="list-group-item list-group-item-action">[[#{loanCollector.list.headline}]]</a>
+                    <a th:href="@{/loanCollectorStatuses}" class="list-group-item list-group-item-action">[[#{loanCollectorStatus.list.headline}]]</a>
+                    <a th:href="@{/loanContracts}" class="list-group-item list-group-item-action">[[#{loanContract.list.headline}]]</a>
+                    <a th:href="@{/loanStatuses}" class="list-group-item list-group-item-action">[[#{loanStatus.list.headline}]]</a>
+                    <a th:href="@{/loanTypes}" class="list-group-item list-group-item-action">[[#{loanType.list.headline}]]</a>
+                    <a th:href="@{/maritalStatuses}" class="list-group-item list-group-item-action">[[#{maritalStatus.list.headline}]]</a>
+                    <a th:href="@{/paymentDatailss}" class="list-group-item list-group-item-action">[[#{paymentDatails.list.headline}]]</a>
+                    <a th:href="@{/paymentStatuses}" class="list-group-item list-group-item-action">[[#{paymentStatus.list.headline}]]</a>
+                    <a th:href="@{/paymentTypes}" class="list-group-item list-group-item-action">[[#{paymentType.list.headline}]]</a>
+                    <a th:href="@{/people}" class="list-group-item list-group-item-action">[[#{person.list.headline}]]</a>
+                    <a th:href="@{/phoneNotifications}" class="list-group-item list-group-item-action">[[#{phoneNotification.list.headline}]]</a>
+                    <a th:href="@{/whatsappNotifications}" class="list-group-item list-group-item-action">[[#{whatsappNotification.list.headline}]]</a>
+                </div>
+            </div> 
+        </div>
+    </body>
+</html>

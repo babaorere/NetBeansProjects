@@ -1,22 +1,23 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-  
+
 <html lang="en" 
       xmlns="http://www.w3.org/1999/xhtml" 
       xmlns:th="http://www.thymeleaf.org" 
+      xmlns:util="com.java:com.isiweek.util.WebUtils"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
     <head>
-        <title></title>        
+        <title></title>  
     </head>
-    
+
     <body>
         <div th:fragment="inputRow(object, field)" th:with="type=${type} ?: 'text', required=${required}, disabled=${disabled},
-                inputClassappend=${#fields.hasErrors(field) || (type == 'textarea' && #fields.hasErrors(field + '.*')) ? 'is-invalid ' : ''} + ${inputClass}"
-                th:object="${__${object}__}" class="row mb-3">
+             inputClassappend=${#fields.hasErrors(field) || (type == 'textarea' && #fields.hasErrors(field + '.*')) ? 'is-invalid ' : ''} + ${inputClass}"
+             th:object="${__${object}__}" class="row mb-3">
             <div th:if="${type == 'checkbox'}" class="col-md-10 offset-md-2">
                 <div class="form-check">
                     <input th:type="${type}" th:field="*{__${field}__}" th:disabled="${disabled}"
-                            th:classappend="${inputClassappend}" class="form-check-input" />
+                           th:classappend="${inputClassappend}" class="form-check-input" />
                     <label th:for="${#ids.prev(field)}" class="form-check-label">
                         <span>[[#{__${object}__.__${field}__.label}]]</span><!--/*
                         */--><span th:replace="~{:: requiredStar(object=${object}, field=${field}, required=${required})}" />
@@ -30,10 +31,10 @@
             </label>
             <div th:if="${type != 'checkbox'}" class="col-md-10">
                 <input th:if="${type == 'text' || type == 'password' || type == 'email' || type == 'tel' || type == 'number'}"
-                        th:type="${type}" th:field="*{__${field}__}" th:disabled="${disabled}"
-                        th:classappend="${inputClassappend}" class="form-control" />
+                       th:type="${type}" th:field="*{__${field}__}" th:disabled="${disabled}"
+                       th:classappend="${inputClassappend}" class="form-control" />
                 <textarea th:if="${type == 'textarea'}" th:field="*{__${field}__}" th:disabled="${disabled}"
-                        th:classappend="${inputClassappend}" class="form-control" />
+                          th:classappend="${inputClassappend}" class="form-control" />
                 <select th:if="${type == 'select' || type == 'multiselect'}" th:field="*{__${field}__}" th:disabled="${disabled}"
                         th:multiple="${type == 'multiselect'}" th:classappend="${inputClassappend}" class="form-select">
                     <option th:if="${type == 'select'}" value="">[[#{select.empty.label}]]</option>
@@ -44,12 +45,12 @@
                 </select>
                 <div th:if="${type == 'radio' && !T(baba.loan_app.util.WebUtils).isRequiredField(__${object}__, field)}" class="form-check form-check-inline pt-2">
                     <input value="" th:checked="*{__${field}__} == null" th:name="${field}" th:disabled="${disabled}"
-                            th:classappend="${inputClassappend}" type="radio" class="form-check-input" />
+                           th:classappend="${inputClassappend}" type="radio" class="form-check-input" />
                     <label class="form-check-label">[[#{select.empty.label}]]</label>
                 </div>
                 <div th:if="${type == 'radio'}" th:each="radioValue : ${__${field}__Values}" class="form-check form-check-inline pt-2">
                     <input th:field="*{__${field}__}" th:value="${radioValue}" th:disabled="${disabled}"
-                            th:classappend="${inputClassappend}" type="radio" class="form-check-input" />
+                           th:classappend="${inputClassappend}" type="radio" class="form-check-input" />
                     <label th:for="${#ids.prev(field)}" class="form-check-label">[[${radioValue}]]</label>
                 </div>
                 <div th:replace="~{:: fieldErrors(${object}, ${field})}" />
@@ -57,12 +58,12 @@
         </div>
 
         <span th:fragment="requiredStar(object, field)" th:with="required=${required}"
-                th:if="${required == null ? T(baba.loan_app.util.WebUtils).isRequiredField(__${object}__, field) : required}">*</span>
+              th:if="${required == null ? T(baba.loan_app.util.WebUtils).isRequiredField(__${object}__, field) : required}">*</span>
 
         <div th:fragment="fieldErrors(object, field)" th:object="${__${object}__}" th:remove="tag">
             <div th:if="${#fields.hasErrors(field) || #fields.hasErrors(field + '.*')}" class="invalid-feedback d-block">
                 <p th:each="fieldError : ${#fields.detailedErrors(field + '*')}" class="mb-0"
-                        >[[${(fieldError.fieldName != field ? fieldError.fieldName + ': ' : '') + fieldError.message}]]</p>
+                   >[[${(fieldError.fieldName != field ? fieldError.fieldName + ': ' : '') + fieldError.message}]]</p>
             </div>
         </div>
 

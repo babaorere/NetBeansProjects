@@ -1,6 +1,6 @@
 package com.isiweek.marital_status;
 
-import com.github.javafaker.Faker;
+import net.datafaker.Faker;
 import com.isiweek.person.Person;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

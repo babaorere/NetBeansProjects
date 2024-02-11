@@ -35,7 +35,7 @@ public class CompanyController {
 
     @PostMapping("/add")
     public String add(@ModelAttribute("company") @Valid final Company companyDTO,
-        final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
+            final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
         if (!bindingResult.hasFieldErrors("email") && companyService.emailExists(companyDTO.getEmail())) {
             bindingResult.rejectValue("email", "Exists.company.email");
         }
@@ -62,22 +62,22 @@ public class CompanyController {
 
     @PostMapping("/edit/{id}")
     public String edit(@PathVariable(name = "id") final Long id,
-        @ModelAttribute("company") @Valid final Company companyDTO,
-        final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
+            @ModelAttribute("company") @Valid final Company companyDTO,
+            final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
         final Company currentCompanyDTO = companyService.get(id);
         if (!bindingResult.hasFieldErrors("email")
-            && !companyDTO.getEmail().equalsIgnoreCase(currentCompanyDTO.getEmail())
-            && companyService.emailExists(companyDTO.getEmail())) {
+                && !companyDTO.getEmail().equalsIgnoreCase(currentCompanyDTO.getEmail())
+                && companyService.emailExists(companyDTO.getEmail())) {
             bindingResult.rejectValue("email", "Exists.company.email");
         }
         if (!bindingResult.hasFieldErrors("name")
-            && !companyDTO.getName().equalsIgnoreCase(currentCompanyDTO.getName())
-            && companyService.nameExists(companyDTO.getName())) {
+                && !companyDTO.getName().equalsIgnoreCase(currentCompanyDTO.getName())
+                && companyService.nameExists(companyDTO.getName())) {
             bindingResult.rejectValue("name", "Exists.company.name");
         }
         if (!bindingResult.hasFieldErrors("taxidnumber")
-            && !companyDTO.getTaxidnumber().equalsIgnoreCase(currentCompanyDTO.getTaxidnumber())
-            && companyService.taxidnumberExists(companyDTO.getTaxidnumber())) {
+                && !companyDTO.getTaxidnumber().equalsIgnoreCase(currentCompanyDTO.getTaxidnumber())
+                && companyService.taxidnumberExists(companyDTO.getTaxidnumber())) {
             bindingResult.rejectValue("taxidnumber", "Exists.company.taxidnumber");
         }
         if (bindingResult.hasErrors()) {
@@ -91,7 +91,7 @@ public class CompanyController {
 
     @PostMapping("/delete/{id}")
     public String delete(@PathVariable(name = "id") final Long id,
-        final RedirectAttributes redirectAttributes) {
+            final RedirectAttributes redirectAttributes) {
         final String referencedWarning = companyService.getReferencedWarning(id);
         if (referencedWarning != null) {
             redirectAttributes.addFlashAttribute(WebUtils.MSG_ERROR, referencedWarning);

@@ -1,5 +1,6 @@
 package com.isiweek.person;
 
+import net.datafaker.Faker;
 import com.isiweek.company.Company;
 import com.isiweek.country.Country;
 import com.isiweek.criminal_record.CriminalRecord;
@@ -11,8 +12,6 @@ import com.isiweek.loan_collector.domain.LoanCollector;
 import com.isiweek.marital_status.MaritalStatus;
 import com.isiweek.phone_notification.domain.PhoneNotification;
 import com.isiweek.whatsapp_notification.domain.WhatsappNotification;
-import io.github.benas.randombeans.EnhancedRandomBuilder;
-import io.github.benas.randombeans.api.EnhancedRandom;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -27,6 +26,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -173,24 +173,25 @@ public class Person {
     }
 
     public static Person generateRandom() {
-        EnhancedRandom enhancedRandom = EnhancedRandomBuilder.aNewEnhancedRandomBuilder().build();
+
+        final Faker faker = new Faker();
 
         return Person.builder()
                 .id(null)
                 .idDoc(UUID.randomUUID().toString().substring(0, 16))
                 .email(UUID.randomUUID().toString().substring(0, 32) + "@example.com")
-                .firstName(enhancedRandom.nextObject(String.class))
-                .lastName(enhancedRandom.nextObject(String.class))
+                .firstName(faker.name().firstName())
+                .lastName(faker.name().lastName())
                 .phoneNumber1(UUID.randomUUID().toString().substring(0, 16))
                 .phoneNumber2(UUID.randomUUID().toString().substring(0, 16))
-                .dateOfBirth(enhancedRandom.nextObject(LocalDate.class))
-                .gender(enhancedRandom.nextObject(Boolean.class))
-                .address(enhancedRandom.nextObject(String.class))
-                .city(enhancedRandom.nextObject(String.class))
-                .state(enhancedRandom.nextObject(String.class))
-                .observations(enhancedRandom.nextObject(String.class))
-                .occupation(enhancedRandom.nextObject(String.class))
-                .photo(enhancedRandom.nextObject(String.class))
+                .dateOfBirth(faker.date().birthday().toInstant().atZone(ZoneId.systemDefault()).toLocalDate())
+                .gender(faker.bool().bool())
+                .address(faker.address().fullAddress())
+                .city(faker.address().city())
+                .state(faker.address().state())
+                .observations(faker.lorem().sentence())
+                .occupation(faker.job().title())
+                .photo(faker.avatar().image())
                 .maritalStatus(MaritalStatus.generateRandom())
                 .docType(DocType.generateRandom())
                 .country(Country.generateRandom())
@@ -202,5 +203,4 @@ public class Person {
                 .lastUpdated(OffsetDateTime.now())
                 .build();
     }
-
 }

@@ -1,6 +1,6 @@
 package com.isiweek.criminal_record;
 
-import com.github.javafaker.Faker;
+import net.datafaker.Faker;
 import com.isiweek.person.Person;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
