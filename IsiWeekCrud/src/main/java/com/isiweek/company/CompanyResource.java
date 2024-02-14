@@ -31,7 +31,7 @@ public class CompanyResource {
 
     @GetMapping("/{id}")
     public ResponseEntity<Company> getCompany(@PathVariable(name = "id") final Long id) {
-        return ResponseEntity.ok(companyService.get(id));
+        return ResponseEntity.ok(companyService.get(id).get());
     }
 
     @PostMapping

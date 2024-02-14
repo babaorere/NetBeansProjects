@@ -1,8 +1,4 @@
-package baba.loan_app.status;
-
-import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
+package com.isiweek.status;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Constraint;
@@ -10,17 +6,20 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import jakarta.validation.Payload;
 import java.lang.annotation.Documented;
+import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.Map;
+import java.util.Optional;
 import org.springframework.web.servlet.HandlerMapping;
-
 
 /**
  * Validate that the name value isn't taken yet.
  */
-@Target({ FIELD, METHOD, ANNOTATION_TYPE })
+@Target({FIELD, METHOD, ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Constraint(
@@ -51,12 +50,22 @@ public @interface StatusNameUnique {
                 // no value present
                 return true;
             }
-            @SuppressWarnings("unchecked") final Map<String, String> pathVariables = 
-                    ((Map<String, String>)request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE));
+            @SuppressWarnings("unchecked")
+            final Map<String, String> pathVariables
+                    = ((Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE));
             final String currentId = pathVariables.get("id");
-            if (currentId != null && value.equals(statusService.get(Long.parseLong(currentId)).getName())) {
-                // value hasn't changed
-                return true;
+            if (currentId != null) {
+                try {
+                    final Optional<Status> existingStatus = statusService.get(Long.valueOf(currentId));
+                    if (existingStatus.isPresent() && value.equals(existingStatus.get().getStatusEnum())) {
+                        // Value hasn't changed
+                        return true;
+                    }
+                } catch (NumberFormatException e) {
+                    // Handle invalid ID format gracefully
+                    // ... (log error or provide appropriate message)
+                    return false;
+                }
             }
             return !statusService.nameExists(value);
         }

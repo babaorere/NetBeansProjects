@@ -1,8 +1,9 @@
-package baba.loan_app.status;
+package com.isiweek.status;
 
-import baba.loan_app.util.ReferencedWarning;
-import baba.loan_app.util.WebUtils;
+import com.isiweek.util.ReferencedWarning;
+import com.isiweek.util.WebUtils;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,15 +14,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-
 @Controller
 @RequestMapping("/statuses")
 public class StatusController {
 
     private final StatusService statusService;
 
-    public StatusController(final StatusService statusService) {
-        this.statusService = statusService;
+    @Autowired
+    public StatusController(final StatusService inStatusService) {
+        this.statusService = inStatusService;
     }
 
     @ModelAttribute
@@ -36,17 +37,17 @@ public class StatusController {
     }
 
     @GetMapping("/add")
-    public String add(@ModelAttribute("status") final StatusDTO statusDTO) {
+    public String add(@ModelAttribute("status") final Status status) {
         return "status/add";
     }
 
     @PostMapping("/add")
-    public String add(@ModelAttribute("status") @Valid final StatusDTO statusDTO,
+    public String add(@ModelAttribute("status") @Valid final Status status,
             final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             return "status/add";
         }
-        statusService.create(statusDTO);
+        statusService.create(status);
         redirectAttributes.addFlashAttribute(WebUtils.MSG_SUCCESS, WebUtils.getMessage("status.create.success"));
         return "redirect:/statuses";
     }
@@ -59,12 +60,13 @@ public class StatusController {
 
     @PostMapping("/edit/{id}")
     public String edit(@PathVariable(name = "id") final Long id,
-            @ModelAttribute("status") @Valid final StatusDTO statusDTO,
+            @ModelAttribute("status") @Valid final Status status,
             final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             return "status/edit";
         }
-        statusService.update(id, statusDTO);
+
+        statusService.update(id, status);
         redirectAttributes.addFlashAttribute(WebUtils.MSG_SUCCESS, WebUtils.getMessage("status.update.success"));
         return "redirect:/statuses";
     }

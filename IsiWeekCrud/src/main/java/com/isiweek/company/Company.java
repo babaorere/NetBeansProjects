@@ -2,6 +2,7 @@ package com.isiweek.company;
 
 import com.isiweek.person.Person;
 import com.isiweek.status.Status;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -51,7 +52,7 @@ public class Company {
                 .phone2(faker.phoneNumber().phoneNumber())
                 .primaryContact(faker.name().fullName())
                 .persons(new HashSet<>())
-                .status(Status.generateRandom())
+                .status(Status.randomGenerator())
                 .build();
     }
 
@@ -119,15 +120,12 @@ public class Company {
     @ManyToMany(mappedBy = "companies", fetch = FetchType.LAZY)
     private Set<Person> persons = new HashSet<>();
 
-    @Column
-    private Long statusId;
-
     @NonNull
     @NotNull(message = "Status is required")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "status_id", nullable = false)
     @Builder.Default
-    private Status status = Status.generateRandom();
+    private Status status = Status.emptyGenerator();
 
     // Soft copy contructor
     public Company(Company inEntity) {

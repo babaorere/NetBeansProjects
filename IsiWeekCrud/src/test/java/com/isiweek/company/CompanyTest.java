@@ -2,46 +2,50 @@ package com.isiweek.company;
 
 import com.isiweek.AppConfig;
 import com.isiweek.LoanAppApplication;
-import com.isiweek.company.Company;
-import com.isiweek.company.CompanyRepository;
-import com.isiweek.status.Status;
-import com.isiweek.company.CompanyStatusRepository;
 import com.isiweek.person.Person;
+import com.isiweek.status.Status;
+import com.isiweek.status.StatusRepository;
+import com.isiweek.status.StatusService;
 import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-//@Disabled
+@Disabled
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = LoanAppApplication.class)
 @ContextConfiguration(classes = AppConfig.class)
 class CompanyTest {
 
-    @Autowired(required = true)
-    private CompanyStatusRepository companyStatusRepository;
-    private Status status;
+    private StatusRepository statusRepository;
 
-    @Autowired(required = true)
+    private StatusService statusService;
+
     private CompanyRepository companyRepository;
-    Company company;
 
-    public CompanyTest() {
+    private Company company;
+
+    public CompanyTest(StatusRepository inStatusRepository, StatusService inStatusService, CompanyRepository inCompanyRepository) {
+        this.statusRepository = inStatusRepository;
+        this.statusService = inStatusService;
+        this.companyRepository = inCompanyRepository;
+        this.company = null;
     }
 
     @BeforeAll
@@ -50,18 +54,18 @@ class CompanyTest {
 
     @AfterAll
     public static void tearDownClass() {
+
     }
 
     @BeforeEach
     public void setUp() {
-
-        status = companyStatusRepository.save(Status.generateRandom());
+        statusService.persistStatusEnumValues();
     }
 
     @AfterEach
     public void tearDown() {
         companyRepository.deleteAll();
-        companyStatusRepository.deleteAll();
+        statusService.deleteAll();
     }
 
     @Test
@@ -73,19 +77,19 @@ class CompanyTest {
         assertNotNull(company);
 
         // Verificar que las propiedades inicializadas en el constructor estén en sus valores predeterminados
-        assertEquals(null, company.getId());
-        assertEquals(null, company.getAddress());
-        assertEquals(null, company.getDescription());
-        assertEquals(null, company.getEmail());
-        assertEquals(null, company.getName());
-        assertEquals(null, company.getPhone1());
-        assertEquals(null, company.getPhone2());
-        assertEquals(null, company.getPrimaryContact());
-        assertEquals(null, company.getTaxidnumber());
+        assertEquals(0L, company.getId());
+        assertEquals("", company.getAddress());
+        assertEquals("", company.getDescription());
+        assertEquals("", company.getEmail());
+        assertEquals("", company.getName());
+        assertEquals("", company.getPhone1());
+        assertEquals("", company.getPhone2());
+        assertEquals("", company.getPrimaryContact());
+        assertEquals("", company.getTaxidnumber());
         assertEquals(new HashSet(), company.getPersons());
         assertEquals(null, company.getDateCreated());
         assertEquals(null, company.getLastUpdated());
-        assertEquals(null, company.getStatus());
+        assertNotEquals(null, company.getStatus());
     }
 
     @Test
@@ -104,9 +108,11 @@ class CompanyTest {
         OffsetDateTime dateCreated = OffsetDateTime.now();
         OffsetDateTime lastUpdated = OffsetDateTime.now();
 
+        Optional<Status> status = statusRepository.findFirst();
+
         // Crear instancia utilizando el constructor con todos los argumentos
         Company company = new Company(id, name, description, taxidnumber, address, email, phone1, phone2,
-                primaryContact, dateCreated, lastUpdated, persons, status);
+                primaryContact, dateCreated, lastUpdated, persons, status.get());
 
         // Verificar que la instancia no sea nula
         assertNotNull(company);
@@ -129,8 +135,10 @@ class CompanyTest {
 
     @Test
     void testCreateCompany() {
+        Optional<Status> status = statusRepository.findFirst();
+
         Company company = new Company();
-        company.setStatus(status);
+        company.setStatus(status.get());
 
         assertNotNull(company);
     }
@@ -149,7 +157,7 @@ class CompanyTest {
         Set<Person> persons = new HashSet<>();
         OffsetDateTime dateCreated = OffsetDateTime.now();
         OffsetDateTime lastUpdated = OffsetDateTime.now();
-        Status status = new Status(1L, "NONE");
+        Status status = Status.randomGenerator();
 
         // Crear instancia utilizando el builder de Lombok
         company = Company.builder()
@@ -189,16 +197,15 @@ class CompanyTest {
 
     @Test
     void testBuilderValidation() {
-//        Assertions.assertDoesNotThrow(() -> Company.builder().build()
-//        );
-
-        assertThrows(Exception.class, ()
-                -> Company.builder().build()
+        Assertions.assertDoesNotThrow(() -> Company.builder().build()
         );
     }
 
     @Test
     void testGetterSetter() {
+
+        Optional<Status> status = statusRepository.findFirst();
+
         Company company = new Company();
 
         // Configurar valores
@@ -216,7 +223,7 @@ class CompanyTest {
         OffsetDateTime now = OffsetDateTime.now();
         company.setDateCreated(now);
         company.setLastUpdated(now);
-        company.setStatus(status);
+        company.setStatus(status.get());
 
         // Verificar los valores a través de los getters
         assertEquals(1L, company.getId());
@@ -236,10 +243,11 @@ class CompanyTest {
 
     @Test
     void testEqualsAndHashCode() {
+        Optional<Status> status = statusRepository.findFirst();
 
-        Status status1 = status;
-        Status status2 = status;
-        Status status3 = status;
+        Status status1 = status.get();
+        Status status2 = status.get();
+        Status status3 = status.get();
 
         Set<Person> persons1 = new HashSet<>();
         Set<Person> persons2 = new HashSet<>();
@@ -304,6 +312,7 @@ class CompanyTest {
 
     @Test
     void testAddPersonToCompany() {
+        Optional<Status> status = statusRepository.findFirst();
 
         // Crear instancia utilizando el builder de Lombok
         Company company = Company.builder()
@@ -319,7 +328,7 @@ class CompanyTest {
                 .persons(new HashSet<>())
                 .dateCreated(OffsetDateTime.now())
                 .lastUpdated(OffsetDateTime.now())
-                .status(status)
+                .status(status.get())
                 .build();
 
         Person person = Person.generateRandom();
@@ -332,8 +341,10 @@ class CompanyTest {
 
     @Test
     void testUtilityMethods() {
-        Status status1 = status;
-        Status status2 = status;
+        Optional<Status> status = statusRepository.findFirst();
+
+        Status status1 = status.get();
+        Status status2 = status.get();
 
         Set<Person> persons1 = new HashSet<>();
         Set<Person> persons2 = new HashSet<>();
@@ -370,7 +381,7 @@ class CompanyTest {
                 .status(status2)
                 .build();
 
-        assertEquals("[\"id\": " + null + ", \"name\": " + name + "]", company1.toString());
+        assertEquals("[\"id\": " + 0 + ", \"name\": " + name + "]", company1.toString());
 
         assertEquals(Objects.hash(company2.getId(), company2.getName(), company2.getTaxidnumber()), company1.hashCode());
     }

@@ -1,13 +1,13 @@
-package baba.loan_app.status;
+package com.isiweek.status;
 
-import baba.loan_app.company.Company;
-import baba.loan_app.company.CompanyRepository;
-import baba.loan_app.util.NotFoundException;
-import baba.loan_app.util.ReferencedWarning;
+import com.isiweek.company.Company;
+import com.isiweek.company.CompanyRepository;
+import com.isiweek.util.NotFoundException;
+import com.isiweek.util.ReferencedWarning;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
 
 @Service
 public class StatusService {
@@ -21,61 +21,100 @@ public class StatusService {
         this.companyRepository = companyRepository;
     }
 
-    public List<StatusDTO> findAll() {
-        final List<Status> statuses = statusRepository.findAll(Sort.by("id"));
-        return statuses.stream()
-                .map(status -> mapToDTO(status, new StatusDTO()))
-                .toList();
+    public List<Status> findAll() {
+        return statusRepository.findAll(Sort.by("id"));
     }
 
-    public StatusDTO get(final Long id) {
-        return statusRepository.findById(id)
-                .map(status -> mapToDTO(status, new StatusDTO()))
-                .orElseThrow(NotFoundException::new);
+    public Optional<Status> findById(final Long id) {
+        return statusRepository.findById(id);
     }
 
-    public Long create(final StatusDTO statusDTO) {
-        final Status status = new Status();
-        mapToEntity(statusDTO, status);
-        return statusRepository.save(status).getId();
+    public Optional<Status> get(final Long id) {
+        return statusRepository.findById(id);
     }
 
-    public void update(final Long id, final StatusDTO statusDTO) {
-        final Status status = statusRepository.findById(id)
-                .orElseThrow(NotFoundException::new);
-        mapToEntity(statusDTO, status);
-        statusRepository.save(status);
+    public Status create(final Status inStatus) {
+
+        Status statusEntity;
+
+        if (!existsByStatus(inStatus.getStatusEnum())) {
+            statusEntity = statusRepository.save(inStatus);
+        } else {
+            statusEntity = inStatus;
+        }
+
+        return statusEntity;
+    }
+
+    public Optional<Status> read(final Long id) {
+        return get(id);
+    }
+
+    public Status update(final Long id, final Status inStatus) {
+
+        Status statusEntity;
+
+        if (existsById(id)) {
+            statusEntity = statusRepository.save(inStatus);
+        } else {
+            statusEntity = inStatus;
+        }
+
+        return statusEntity;
     }
 
     public void delete(final Long id) {
         statusRepository.deleteById(id);
     }
 
-    private StatusDTO mapToDTO(final Status status, final StatusDTO statusDTO) {
-        statusDTO.setId(status.getId());
-        statusDTO.setName(status.getName());
-        return statusDTO;
+    public void deleteAll() {
+        statusRepository.deleteAll();
     }
 
-    private Status mapToEntity(final StatusDTO statusDTO, final Status status) {
-        status.setName(statusDTO.getName());
-        return status;
+    public boolean nameExists(final StatusEnum inStatusEnum) {
+        return statusRepository.existsByStatusEnum(inStatusEnum);
     }
 
-    public boolean nameExists(final StatusEnum name) {
-        return statusRepository.existsByName(name);
+    public boolean existsById(Long inId) {
+        return statusRepository.existsById(inId);
+    }
+
+    public boolean existsByStatus(StatusEnum inStatusEnum) {
+        return statusRepository.existsByStatusEnum(inStatusEnum);
+    }
+
+    public Optional<Status> findFirstStatus() {
+        return statusRepository.findFirst();
+    }
+
+    public void persistStatusEnumValues() {
+
+        for (StatusEnum statusEnum : StatusEnum.values()) {
+            if (!existsByStatus(statusEnum)) {
+                create(Status.builder().statusEnum(statusEnum).build());
+            }
+        }
+    }
+
+    public void deleteAllStatus() {
+        deleteAll();
     }
 
     public ReferencedWarning getReferencedWarning(final Long id) {
+
         final ReferencedWarning referencedWarning = new ReferencedWarning();
+
         final Status status = statusRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
-        final Company statusCompany = companyRepository.findFirstByStatus(status);
-        if (statusCompany != null) {
+
+        final Optional<Company> statusCompany = companyRepository.findFirstByStatusOrderByIdAsc(status);
+
+        if (statusCompany.isPresent()) {
             referencedWarning.setKey("status.company.status.referenced");
-            referencedWarning.addParam(statusCompany.getId());
+            referencedWarning.addParam(statusCompany.get().getId());
             return referencedWarning;
         }
+
         return null;
     }
 

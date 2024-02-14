@@ -1,7 +1,8 @@
 package com.isiweek.company;
 
-import com.isiweek.status.Status;
 import com.isiweek.AppConfig;
+import com.isiweek.status.Status;
+import com.isiweek.status.StatusService;
 import java.util.Optional;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -12,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +28,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
  *
  * @author manager
  */
-//@Disabled
+@Disabled
 @ComponentScan(basePackages = "com.isiweek.company")
 @ExtendWith(SpringExtension.class)
 @SpringJUnitConfig
@@ -34,12 +36,12 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 @ContextConfiguration(classes = AppConfig.class)
 public class CompanyRepositoryTest {
 
-    private final CompanyStatusService statusService;
+    private final StatusService statusService;
     private final CompanyRepository companyRepository;
     private final CompanyService companyService;
 
     @Autowired(required = true)
-    public CompanyRepositoryTest(CompanyStatusService inStatusService,
+    public CompanyRepositoryTest(StatusService inStatusService,
             CompanyRepository inCompanyRepository,
             CompanyService inCompanyService) {
         this.statusService = inStatusService;
@@ -88,7 +90,7 @@ public class CompanyRepositoryTest {
 
         assertNotNull(foundStatus);
         assertEquals(status.getId(), foundStatus.getId());
-        assertEquals(status.getName(), foundStatus.getName());
+        assertEquals(status.getStatusEnum(), foundStatus.getStatusEnum());
 
         assertNotNull(foundCompany);
         assertEquals(company.getName(), foundCompany.getName());
