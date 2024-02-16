@@ -35,32 +35,36 @@ public class StatusService {
 
     public Status create(final Status inStatus) {
 
-        Status statusEntity;
+        Status status;
 
-        if (!existsByStatus(inStatus.getStatusEnum())) {
-            statusEntity = statusRepository.save(inStatus);
+        Optional<Status> statusOp = statusRepository.findByStatusEnum(inStatus.getStatusEnum());
+
+        if (statusOp.isPresent()) {
+            status = statusOp.get();
         } else {
-            statusEntity = inStatus;
+            status = statusRepository.save(inStatus);
         }
 
-        return statusEntity;
+        return status;
     }
 
     public Optional<Status> read(final Long id) {
         return get(id);
     }
 
-    public Status update(final Long id, final Status inStatus) {
+    public Status update(final Status inStatus) {
 
-        Status statusEntity;
+        Status status;
 
-        if (existsById(id)) {
-            statusEntity = statusRepository.save(inStatus);
-        } else {
-            statusEntity = inStatus;
-        }
+        return statusRepository.save(inStatus);
+    }
 
-        return statusEntity;
+    public Status update(final Long inId, final Status inStatus) {
+
+        Status status = inStatus;
+        status.setId(inId);
+
+        return statusRepository.save(status);
     }
 
     public void delete(final Long id) {
@@ -87,17 +91,20 @@ public class StatusService {
         return statusRepository.findFirst();
     }
 
+    public Optional<Status> findByStatusEnum(StatusEnum inStatusEnum) {
+        return statusRepository.findByStatusEnum(inStatusEnum);
+    }
+
     public void persistStatusEnumValues() {
+
+        deleteAll();
 
         for (StatusEnum statusEnum : StatusEnum.values()) {
             if (!existsByStatus(statusEnum)) {
+                System.out.println("Persist Status -> " + statusEnum);
                 create(Status.builder().statusEnum(statusEnum).build());
             }
         }
-    }
-
-    public void deleteAllStatus() {
-        deleteAll();
     }
 
     public ReferencedWarning getReferencedWarning(final Long id) {

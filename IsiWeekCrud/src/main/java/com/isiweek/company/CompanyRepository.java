@@ -29,4 +29,8 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
 
     boolean existsByNameIgnoreCase(String name);
 
+    public Optional<Company> findByName(String name);
+
+    public Optional<Company> findById(Long id);
+
 }

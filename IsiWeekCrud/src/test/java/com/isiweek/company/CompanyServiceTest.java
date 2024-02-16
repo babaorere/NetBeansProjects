@@ -2,6 +2,7 @@ package com.isiweek.company;
 
 import com.isiweek.AppConfig;
 import com.isiweek.status.Status;
+import com.isiweek.status.StatusRepository;
 import com.isiweek.status.StatusService;
 import java.util.List;
 import java.util.Optional;
@@ -10,10 +11,10 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +24,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import com.isiweek.status.StatusRepository;
 
-@Disabled
+//@Disabled
 @ComponentScan(basePackages = "com.isiweek.company")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ExtendWith(SpringExtension.class)
@@ -60,21 +60,13 @@ public class CompanyServiceTest {
 
     @BeforeEach
     public void setUp() {
-//        Company company = Company.generateRandom();
-//        Status status = company.getStatus();
-//
-//        status = statusService.create(status);
-//        company.setStatus(status);
-//        company = companyService.create(company);
-//
-////        assertNotNull(status.getId());
-//        assertNotNull(company.getId());
+        companyRepository.deleteAll();
+        statusService.persistStatusEnumValues();
     }
 
     @AfterEach
     public void tearDown() {
-
-        companyRepository.deleteAll();
+        companyService.deleteAll();
         statusService.deleteAll();
     }
 
@@ -83,8 +75,17 @@ public class CompanyServiceTest {
      */
     @Test
     public void testFindAll() {
+
+        Company company = Company.generateRandom();
+        Optional<Status> statusOp = statusRepository.findFirst();
+
+        company.setStatus(statusOp.get());
+
+        companyService.create(company);
+
         List<Company> result = companyService.findAll();
         Assertions.assertNotNull(result);
+        Assertions.assertTrue(result.size() > 0);
     }
 
     /**
@@ -92,22 +93,22 @@ public class CompanyServiceTest {
      */
     @Test
     public void testGet() {
-//        Company company = Company.generateRandom();
-//        Status status = company.getStatus();
-//
-//        status = statusService.create(status);
-//        company.setStatus(status);
-//        company = companyService.create(company);
-//
-//        Company company2 = companyRepository.save(company);
-//        company.setId(company2.getId());
-//
-//        Optional<Company> anyCompany = companyRepository.findAll().stream().findFirst();
-//
-//        assertNotNull(anyCompany.get());
-//
-//        assertEquals(company2, company);
+        Company company = Company.generateRandom();
+        Optional<Status> statusOp = statusRepository.findFirst();
 
+        company.setStatus(statusOp.get());
+
+        company = companyService.create(company);
+
+        Company company2 = Company.generateRandom();
+        company2.setStatus(statusOp.get());
+
+        Optional<Company> company3Op = companyRepository.findById(company.getId());
+
+        assertNotNull(company3Op.get());
+
+        Assertions.assertEquals(company, company3Op.get());
+        Assertions.assertNotEquals(company2, company);
     }
 
     /**
@@ -115,17 +116,16 @@ public class CompanyServiceTest {
      */
     @Test
     public void testCreate() {
-        Company expResult = Company.generateRandom();
+        Company company = Company.generateRandom();
+        Optional<Status> statusOp = statusRepository.findFirst();
 
-        Status status = statusService.create(expResult.getStatus());
+        company.setStatus(statusOp.get());
 
-        expResult.setStatus(status);
+        Company result = companyService.create(company);
 
-        expResult = companyService.create(expResult);
-//
-//        Company result = companyService.create(expResult);
-//        expResult.setId(result.getId());
-//        assertEquals(expResult, result);
+        company.setId(result.getId());
+
+        assertEquals(company, result);
     }
 
     /**
@@ -134,18 +134,19 @@ public class CompanyServiceTest {
     @Test
     public void testUpdate() {
 
-        Company expResult = Company.generateRandom();
-        Status status = expResult.getStatus();
+        Company company = Company.generateRandom();
+        Optional<Status> statusOp = statusRepository.findFirst();
 
-        status = statusService.create(status);
-        expResult = companyService.create(expResult);
+        company.setStatus(statusOp.get());
+
+        company = companyService.create(company);
 
         String name = "ISIWEEK";
-        expResult.setName(name);
+        company.setName(name);
 
-        Company result = companyService.update(expResult.getId(), expResult);
+        Company result = companyService.update(company.getId(), company);
 
-        assertEquals(expResult, result);
+        assertEquals(company, result);
     }
 
     /**
@@ -154,11 +155,11 @@ public class CompanyServiceTest {
     @Test
     public void testDelete() {
 
-        // Crear una Company y un Status
         Company company = Company.generateRandom();
-        Status status = company.getStatus();
+        Optional<Status> statusOp = statusRepository.findFirst();
 
-        status = statusService.create(status);
+        company.setStatus(statusOp.get());
+
         company = companyService.create(company);
 
         // Obtener el ID de la Company antes de borrar
@@ -177,9 +178,10 @@ public class CompanyServiceTest {
     public void testExistsMethods() {
 
         Company company = Company.generateRandom();
-        Status status = company.getStatus();
+        Optional<Status> statusOp = statusRepository.findFirst();
 
-        status = statusService.create(status);
+        company.setStatus(statusOp.get());
+
         company = companyService.create(company);
 
         // Datos de prueba

@@ -49,10 +49,8 @@ public class Status {
     @Id
     @Column(nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @NonNull
-    @NotNull(message = "Id is required")
     @Builder.Default
-    private Long id = 0L;
+    private Long id = null;
 
     @Column(nullable = false, unique = true)
     @Enumerated(EnumType.STRING)
@@ -71,8 +69,8 @@ public class Status {
     @Builder.Default
     private OffsetDateTime lastUpdated = OffsetDateTime.now();
 
+    @OneToMany(mappedBy = "status", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @Builder.Default
-    @OneToMany(mappedBy = "status", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Company> companies = new HashSet<Company>();
 
     @Override

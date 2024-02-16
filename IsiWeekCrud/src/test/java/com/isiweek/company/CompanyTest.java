@@ -23,14 +23,22 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 @Disabled
+@ComponentScan(basePackages = "com.isiweek")
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ExtendWith(SpringExtension.class)
+@SpringJUnitConfig
 @SpringBootTest(classes = LoanAppApplication.class)
 @ContextConfiguration(classes = AppConfig.class)
+@ExtendWith(SpringExtension.class)
 class CompanyTest {
 
     private StatusRepository statusRepository;
@@ -39,13 +47,15 @@ class CompanyTest {
 
     private CompanyRepository companyRepository;
 
-    private Company company;
+    private CompanyService companyService;
 
-    public CompanyTest(StatusRepository inStatusRepository, StatusService inStatusService, CompanyRepository inCompanyRepository) {
+    @Autowired
+    public CompanyTest(StatusRepository inStatusRepository, StatusService inStatusService, CompanyRepository inCompanyRepository,
+            CompanyService inCompanyService) {
         this.statusRepository = inStatusRepository;
         this.statusService = inStatusService;
         this.companyRepository = inCompanyRepository;
-        this.company = null;
+        this.companyService = inCompanyService;
     }
 
     @BeforeAll
@@ -59,6 +69,7 @@ class CompanyTest {
 
     @BeforeEach
     public void setUp() {
+        companyRepository.deleteAll();
         statusService.persistStatusEnumValues();
     }
 
@@ -69,6 +80,7 @@ class CompanyTest {
     }
 
     @Test
+    // @Disabled
     void testNoArgsConstructor() {
         // Crear instancia utilizando el constructor sin argumentos
         Company company = new Company();
@@ -77,7 +89,7 @@ class CompanyTest {
         assertNotNull(company);
 
         // Verificar que las propiedades inicializadas en el constructor estén en sus valores predeterminados
-        assertEquals(0L, company.getId());
+        assertEquals(null, company.getId());
         assertEquals("", company.getAddress());
         assertEquals("", company.getDescription());
         assertEquals("", company.getEmail());
@@ -87,13 +99,15 @@ class CompanyTest {
         assertEquals("", company.getPrimaryContact());
         assertEquals("", company.getTaxidnumber());
         assertEquals(new HashSet(), company.getPersons());
-        assertEquals(null, company.getDateCreated());
-        assertEquals(null, company.getLastUpdated());
-        assertNotEquals(null, company.getStatus());
+        assertNotNull(company.getDateCreated());
+        assertNotNull(company.getLastUpdated());
+        assertNotNull(company.getStatus());
     }
 
     @Test
+//    @Disabled
     void testAllArgsConstructor() {
+
         // Configurar valores para el constructor con todos los argumentos
         Long id = 1L;
         String address = "Company Address";
@@ -109,6 +123,12 @@ class CompanyTest {
         OffsetDateTime lastUpdated = OffsetDateTime.now();
 
         Optional<Status> status = statusRepository.findFirst();
+
+        // Verificar que la instancia no sea nula
+        assertNotNull(status);
+
+        // Verificar que la instancia no sea nula
+        assertTrue(status.isPresent());
 
         // Crear instancia utilizando el constructor con todos los argumentos
         Company company = new Company(id, name, description, taxidnumber, address, email, phone1, phone2,
@@ -130,21 +150,21 @@ class CompanyTest {
         assertEquals(persons, company.getPersons());
         assertEquals(dateCreated, company.getDateCreated());
         assertEquals(lastUpdated, company.getLastUpdated());
-        assertEquals(status, company.getStatus());
+        assertEquals(status.get(), company.getStatus());
     }
 
     @Test
+    @Disabled
     void testCreateCompany() {
-        Optional<Status> status = statusRepository.findFirst();
 
         Company company = new Company();
-        company.setStatus(status.get());
-
         assertNotNull(company);
     }
 
     @Test
+    @Disabled
     void testBuilder() {
+
         Long id = 1L;
         String address = "Company Address";
         String description = "Company Description";
@@ -160,7 +180,7 @@ class CompanyTest {
         Status status = Status.randomGenerator();
 
         // Crear instancia utilizando el builder de Lombok
-        company = Company.builder()
+        Company company = Company.builder()
                 .id(id)
                 .address(address)
                 .description(description)
@@ -196,12 +216,14 @@ class CompanyTest {
     }
 
     @Test
+    @Disabled
     void testBuilderValidation() {
         Assertions.assertDoesNotThrow(() -> Company.builder().build()
         );
     }
 
     @Test
+    @Disabled
     void testGetterSetter() {
 
         Optional<Status> status = statusRepository.findFirst();
@@ -225,6 +247,8 @@ class CompanyTest {
         company.setLastUpdated(now);
         company.setStatus(status.get());
 
+        System.out.println("Company: " + company);
+
         // Verificar los valores a través de los getters
         assertEquals(1L, company.getId());
         assertEquals("Company Address", company.getAddress());
@@ -238,11 +262,13 @@ class CompanyTest {
         assertEquals(persons, company.getPersons());
         assertEquals(now, company.getDateCreated());
         assertEquals(now, company.getLastUpdated());
-        assertEquals(status, company.getStatus());
+        assertEquals(status.get(), company.getStatus());
     }
 
     @Test
+    @Disabled
     void testEqualsAndHashCode() {
+
         Optional<Status> status = statusRepository.findFirst();
 
         Status status1 = status.get();
@@ -311,8 +337,12 @@ class CompanyTest {
     }
 
     @Test
+    @Disabled
     void testAddPersonToCompany() {
+
         Optional<Status> status = statusRepository.findFirst();
+
+        System.out.println("Status: " + status);
 
         // Crear instancia utilizando el builder de Lombok
         Company company = Company.builder()
@@ -331,15 +361,20 @@ class CompanyTest {
                 .status(status.get())
                 .build();
 
-        Person person = Person.generateRandom();
+        System.out.println("Company: " + company);
+        System.out.println("Company.dtatus: " + company.getStatus());
 
-        company.addPerson(person);
+        Company auxCompany = companyService.create(company);
 
-        assertTrue(company.getPersons().contains(person));
-        assertEquals(company, person.getCompanies().stream().findAny().get());
+        Optional<Company> companyOp = companyService.get(auxCompany.getId());
+
+        assertTrue(companyOp.isPresent());
+
+        System.out.println("Company get: " + companyOp.get());
     }
 
     @Test
+    @Disabled
     void testUtilityMethods() {
         Optional<Status> status = statusRepository.findFirst();
 

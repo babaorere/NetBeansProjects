@@ -1,12 +1,11 @@
 package com.isiweek.company;
 
-import com.isiweek.util.NotFoundException;
+import com.isiweek.status.StatusRepository;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import com.isiweek.status.StatusRepository;
 
 @Service
 public class CompanyService {
@@ -33,13 +32,16 @@ public class CompanyService {
         return companyRepository.findById(id);
     }
 
-    public Company create(final Company company) {
-        return companyRepository.save(company);
+    public Company create(final Company inCompany) {
+
+        return companyRepository.save(inCompany);
     }
 
-    public Company update(final Long id, final Company inCompany) {
-        final Company company = companyRepository.findById(id)
-                .orElseThrow(NotFoundException::new);
+    public Company update(final Long inId, final Company inCompany) {
+
+        Company company = inCompany;
+        company.setId(inId);
+
         return companyRepository.save(company);
     }
 

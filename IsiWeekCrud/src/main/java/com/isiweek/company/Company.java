@@ -2,7 +2,6 @@ package com.isiweek.company;
 
 import com.isiweek.person.Person;
 import com.isiweek.status.Status;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -59,7 +58,7 @@ public class Company {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Builder.Default
-    private Long id = 0L;
+    private Long id = null;
 
     @NonNull
     @NotNull(message = "Name is required")
@@ -106,13 +105,19 @@ public class Company {
     @Builder.Default
     private String primaryContact = "";
 
+    @NonNull
+    @NotNull(message = "Date created is required")
     @CreatedDate
     @Column(nullable = false, updatable = false)
-    private OffsetDateTime dateCreated;
+    @Builder.Default
+    private OffsetDateTime dateCreated = OffsetDateTime.now();
 
+    @NonNull
+    @NotNull(message = "Last Udate is required")
     @LastModifiedDate
     @Column(nullable = false)
-    private OffsetDateTime lastUpdated;
+    @Builder.Default
+    private OffsetDateTime lastUpdated = OffsetDateTime.now();
 
     @NonNull
     @NotNull(message = "Persons is required")
@@ -122,7 +127,7 @@ public class Company {
 
     @NonNull
     @NotNull(message = "Status is required")
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "status_id", nullable = false)
     @Builder.Default
     private Status status = Status.emptyGenerator();
@@ -156,8 +161,13 @@ public class Company {
     }
 
     public void addPerson(Person inPerson) {
-        persons.add(inPerson);
-        inPerson.getCompanies().add(this);
+        if (!persons.contains(inPerson)) {
+            persons.add(inPerson);
+        }
+
+        if (!inPerson.getCompanies().contains(this)) {
+            inPerson.getCompanies().add(this);
+        }
     }
 
 }

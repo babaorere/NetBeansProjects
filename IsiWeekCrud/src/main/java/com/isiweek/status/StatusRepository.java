@@ -16,6 +16,8 @@ public interface StatusRepository extends JpaRepository<Status, Long> {
     @Query("SELECT s FROM Status s WHERE s.id = (SELECT MIN(s.id) FROM Status s)")
     Optional<Status> findFirst();
 
+    Optional<Status> findByStatusEnum(StatusEnum inStatusEnum);
+
     @Query("SELECT MAX(c.id) FROM Status c")
     Optional<Long> findLastId();
 
