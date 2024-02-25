@@ -4,8 +4,8 @@ import com.isiweek.departament.Departament;
 import com.isiweek.departament.DepartamentRepository;
 import com.isiweek.employee_status.EmployeeStatus;
 import com.isiweek.employee_status.EmployeeStatusRepository;
-import com.isiweek.job_title.domain.JobTitle;
-import com.isiweek.job_title.repos.JobTitleRepository;
+import com.isiweek.job_title.JobTitle;
+import com.isiweek.job_title.JobTitleRepository;
 import com.isiweek.person.Person;
 import com.isiweek.person.PersonRepository;
 import com.isiweek.util.CustomCollectors;
@@ -22,60 +22,45 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+
 @Controller
 @RequestMapping("/employees")
 public class EmployeeController {
 
     private final EmployeeService employeeService;
-    private final PersonRepository personRepository;
     private final EmployeeStatusRepository employeeStatusRepository;
-    private final JobTitleRepository jobTitleRepository;
     private final DepartamentRepository departamentRepository;
+    private final PersonRepository personRepository;
+    private final JobTitleRepository jobTitleRepository;
 
     public EmployeeController(final EmployeeService employeeService,
-        final PersonRepository personRepository,
-        final EmployeeStatusRepository employeeStatusRepository,
-        final JobTitleRepository jobTitleRepository,
-        final DepartamentRepository departamentRepository) {
+            final EmployeeStatusRepository employeeStatusRepository,
+            final DepartamentRepository departamentRepository,
+            final PersonRepository personRepository, final JobTitleRepository jobTitleRepository) {
         this.employeeService = employeeService;
-        this.personRepository = personRepository;
         this.employeeStatusRepository = employeeStatusRepository;
-        this.jobTitleRepository = jobTitleRepository;
         this.departamentRepository = departamentRepository;
+        this.personRepository = personRepository;
+        this.jobTitleRepository = jobTitleRepository;
     }
 
     @ModelAttribute
     public void prepareContext(final Model model) {
-        model.addAttribute("personValues", personRepository.findAll(Sort.by("id"))
-            .stream()
-            .collect(CustomCollectors.toSortedMap(Person::getId, Person::getIdDoc)));
         model.addAttribute("employeeStatusValues", employeeStatusRepository.findAll(Sort.by("id"))
-            .stream()
-            .collect(CustomCollectors.toSortedMap(EmployeeStatus::getId, EmployeeStatus::getName)));
-        model.addAttribute("jobTitleValues", jobTitleRepository.findAll(Sort.by("id"))
-            .stream()
-            .collect(CustomCollectors.toSortedMap(JobTitle::getId, JobTitle::getName)));
+                .stream()
+                .collect(CustomCollectors.toSortedMap(EmployeeStatus::getId, EmployeeStatus::getName)));
         model.addAttribute("departmentValues", departamentRepository.findAll(Sort.by("id"))
-            .stream()
-            .collect(CustomCollectors.toSortedMap(Departament::getId, Departament::getName)));
+                .stream()
+                .collect(CustomCollectors.toSortedMap(Departament::getId, Departament::getName)));
         model.addAttribute("managerValues", personRepository.findAll(Sort.by("id"))
-            .stream()
-            .collect(CustomCollectors.toSortedMap(Person::getId, Person::getIdDoc)));
-        model.addAttribute("managerValues", personRepository.findAll(Sort.by("id"))
-            .stream()
-            .collect(CustomCollectors.toSortedMap(Person::getId, Person::getIdDoc)));
-        model.addAttribute("employeeStatusValues", employeeStatusRepository.findAll(Sort.by("id"))
-            .stream()
-            .collect(CustomCollectors.toSortedMap(EmployeeStatus::getId, EmployeeStatus::getName)));
-        model.addAttribute("departmentValues", departamentRepository.findAll(Sort.by("id"))
-            .stream()
-            .collect(CustomCollectors.toSortedMap(Departament::getId, Departament::getName)));
-        model.addAttribute("jobTitleValues", jobTitleRepository.findAll(Sort.by("id"))
-            .stream()
-            .collect(CustomCollectors.toSortedMap(JobTitle::getId, JobTitle::getName)));
+                .stream()
+                .collect(CustomCollectors.toSortedMap(Person::getId, Person::getIdDoc)));
         model.addAttribute("personValues", personRepository.findAll(Sort.by("id"))
-            .stream()
-            .collect(CustomCollectors.toSortedMap(Person::getId, Person::getIdDoc)));
+                .stream()
+                .collect(CustomCollectors.toSortedMap(Person::getId, Person::getIdDoc)));
+        model.addAttribute("jobTitleValues", jobTitleRepository.findAll(Sort.by("id"))
+                .stream()
+                .collect(CustomCollectors.toSortedMap(JobTitle::getId, JobTitle::getName)));
     }
 
     @GetMapping
@@ -91,7 +76,7 @@ public class EmployeeController {
 
     @PostMapping("/add")
     public String add(@ModelAttribute("employee") @Valid final EmployeeDTO employeeDTO,
-        final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
+            final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             return "employee/add";
         }
@@ -108,8 +93,8 @@ public class EmployeeController {
 
     @PostMapping("/edit/{id}")
     public String edit(@PathVariable(name = "id") final Long id,
-        @ModelAttribute("employee") @Valid final EmployeeDTO employeeDTO,
-        final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
+            @ModelAttribute("employee") @Valid final EmployeeDTO employeeDTO,
+            final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             return "employee/edit";
         }
@@ -120,7 +105,7 @@ public class EmployeeController {
 
     @PostMapping("/delete/{id}")
     public String delete(@PathVariable(name = "id") final Long id,
-        final RedirectAttributes redirectAttributes) {
+            final RedirectAttributes redirectAttributes) {
         employeeService.delete(id);
         redirectAttributes.addFlashAttribute(WebUtils.MSG_INFO, WebUtils.getMessage("employee.delete.success"));
         return "redirect:/employees";

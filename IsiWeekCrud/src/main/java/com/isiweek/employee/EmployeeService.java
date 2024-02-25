@@ -2,13 +2,10 @@ package com.isiweek.employee;
 
 import com.isiweek.departament.Departament;
 import com.isiweek.departament.DepartamentRepository;
-import com.isiweek.employee.Employee;
-import com.isiweek.employee.EmployeeDTO;
-import com.isiweek.employee.EmployeeRepository;
 import com.isiweek.employee_status.EmployeeStatus;
 import com.isiweek.employee_status.EmployeeStatusRepository;
-import com.isiweek.job_title.domain.JobTitle;
-import com.isiweek.job_title.repos.JobTitleRepository;
+import com.isiweek.job_title.JobTitle;
+import com.isiweek.job_title.JobTitleRepository;
 import com.isiweek.person.Person;
 import com.isiweek.person.PersonRepository;
 import com.isiweek.util.NotFoundException;
@@ -16,25 +13,25 @@ import java.util.List;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+
 @Service
 public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;
-    private final PersonRepository personRepository;
     private final EmployeeStatusRepository employeeStatusRepository;
-    private final JobTitleRepository jobTitleRepository;
     private final DepartamentRepository departamentRepository;
+    private final PersonRepository personRepository;
+    private final JobTitleRepository jobTitleRepository;
 
     public EmployeeService(final EmployeeRepository employeeRepository,
-            final PersonRepository personRepository,
             final EmployeeStatusRepository employeeStatusRepository,
-            final JobTitleRepository jobTitleRepository,
-            final DepartamentRepository departamentRepository) {
+            final DepartamentRepository departamentRepository,
+            final PersonRepository personRepository, final JobTitleRepository jobTitleRepository) {
         this.employeeRepository = employeeRepository;
-        this.personRepository = personRepository;
         this.employeeStatusRepository = employeeStatusRepository;
-        this.jobTitleRepository = jobTitleRepository;
         this.departamentRepository = departamentRepository;
+        this.personRepository = personRepository;
+        this.jobTitleRepository = jobTitleRepository;
     }
 
     public List<EmployeeDTO> findAll() {
@@ -71,48 +68,46 @@ public class EmployeeService {
         employeeDTO.setId(employee.getId());
         employeeDTO.setDateOfHire(employee.getDateOfHire());
         employeeDTO.setSalary(employee.getSalary());
+        employeeDTO.setDateCreated(employee.getDateCreated());
+        employeeDTO.setLastUpdated(employee.getLastUpdated());
         employeeDTO.setBenefits(employee.getBenefits());
         employeeDTO.setContactInformation(employee.getContactInformation());
         employeeDTO.setEducation(employee.getEducation());
         employeeDTO.setSkills(employee.getSkills());
         employeeDTO.setPerformanceReviews(employee.getPerformanceReviews());
-        employeeDTO.setPerson(employee.getPerson() == null ? null : employee.getPerson().getId());
-        employeeDTO.setEmployeeStatus(employee.getEmployeeStatus() == null ? null : employee.getEmployeeStatus().getId());
-        employeeDTO.setJobTitle(employee.getJobTitle() == null ? null : employee.getJobTitle().getId());
-        employeeDTO.setDepartment(employee.getDepartment() == null ? null : employee.getDepartment().getId());
-        employeeDTO.setManager(employee.getManager() == null ? null : employee.getManager().getId());
-        employeeDTO.setManager(employee.getManager() == null ? null : employee.getManager().getId());
         employeeDTO.setEmployeeStatus(employee.getEmployeeStatus() == null ? null : employee.getEmployeeStatus().getId());
         employeeDTO.setDepartment(employee.getDepartment() == null ? null : employee.getDepartment().getId());
-        employeeDTO.setJobTitle(employee.getJobTitle() == null ? null : employee.getJobTitle().getId());
+        employeeDTO.setManager(employee.getManager() == null ? null : employee.getManager().getId());
         employeeDTO.setPerson(employee.getPerson() == null ? null : employee.getPerson().getId());
+        employeeDTO.setJobTitle(employee.getJobTitle() == null ? null : employee.getJobTitle().getId());
         return employeeDTO;
     }
 
     private Employee mapToEntity(final EmployeeDTO employeeDTO, final Employee employee) {
         employee.setDateOfHire(employeeDTO.getDateOfHire());
         employee.setSalary(employeeDTO.getSalary());
+        employee.setDateCreated(employeeDTO.getDateCreated());
+        employee.setLastUpdated(employeeDTO.getLastUpdated());
         employee.setBenefits(employeeDTO.getBenefits());
         employee.setContactInformation(employeeDTO.getContactInformation());
         employee.setEducation(employeeDTO.getEducation());
         employee.setSkills(employeeDTO.getSkills());
         employee.setPerformanceReviews(employeeDTO.getPerformanceReviews());
-        final Person person = employeeDTO.getPerson() == null ? null : personRepository.findById(employeeDTO.getPerson())
-                .orElseThrow(() -> new NotFoundException("person not found"));
-        employee.setPerson(person);
         final EmployeeStatus employeeStatus = employeeDTO.getEmployeeStatus() == null ? null : employeeStatusRepository.findById(employeeDTO.getEmployeeStatus())
                 .orElseThrow(() -> new NotFoundException("employeeStatus not found"));
         employee.setEmployeeStatus(employeeStatus);
-        final JobTitle jobTitle = employeeDTO.getJobTitle() == null ? null : jobTitleRepository.findById(employeeDTO.getJobTitle())
-                .orElseThrow(() -> new NotFoundException("jobTitle not found"));
-        employee.setJobTitle(jobTitle);
         final Departament department = employeeDTO.getDepartment() == null ? null : departamentRepository.findById(employeeDTO.getDepartment())
                 .orElseThrow(() -> new NotFoundException("department not found"));
         employee.setDepartment(department);
         final Person manager = employeeDTO.getManager() == null ? null : personRepository.findById(employeeDTO.getManager())
                 .orElseThrow(() -> new NotFoundException("manager not found"));
         employee.setManager(manager);
-
+        final Person person = employeeDTO.getPerson() == null ? null : personRepository.findById(employeeDTO.getPerson())
+                .orElseThrow(() -> new NotFoundException("person not found"));
+        employee.setPerson(person);
+        final JobTitle jobTitle = employeeDTO.getJobTitle() == null ? null : jobTitleRepository.findById(employeeDTO.getJobTitle())
+                .orElseThrow(() -> new NotFoundException("jobTitle not found"));
+        employee.setJobTitle(jobTitle);
         return employee;
     }
 

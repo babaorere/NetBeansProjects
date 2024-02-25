@@ -44,9 +44,11 @@ public class StatusController {
     @PostMapping("/add")
     public String add(@ModelAttribute("status") @Valid final Status status,
             final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
+
         if (bindingResult.hasErrors()) {
             return "status/add";
         }
+
         statusService.create(status);
         redirectAttributes.addFlashAttribute(WebUtils.MSG_SUCCESS, WebUtils.getMessage("status.create.success"));
         return "redirect:/statuses";
@@ -55,6 +57,7 @@ public class StatusController {
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable(name = "id") final Long id, final Model model) {
         model.addAttribute("status", statusService.get(id));
+
         return "status/edit";
     }
 
@@ -62,6 +65,7 @@ public class StatusController {
     public String edit(@PathVariable(name = "id") final Long id,
             @ModelAttribute("status") @Valid final Status status,
             final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
+
         if (bindingResult.hasErrors()) {
             return "status/edit";
         }
@@ -75,6 +79,7 @@ public class StatusController {
     public String delete(@PathVariable(name = "id") final Long id,
             final RedirectAttributes redirectAttributes) {
         final ReferencedWarning referencedWarning = statusService.getReferencedWarning(id);
+
         if (referencedWarning != null) {
             redirectAttributes.addFlashAttribute(WebUtils.MSG_ERROR,
                     WebUtils.getMessage(referencedWarning.getKey(), referencedWarning.getParams().toArray()));
@@ -82,6 +87,7 @@ public class StatusController {
             statusService.delete(id);
             redirectAttributes.addFlashAttribute(WebUtils.MSG_INFO, WebUtils.getMessage("status.delete.success"));
         }
+
         return "redirect:/statuses";
     }
 

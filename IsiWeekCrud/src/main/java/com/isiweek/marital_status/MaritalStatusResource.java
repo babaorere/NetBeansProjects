@@ -1,6 +1,7 @@
 package com.isiweek.marital_status;
 
-import com.isiweek.marital_status.MaritalStatusDTO;
+import com.isiweek.util.ReferencedException;
+import com.isiweek.util.ReferencedWarning;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.http.HttpStatus;
@@ -53,6 +54,10 @@ public class MaritalStatusResource {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteMaritalStatus(@PathVariable(name = "id") final Long id) {
+        final ReferencedWarning referencedWarning = maritalStatusService.getReferencedWarning(id);
+        if (referencedWarning != null) {
+            throw new ReferencedException(referencedWarning);
+        }
         maritalStatusService.delete(id);
         return ResponseEntity.noContent().build();
     }

@@ -1,15 +1,13 @@
 package com.isiweek.marital_status;
 
-import com.isiweek.marital_status.MaritalStatus;
-import com.isiweek.marital_status.MaritalStatusDTO;
-import com.isiweek.marital_status.MaritalStatusRepository;
 import com.isiweek.person.Person;
 import com.isiweek.person.PersonRepository;
 import com.isiweek.util.NotFoundException;
-import com.isiweek.util.WebUtils;
+import com.isiweek.util.ReferencedWarning;
 import java.util.List;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
 
 @Service
 public class MaritalStatusService {
@@ -56,6 +54,8 @@ public class MaritalStatusService {
     private MaritalStatusDTO mapToDTO(final MaritalStatus maritalStatus,
             final MaritalStatusDTO maritalStatusDTO) {
         maritalStatusDTO.setId(maritalStatus.getId());
+        maritalStatusDTO.setDateCreated(maritalStatus.getDateCreated());
+        maritalStatusDTO.setLastUpdated(maritalStatus.getLastUpdated());
         maritalStatusDTO.setName(maritalStatus.getName());
         maritalStatusDTO.setDescription(maritalStatus.getDescription());
         return maritalStatusDTO;
@@ -63,6 +63,8 @@ public class MaritalStatusService {
 
     private MaritalStatus mapToEntity(final MaritalStatusDTO maritalStatusDTO,
             final MaritalStatus maritalStatus) {
+        maritalStatus.setDateCreated(maritalStatusDTO.getDateCreated());
+        maritalStatus.setLastUpdated(maritalStatusDTO.getLastUpdated());
         maritalStatus.setName(maritalStatusDTO.getName());
         maritalStatus.setDescription(maritalStatusDTO.getDescription());
         return maritalStatus;
@@ -72,14 +74,16 @@ public class MaritalStatusService {
         return maritalStatusRepository.existsByNameIgnoreCase(name);
     }
 
-    public String getReferencedWarning(final Long id) {
+    public ReferencedWarning getReferencedWarning(final Long id) {
+        final ReferencedWarning referencedWarning = new ReferencedWarning();
         final MaritalStatus maritalStatus = maritalStatusRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         final Person maritalStatusPerson = personRepository.findFirstByMaritalStatus(maritalStatus);
         if (maritalStatusPerson != null) {
-            return WebUtils.getMessage("maritalStatus.person.maritalStatus.referenced", maritalStatusPerson.getId());
+            referencedWarning.setKey("maritalStatus.person.maritalStatus.referenced");
+            referencedWarning.addParam(maritalStatusPerson.getId());
+            return referencedWarning;
         }
-
         return null;
     }
 

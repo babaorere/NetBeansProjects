@@ -1,8 +1,11 @@
 package com.isiweek.status;
 
 import java.util.Optional;
+import java.util.Set;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -23,4 +26,9 @@ public interface StatusRepository extends JpaRepository<Status, Long> {
 
     @Query("SELECT s FROM Status s WHERE s.id = (SELECT MAX(s.id) FROM Status s)")
     Optional<Status> findLast();
+
+    // Elimina los registros que no esten incluidos iniciales dentro de StatusEnum
+    @Modifying
+    @Query("DELETE FROM Status s WHERE s.statusEnum NOT IN :statusEnums")
+    void deleteNotStatusEnum(@Param("statusEnums") Set<StatusEnum> statusEnums);
 }

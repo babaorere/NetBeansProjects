@@ -1,15 +1,13 @@
 package com.isiweek.doc_type;
 
-import com.isiweek.doc_type.DocType;
-import com.isiweek.doc_type.DocTypeDTO;
-import com.isiweek.doc_type.DocTypeRepository;
 import com.isiweek.person.Person;
 import com.isiweek.person.PersonRepository;
 import com.isiweek.util.NotFoundException;
-import com.isiweek.util.WebUtils;
+import com.isiweek.util.ReferencedWarning;
 import java.util.List;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
 
 @Service
 public class DocTypeService {
@@ -55,12 +53,16 @@ public class DocTypeService {
 
     private DocTypeDTO mapToDTO(final DocType docType, final DocTypeDTO docTypeDTO) {
         docTypeDTO.setId(docType.getId());
+        docTypeDTO.setDateCreated(docType.getDateCreated());
+        docTypeDTO.setLastUpdated(docType.getLastUpdated());
         docTypeDTO.setName(docType.getName());
         docTypeDTO.setDescription(docType.getDescription());
         return docTypeDTO;
     }
 
     private DocType mapToEntity(final DocTypeDTO docTypeDTO, final DocType docType) {
+        docType.setDateCreated(docTypeDTO.getDateCreated());
+        docType.setLastUpdated(docTypeDTO.getLastUpdated());
         docType.setName(docTypeDTO.getName());
         docType.setDescription(docTypeDTO.getDescription());
         return docType;
@@ -70,14 +72,16 @@ public class DocTypeService {
         return docTypeRepository.existsByNameIgnoreCase(name);
     }
 
-    public String getReferencedWarning(final Long id) {
+    public ReferencedWarning getReferencedWarning(final Long id) {
+        final ReferencedWarning referencedWarning = new ReferencedWarning();
         final DocType docType = docTypeRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         final Person docTypePerson = personRepository.findFirstByDocType(docType);
         if (docTypePerson != null) {
-            return WebUtils.getMessage("docType.person.docType.referenced", docTypePerson.getId());
+            referencedWarning.setKey("docType.person.docType.referenced");
+            referencedWarning.addParam(docTypePerson.getId());
+            return referencedWarning;
         }
-
         return null;
     }
 

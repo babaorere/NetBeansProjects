@@ -1,6 +1,5 @@
 package com.isiweek.criminal_record;
 
-import com.isiweek.criminal_record.CriminalRecord;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 

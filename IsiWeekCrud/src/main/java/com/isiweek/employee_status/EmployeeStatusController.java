@@ -1,5 +1,6 @@
 package com.isiweek.employee_status;
 
+import com.isiweek.util.ReferencedWarning;
 import com.isiweek.util.WebUtils;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -38,9 +39,6 @@ public class EmployeeStatusController {
     public String add(
             @ModelAttribute("employeeStatus") @Valid final EmployeeStatusDTO employeeStatusDTO,
             final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
-        if (!bindingResult.hasFieldErrors("name") && employeeStatusService.nameExists(employeeStatusDTO.getName())) {
-            bindingResult.rejectValue("name", "Exists.employeeStatus.name");
-        }
         if (bindingResult.hasErrors()) {
             return "employeeStatus/add";
         }
@@ -59,12 +57,6 @@ public class EmployeeStatusController {
     public String edit(@PathVariable(name = "id") final Long id,
             @ModelAttribute("employeeStatus") @Valid final EmployeeStatusDTO employeeStatusDTO,
             final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
-        final EmployeeStatusDTO currentEmployeeStatusDTO = employeeStatusService.get(id);
-        if (!bindingResult.hasFieldErrors("name") &&
-                !employeeStatusDTO.getName().equalsIgnoreCase(currentEmployeeStatusDTO.getName()) &&
-                employeeStatusService.nameExists(employeeStatusDTO.getName())) {
-            bindingResult.rejectValue("name", "Exists.employeeStatus.name");
-        }
         if (bindingResult.hasErrors()) {
             return "employeeStatus/edit";
         }
@@ -76,9 +68,10 @@ public class EmployeeStatusController {
     @PostMapping("/delete/{id}")
     public String delete(@PathVariable(name = "id") final Long id,
             final RedirectAttributes redirectAttributes) {
-        final String referencedWarning = employeeStatusService.getReferencedWarning(id);
+        final ReferencedWarning referencedWarning = employeeStatusService.getReferencedWarning(id);
         if (referencedWarning != null) {
-            redirectAttributes.addFlashAttribute(WebUtils.MSG_ERROR, referencedWarning);
+            redirectAttributes.addFlashAttribute(WebUtils.MSG_ERROR,
+                    WebUtils.getMessage(referencedWarning.getKey(), referencedWarning.getParams().toArray()));
         } else {
             employeeStatusService.delete(id);
             redirectAttributes.addFlashAttribute(WebUtils.MSG_INFO, WebUtils.getMessage("employeeStatus.delete.success"));

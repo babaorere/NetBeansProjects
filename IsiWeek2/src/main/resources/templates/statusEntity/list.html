@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layout}">
+    <head>
+        <title>[[#{statusEntity.list.headline}]]</title>
+    </head>
+    <body>
+        <div layout:fragment="content">
+            <div class="d-flex flex-wrap mb-4">
+                <h1 class="flex-grow-1">[[#{statusEntity.list.headline}]]</h1>
+                <div>
+                    <a th:href="@{/statusEntities/add}" class="btn btn-primary ms-2">[[#{statusEntity.list.createNew}]]</a>
+                </div>
+            </div>
+            <div th:if="${statusEntities.empty}">[[#{statusEntity.list.empty}]]</div>
+            <div th:if="${!statusEntities.empty}" class="table-responsive">
+                <table class="table table-striped table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col">[[#{statusEntity.id.label}]]</th>
+                            <th scope="col">[[#{statusEntity.name.label}]]</th>
+                            <th><!-- --></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="statusEntity : ${statusEntities}">
+                            <td>[[${statusEntity.id}]]</td>
+                            <td>[[${statusEntity.name}]]</td>
+                            <td>
+                                <div class="float-end text-nowrap">
+                                    <a th:href="@{/statusEntities/edit/{id}(id=${statusEntity.id})}" class="btn btn-sm btn-secondary">[[#{statusEntity.list.edit}]]</a>
+                                    <form th:action="@{/statusEntities/delete/{id}(id=${statusEntity.id})}"
+                                            th:data-confirm-message="#{delete.confirm}" method="post" class="js-submit-confirm d-inline">
+                                        <button type="submit" class="btn btn-sm btn-secondary">[[#{statusEntity.list.delete}]]</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </body>
+</html>

@@ -6,9 +6,17 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Getter
 @Setter
 public class EmployeeDTO {
@@ -19,9 +27,17 @@ public class EmployeeDTO {
     private LocalDate dateOfHire;
 
     @NotNull
-    @Digits(integer = 2, fraction = 2)
+    @Digits(integer = 4, fraction = 2)
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private BigDecimal salary;
+
+    @NotNull
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
+    private OffsetDateTime dateCreated;
+
+    @NotNull
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
+    private OffsetDateTime lastUpdated;
 
     @Size(max = 512)
     private String benefits;
@@ -40,18 +56,18 @@ public class EmployeeDTO {
     private String performanceReviews;
 
     @NotNull
-    private Long person;
-
-    @NotNull
     private Long employeeStatus;
-
-    @NotNull
-    private Long jobTitle;
 
     @NotNull
     private Long department;
 
     @NotNull
     private Long manager;
+
+    @NotNull
+    private Long person;
+
+    @NotNull
+    private Long jobTitle;
 
 }

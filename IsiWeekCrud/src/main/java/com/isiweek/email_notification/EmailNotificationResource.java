@@ -1,6 +1,5 @@
 package com.isiweek.email_notification;
 
-import com.isiweek.email_notification.EmailNotificationDTO;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.http.HttpStatus;

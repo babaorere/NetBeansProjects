@@ -3,11 +3,11 @@ package com.isiweek.criminal_record;
 import com.isiweek.person.Person;
 import com.isiweek.person.PersonRepository;
 import com.isiweek.util.NotFoundException;
-import com.isiweek.util.WebUtils;
+import com.isiweek.util.ReferencedWarning;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
 
 @Service
 public class CriminalRecordService {
@@ -21,19 +21,29 @@ public class CriminalRecordService {
         this.personRepository = personRepository;
     }
 
-    public List<CriminalRecord> findAll() {
-        return criminalRecordRepository.findAll(Sort.by("id"));
+    public List<CriminalRecordDTO> findAll() {
+        final List<CriminalRecord> criminalRecords = criminalRecordRepository.findAll(Sort.by("id"));
+        return criminalRecords.stream()
+                .map(criminalRecord -> mapToDTO(criminalRecord, new CriminalRecordDTO()))
+                .toList();
     }
 
-    public Optional<CriminalRecord> get(final Long id) {
-        return criminalRecordRepository.findById(id);
+    public CriminalRecordDTO get(final Long id) {
+        return criminalRecordRepository.findById(id)
+                .map(criminalRecord -> mapToDTO(criminalRecord, new CriminalRecordDTO()))
+                .orElseThrow(NotFoundException::new);
     }
 
-    public Long create(final CriminalRecord inCriminalRecord) {
-        return criminalRecordRepository.save(inCriminalRecord).getId();
+    public Long create(final CriminalRecordDTO criminalRecordDTO) {
+        final CriminalRecord criminalRecord = new CriminalRecord();
+        mapToEntity(criminalRecordDTO, criminalRecord);
+        return criminalRecordRepository.save(criminalRecord).getId();
     }
 
-    public void update(final Long id, final CriminalRecord criminalRecord) {
+    public void update(final Long id, final CriminalRecordDTO criminalRecordDTO) {
+        final CriminalRecord criminalRecord = criminalRecordRepository.findById(id)
+                .orElseThrow(NotFoundException::new);
+        mapToEntity(criminalRecordDTO, criminalRecord);
         criminalRecordRepository.save(criminalRecord);
     }
 
@@ -41,18 +51,39 @@ public class CriminalRecordService {
         criminalRecordRepository.deleteById(id);
     }
 
+    private CriminalRecordDTO mapToDTO(final CriminalRecord criminalRecord,
+            final CriminalRecordDTO criminalRecordDTO) {
+        criminalRecordDTO.setId(criminalRecord.getId());
+        criminalRecordDTO.setDateCreated(criminalRecord.getDateCreated());
+        criminalRecordDTO.setLastUpdated(criminalRecord.getLastUpdated());
+        criminalRecordDTO.setName(criminalRecord.getName());
+        criminalRecordDTO.setDescription(criminalRecord.getDescription());
+        return criminalRecordDTO;
+    }
+
+    private CriminalRecord mapToEntity(final CriminalRecordDTO criminalRecordDTO,
+            final CriminalRecord criminalRecord) {
+        criminalRecord.setDateCreated(criminalRecordDTO.getDateCreated());
+        criminalRecord.setLastUpdated(criminalRecordDTO.getLastUpdated());
+        criminalRecord.setName(criminalRecordDTO.getName());
+        criminalRecord.setDescription(criminalRecordDTO.getDescription());
+        return criminalRecord;
+    }
+
     public boolean nameExists(final String name) {
         return criminalRecordRepository.existsByNameIgnoreCase(name);
     }
 
-    public String getReferencedWarning(final Long id) {
+    public ReferencedWarning getReferencedWarning(final Long id) {
+        final ReferencedWarning referencedWarning = new ReferencedWarning();
         final CriminalRecord criminalRecord = criminalRecordRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         final Person criminalRecordPerson = personRepository.findFirstByCriminalRecord(criminalRecord);
         if (criminalRecordPerson != null) {
-            return WebUtils.getMessage("criminalRecord.person.criminalRecord.referenced", criminalRecordPerson.getId());
+            referencedWarning.setKey("criminalRecord.person.criminalRecord.referenced");
+            referencedWarning.addParam(criminalRecordPerson.getId());
+            return referencedWarning;
         }
-
         return null;
     }
 

@@ -2,14 +2,12 @@ package com.isiweek.employee_status;
 
 import com.isiweek.employee.Employee;
 import com.isiweek.employee.EmployeeRepository;
-import com.isiweek.employee_status.EmployeeStatus;
-import com.isiweek.employee_status.EmployeeStatusDTO;
-import com.isiweek.employee_status.EmployeeStatusRepository;
 import com.isiweek.util.NotFoundException;
-import com.isiweek.util.WebUtils;
+import com.isiweek.util.ReferencedWarning;
 import java.util.List;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
 
 @Service
 public class EmployeeStatusService {
@@ -56,6 +54,8 @@ public class EmployeeStatusService {
     private EmployeeStatusDTO mapToDTO(final EmployeeStatus employeeStatus,
             final EmployeeStatusDTO employeeStatusDTO) {
         employeeStatusDTO.setId(employeeStatus.getId());
+        employeeStatusDTO.setDateCreated(employeeStatus.getDateCreated());
+        employeeStatusDTO.setLastUpdated(employeeStatus.getLastUpdated());
         employeeStatusDTO.setName(employeeStatus.getName());
         employeeStatusDTO.setDescription(employeeStatus.getDescription());
         return employeeStatusDTO;
@@ -63,6 +63,8 @@ public class EmployeeStatusService {
 
     private EmployeeStatus mapToEntity(final EmployeeStatusDTO employeeStatusDTO,
             final EmployeeStatus employeeStatus) {
+        employeeStatus.setDateCreated(employeeStatusDTO.getDateCreated());
+        employeeStatus.setLastUpdated(employeeStatusDTO.getLastUpdated());
         employeeStatus.setName(employeeStatusDTO.getName());
         employeeStatus.setDescription(employeeStatusDTO.getDescription());
         return employeeStatus;
@@ -72,12 +74,15 @@ public class EmployeeStatusService {
         return employeeStatusRepository.existsByNameIgnoreCase(name);
     }
 
-    public String getReferencedWarning(final Long id) {
+    public ReferencedWarning getReferencedWarning(final Long id) {
+        final ReferencedWarning referencedWarning = new ReferencedWarning();
         final EmployeeStatus employeeStatus = employeeStatusRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         final Employee employeeStatusEmployee = employeeRepository.findFirstByEmployeeStatus(employeeStatus);
         if (employeeStatusEmployee != null) {
-            return WebUtils.getMessage("employeeStatus.employee.employeeStatus.referenced", employeeStatusEmployee.getId());
+            referencedWarning.setKey("employeeStatus.employee.employeeStatus.referenced");
+            referencedWarning.addParam(employeeStatusEmployee.getId());
+            return referencedWarning;
         }
         return null;
     }

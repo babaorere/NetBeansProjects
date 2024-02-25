@@ -1,6 +1,6 @@
 package com.isiweek.loan_type.domain;
 
-import com.isiweek.loan_contract.domain.LoanContract;
+import com.isiweek.loan_contract.LoanContract;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;

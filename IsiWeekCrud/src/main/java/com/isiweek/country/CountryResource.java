@@ -1,6 +1,7 @@
 package com.isiweek.country;
 
-import com.isiweek.country.Country;
+import com.isiweek.util.ReferencedException;
+import com.isiweek.util.ReferencedWarning;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.http.HttpStatus;
@@ -27,30 +28,34 @@ public class CountryResource {
     }
 
     @GetMapping
-    public ResponseEntity<List<Country>> getAllCountries() {
+    public ResponseEntity<List<CountryDTO>> getAllCountries() {
         return ResponseEntity.ok(countryService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Country> getCountry(@PathVariable(name = "id") final Long id) {
+    public ResponseEntity<CountryDTO> getCountry(@PathVariable(name = "id") final Long id) {
         return ResponseEntity.ok(countryService.get(id));
     }
 
     @PostMapping
-    public ResponseEntity<Long> createCountry(@RequestBody @Valid final Country Country) {
-        final Long createdId = countryService.create(Country);
+    public ResponseEntity<Long> createCountry(@RequestBody @Valid final CountryDTO countryDTO) {
+        final Long createdId = countryService.create(countryDTO);
         return new ResponseEntity<>(createdId, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Long> updateCountry(@PathVariable(name = "id") final Long id,
-            @RequestBody @Valid final Country Country) {
-        countryService.update(id, Country);
+            @RequestBody @Valid final CountryDTO countryDTO) {
+        countryService.update(id, countryDTO);
         return ResponseEntity.ok(id);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCountry(@PathVariable(name = "id") final Long id) {
+        final ReferencedWarning referencedWarning = countryService.getReferencedWarning(id);
+        if (referencedWarning != null) {
+            throw new ReferencedException(referencedWarning);
+        }
         countryService.delete(id);
         return ResponseEntity.noContent().build();
     }

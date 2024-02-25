@@ -1,10 +1,7 @@
 package com.isiweek.email_notification;
 
-import com.isiweek.email_notification.EmailNotification;
-import com.isiweek.email_notification.EmailNotificationDTO;
-import com.isiweek.email_notification.EmailNotificationRepository;
-import com.isiweek.loan_contract.domain.LoanContract;
-import com.isiweek.loan_contract.repos.LoanContractRepository;
+import com.isiweek.loan_contract.LoanContract;
+import com.isiweek.loan_contract.LoanContractRepository;
 import com.isiweek.person.Person;
 import com.isiweek.person.PersonRepository;
 import com.isiweek.util.NotFoundException;
@@ -12,19 +9,20 @@ import java.util.List;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+
 @Service
 public class EmailNotificationService {
 
     private final EmailNotificationRepository emailNotificationRepository;
-    private final PersonRepository personRepository;
     private final LoanContractRepository loanContractRepository;
+    private final PersonRepository personRepository;
 
     public EmailNotificationService(final EmailNotificationRepository emailNotificationRepository,
-            final PersonRepository personRepository,
-            final LoanContractRepository loanContractRepository) {
+            final LoanContractRepository loanContractRepository,
+            final PersonRepository personRepository) {
         this.emailNotificationRepository = emailNotificationRepository;
-        this.personRepository = personRepository;
         this.loanContractRepository = loanContractRepository;
+        this.personRepository = personRepository;
     }
 
     public List<EmailNotificationDTO> findAll() {
@@ -60,29 +58,31 @@ public class EmailNotificationService {
     private EmailNotificationDTO mapToDTO(final EmailNotification emailNotification,
             final EmailNotificationDTO emailNotificationDTO) {
         emailNotificationDTO.setId(emailNotification.getId());
-        emailNotificationDTO.setSubject(emailNotification.getSubject());
-        emailNotificationDTO.setSentAt(emailNotification.getSentAt());
-        emailNotificationDTO.setBody(emailNotification.getBody());
+        emailNotificationDTO.setDateCreated(emailNotification.getDateCreated());
         emailNotificationDTO.setDateSent(emailNotification.getDateSent());
-        emailNotificationDTO.setPerson(emailNotification.getPerson() == null ? null : emailNotification.getPerson().getId());
+        emailNotificationDTO.setLastUpdated(emailNotification.getLastUpdated());
+        emailNotificationDTO.setSentAt(emailNotification.getSentAt());
+        emailNotificationDTO.setSubject(emailNotification.getSubject());
+        emailNotificationDTO.setBody(emailNotification.getBody());
         emailNotificationDTO.setLoanContract(emailNotification.getLoanContract() == null ? null : emailNotification.getLoanContract().getId());
         emailNotificationDTO.setPerson(emailNotification.getPerson() == null ? null : emailNotification.getPerson().getId());
-        emailNotificationDTO.setLoanContract(emailNotification.getLoanContract() == null ? null : emailNotification.getLoanContract().getId());
         return emailNotificationDTO;
     }
 
     private EmailNotification mapToEntity(final EmailNotificationDTO emailNotificationDTO,
             final EmailNotification emailNotification) {
-        emailNotification.setSubject(emailNotificationDTO.getSubject());
-        emailNotification.setSentAt(emailNotificationDTO.getSentAt());
-        emailNotification.setBody(emailNotificationDTO.getBody());
+        emailNotification.setDateCreated(emailNotificationDTO.getDateCreated());
         emailNotification.setDateSent(emailNotificationDTO.getDateSent());
-        final Person person = emailNotificationDTO.getPerson() == null ? null : personRepository.findById(emailNotificationDTO.getPerson())
-                .orElseThrow(() -> new NotFoundException("person not found"));
-        emailNotification.setPerson(person);
+        emailNotification.setLastUpdated(emailNotificationDTO.getLastUpdated());
+        emailNotification.setSentAt(emailNotificationDTO.getSentAt());
+        emailNotification.setSubject(emailNotificationDTO.getSubject());
+        emailNotification.setBody(emailNotificationDTO.getBody());
         final LoanContract loanContract = emailNotificationDTO.getLoanContract() == null ? null : loanContractRepository.findById(emailNotificationDTO.getLoanContract())
                 .orElseThrow(() -> new NotFoundException("loanContract not found"));
         emailNotification.setLoanContract(loanContract);
+        final Person person = emailNotificationDTO.getPerson() == null ? null : personRepository.findById(emailNotificationDTO.getPerson())
+                .orElseThrow(() -> new NotFoundException("person not found"));
+        emailNotification.setPerson(person);
         return emailNotification;
     }
 

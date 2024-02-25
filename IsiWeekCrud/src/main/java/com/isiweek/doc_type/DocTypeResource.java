@@ -1,6 +1,7 @@
 package com.isiweek.doc_type;
 
-import com.isiweek.doc_type.DocTypeDTO;
+import com.isiweek.util.ReferencedException;
+import com.isiweek.util.ReferencedWarning;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.http.HttpStatus;
@@ -51,6 +52,10 @@ public class DocTypeResource {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteDocType(@PathVariable(name = "id") final Long id) {
+        final ReferencedWarning referencedWarning = docTypeService.getReferencedWarning(id);
+        if (referencedWarning != null) {
+            throw new ReferencedException(referencedWarning);
+        }
         docTypeService.delete(id);
         return ResponseEntity.noContent().build();
     }

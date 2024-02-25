@@ -1,5 +1,6 @@
 package com.isiweek.country;
 
+import com.isiweek.util.ReferencedWarning;
 import com.isiweek.util.WebUtils;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -30,20 +31,17 @@ public class CountryController {
     }
 
     @GetMapping("/add")
-    public String add(@ModelAttribute("country") final Country Country) {
+    public String add(@ModelAttribute("country") final CountryDTO countryDTO) {
         return "country/add";
     }
 
     @PostMapping("/add")
-    public String add(@ModelAttribute("country") @Valid final Country Country,
+    public String add(@ModelAttribute("country") @Valid final CountryDTO countryDTO,
             final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
-        if (!bindingResult.hasFieldErrors("name") && countryService.nameExists(Country.getName())) {
-            bindingResult.rejectValue("name", "Exists.country.name");
-        }
         if (bindingResult.hasErrors()) {
             return "country/add";
         }
-        countryService.create(Country);
+        countryService.create(countryDTO);
         redirectAttributes.addFlashAttribute(WebUtils.MSG_SUCCESS, WebUtils.getMessage("country.create.success"));
         return "redirect:/countries";
     }
@@ -56,18 +54,12 @@ public class CountryController {
 
     @PostMapping("/edit/{id}")
     public String edit(@PathVariable(name = "id") final Long id,
-            @ModelAttribute("country") @Valid final Country Country,
+            @ModelAttribute("country") @Valid final CountryDTO countryDTO,
             final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
-        final Country currentCountry = countryService.get(id);
-        if (!bindingResult.hasFieldErrors("name") &&
-                !Country.getName().equalsIgnoreCase(currentCountry.getName()) &&
-                countryService.nameExists(Country.getName())) {
-            bindingResult.rejectValue("name", "Exists.country.name");
-        }
         if (bindingResult.hasErrors()) {
             return "country/edit";
         }
-        countryService.update(id, Country);
+        countryService.update(id, countryDTO);
         redirectAttributes.addFlashAttribute(WebUtils.MSG_SUCCESS, WebUtils.getMessage("country.update.success"));
         return "redirect:/countries";
     }
@@ -75,9 +67,10 @@ public class CountryController {
     @PostMapping("/delete/{id}")
     public String delete(@PathVariable(name = "id") final Long id,
             final RedirectAttributes redirectAttributes) {
-        final String referencedWarning = countryService.getReferencedWarning(id);
+        final ReferencedWarning referencedWarning = countryService.getReferencedWarning(id);
         if (referencedWarning != null) {
-            redirectAttributes.addFlashAttribute(WebUtils.MSG_ERROR, referencedWarning);
+            redirectAttributes.addFlashAttribute(WebUtils.MSG_ERROR,
+                    WebUtils.getMessage(referencedWarning.getKey(), referencedWarning.getParams().toArray()));
         } else {
             countryService.delete(id);
             redirectAttributes.addFlashAttribute(WebUtils.MSG_INFO, WebUtils.getMessage("country.delete.success"));

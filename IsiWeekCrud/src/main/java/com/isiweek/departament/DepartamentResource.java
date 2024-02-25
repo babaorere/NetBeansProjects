@@ -1,6 +1,7 @@
 package com.isiweek.departament;
 
-import com.isiweek.departament.DepartamentDTO;
+import com.isiweek.util.ReferencedException;
+import com.isiweek.util.ReferencedWarning;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.http.HttpStatus;
@@ -52,6 +53,10 @@ public class DepartamentResource {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteDepartament(@PathVariable(name = "id") final Long id) {
+        final ReferencedWarning referencedWarning = departamentService.getReferencedWarning(id);
+        if (referencedWarning != null) {
+            throw new ReferencedException(referencedWarning);
+        }
         departamentService.delete(id);
         return ResponseEntity.noContent().build();
     }

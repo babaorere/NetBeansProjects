@@ -2,7 +2,7 @@ package com.isiweek.employee;
 
 import com.isiweek.departament.Departament;
 import com.isiweek.employee_status.EmployeeStatus;
-import com.isiweek.job_title.domain.JobTitle;
+import com.isiweek.job_title.JobTitle;
 import com.isiweek.person.Person;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,6 +22,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Getter
@@ -36,8 +37,14 @@ public class Employee {
     @Column(nullable = false)
     private LocalDate dateOfHire;
 
-    @Column(nullable = false, precision = 2, scale = 2)
+    @Column(nullable = false, precision = 4, scale = 2)
     private BigDecimal salary;
+
+    @Column(nullable = false)
+    private OffsetDateTime dateCreated;
+
+    @Column(nullable = false)
+    private OffsetDateTime lastUpdated;
 
     @Column(length = 512)
     private String benefits;
@@ -55,16 +62,8 @@ public class Employee {
     private String performanceReviews;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "person_id", nullable = false)
-    private Person person;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employee_status_id", nullable = false)
     private EmployeeStatus employeeStatus;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "job_title_id", nullable = false)
-    private JobTitle jobTitle;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "department_id", nullable = false)
@@ -73,6 +72,14 @@ public class Employee {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "manager_id", nullable = false)
     private Person manager;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "person_id", nullable = false)
+    private Person person;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "job_title_id", nullable = false)
+    private JobTitle jobTitle;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)

@@ -43,7 +43,7 @@ public class StatusTest {
     public StatusTest(StatusRepository inStatusRepository, StatusService inStatusEntityService) {
         this.statusRepository = inStatusRepository;
         this.statusService = inStatusEntityService;
-        this.testStatus = Optional.ofNullable(Status.emptyGenerator());
+        this.testStatus = Optional.ofNullable(Status.builderPending());
     }
 
     @BeforeAll
@@ -68,7 +68,7 @@ public class StatusTest {
         statusService.deleteAll();
 
         // Create
-        Status createdStatus = statusService.create(Status.emptyGenerator());
+        Status createdStatus = statusService.create(Status.builderPending());
 
         // Read
         Optional<Status> retrievedStatus = statusService.read(createdStatus.getId());
@@ -88,11 +88,11 @@ public class StatusTest {
     }
 
     /**
-     * Test of emptyGenerator method, of class Status.
+     * Test of builderPending method, of class Status.
      */
     @Test
     public void testEmptyGenerator() {
-        Status result = Status.emptyGenerator();
+        Status result = Status.builderPending();
         Assertions.assertNotNull(result);
     }
 
@@ -212,7 +212,7 @@ public class StatusTest {
         statusService.deleteAll();
 
         // Create
-        Status createdStatus = statusService.create(Status.emptyGenerator());
+        Status createdStatus = statusService.create(Status.builderPending());
 
         // Update
         Status updatedStatus = createdStatus;

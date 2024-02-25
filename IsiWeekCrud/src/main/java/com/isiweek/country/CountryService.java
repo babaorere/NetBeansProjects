@@ -1,15 +1,13 @@
 package com.isiweek.country;
 
-import com.isiweek.country.Country;
-import com.isiweek.country.Country;
-import com.isiweek.country.CountryRepository;
 import com.isiweek.person.Person;
 import com.isiweek.person.PersonRepository;
 import com.isiweek.util.NotFoundException;
-import com.isiweek.util.WebUtils;
+import com.isiweek.util.ReferencedWarning;
 import java.util.List;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
 
 @Service
 public class CountryService {
@@ -23,29 +21,29 @@ public class CountryService {
         this.personRepository = personRepository;
     }
 
-    public List<Country> findAll() {
+    public List<CountryDTO> findAll() {
         final List<Country> countries = countryRepository.findAll(Sort.by("id"));
         return countries.stream()
-                .map(country -> mapToDTO(country, new Country()))
+                .map(country -> mapToDTO(country, new CountryDTO()))
                 .toList();
     }
 
-    public Country get(final Long id) {
+    public CountryDTO get(final Long id) {
         return countryRepository.findById(id)
-                .map(country -> mapToDTO(country, new Country()))
+                .map(country -> mapToDTO(country, new CountryDTO()))
                 .orElseThrow(NotFoundException::new);
     }
 
-    public Long create(final Country Country) {
+    public Long create(final CountryDTO countryDTO) {
         final Country country = new Country();
-        mapToEntity(Country, country);
+        mapToEntity(countryDTO, country);
         return countryRepository.save(country).getId();
     }
 
-    public void update(final Long id, final Country Country) {
+    public void update(final Long id, final CountryDTO countryDTO) {
         final Country country = countryRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
-        mapToEntity(Country, country);
+        mapToEntity(countryDTO, country);
         countryRepository.save(country);
     }
 
@@ -53,16 +51,20 @@ public class CountryService {
         countryRepository.deleteById(id);
     }
 
-    private Country mapToDTO(final Country country, final Country Country) {
-        Country.setId(country.getId());
-        Country.setName(country.getName());
-        Country.setDescription(country.getDescription());
-        return Country;
+    private CountryDTO mapToDTO(final Country country, final CountryDTO countryDTO) {
+        countryDTO.setId(country.getId());
+        countryDTO.setDateCreated(country.getDateCreated());
+        countryDTO.setLastUpdated(country.getLastUpdated());
+        countryDTO.setName(country.getName());
+        countryDTO.setDescription(country.getDescription());
+        return countryDTO;
     }
 
-    private Country mapToEntity(final Country Country, final Country country) {
-        country.setName(Country.getName());
-        country.setDescription(Country.getDescription());
+    private Country mapToEntity(final CountryDTO countryDTO, final Country country) {
+        country.setDateCreated(countryDTO.getDateCreated());
+        country.setLastUpdated(countryDTO.getLastUpdated());
+        country.setName(countryDTO.getName());
+        country.setDescription(countryDTO.getDescription());
         return country;
     }
 
@@ -70,14 +72,16 @@ public class CountryService {
         return countryRepository.existsByNameIgnoreCase(name);
     }
 
-    public String getReferencedWarning(final Long id) {
+    public ReferencedWarning getReferencedWarning(final Long id) {
+        final ReferencedWarning referencedWarning = new ReferencedWarning();
         final Country country = countryRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         final Person countryPerson = personRepository.findFirstByCountry(country);
         if (countryPerson != null) {
-            return WebUtils.getMessage("country.person.country.referenced", countryPerson.getId());
+            referencedWarning.setKey("country.person.country.referenced");
+            referencedWarning.addParam(countryPerson.getId());
+            return referencedWarning;
         }
-
         return null;
     }
 

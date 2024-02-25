@@ -1,5 +1,6 @@
 package com.isiweek.departament;
 
+import com.isiweek.util.ReferencedWarning;
 import com.isiweek.util.WebUtils;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -37,9 +38,6 @@ public class DepartamentController {
     @PostMapping("/add")
     public String add(@ModelAttribute("departament") @Valid final DepartamentDTO departamentDTO,
             final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
-        if (!bindingResult.hasFieldErrors("name") && departamentService.nameExists(departamentDTO.getName())) {
-            bindingResult.rejectValue("name", "Exists.departament.name");
-        }
         if (bindingResult.hasErrors()) {
             return "departament/add";
         }
@@ -58,12 +56,6 @@ public class DepartamentController {
     public String edit(@PathVariable(name = "id") final Long id,
             @ModelAttribute("departament") @Valid final DepartamentDTO departamentDTO,
             final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
-        final DepartamentDTO currentDepartamentDTO = departamentService.get(id);
-        if (!bindingResult.hasFieldErrors("name") &&
-                !departamentDTO.getName().equalsIgnoreCase(currentDepartamentDTO.getName()) &&
-                departamentService.nameExists(departamentDTO.getName())) {
-            bindingResult.rejectValue("name", "Exists.departament.name");
-        }
         if (bindingResult.hasErrors()) {
             return "departament/edit";
         }
@@ -75,9 +67,10 @@ public class DepartamentController {
     @PostMapping("/delete/{id}")
     public String delete(@PathVariable(name = "id") final Long id,
             final RedirectAttributes redirectAttributes) {
-        final String referencedWarning = departamentService.getReferencedWarning(id);
+        final ReferencedWarning referencedWarning = departamentService.getReferencedWarning(id);
         if (referencedWarning != null) {
-            redirectAttributes.addFlashAttribute(WebUtils.MSG_ERROR, referencedWarning);
+            redirectAttributes.addFlashAttribute(WebUtils.MSG_ERROR,
+                    WebUtils.getMessage(referencedWarning.getKey(), referencedWarning.getParams().toArray()));
         } else {
             departamentService.delete(id);
             redirectAttributes.addFlashAttribute(WebUtils.MSG_INFO, WebUtils.getMessage("departament.delete.success"));

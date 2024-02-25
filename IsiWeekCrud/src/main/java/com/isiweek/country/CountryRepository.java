@@ -1,6 +1,5 @@
 package com.isiweek.country;
 
-import com.isiweek.country.Country;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 

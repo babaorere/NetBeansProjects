@@ -1,5 +1,6 @@
 package com.isiweek.marital_status;
 
+import com.isiweek.util.ReferencedWarning;
 import com.isiweek.util.WebUtils;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -38,9 +39,6 @@ public class MaritalStatusController {
     public String add(
             @ModelAttribute("maritalStatus") @Valid final MaritalStatusDTO maritalStatusDTO,
             final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
-        if (!bindingResult.hasFieldErrors("name") && maritalStatusService.nameExists(maritalStatusDTO.getName())) {
-            bindingResult.rejectValue("name", "Exists.maritalStatus.name");
-        }
         if (bindingResult.hasErrors()) {
             return "maritalStatus/add";
         }
@@ -59,12 +57,6 @@ public class MaritalStatusController {
     public String edit(@PathVariable(name = "id") final Long id,
             @ModelAttribute("maritalStatus") @Valid final MaritalStatusDTO maritalStatusDTO,
             final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
-        final MaritalStatusDTO currentMaritalStatusDTO = maritalStatusService.get(id);
-        if (!bindingResult.hasFieldErrors("name") &&
-                !maritalStatusDTO.getName().equalsIgnoreCase(currentMaritalStatusDTO.getName()) &&
-                maritalStatusService.nameExists(maritalStatusDTO.getName())) {
-            bindingResult.rejectValue("name", "Exists.maritalStatus.name");
-        }
         if (bindingResult.hasErrors()) {
             return "maritalStatus/edit";
         }
@@ -76,9 +68,10 @@ public class MaritalStatusController {
     @PostMapping("/delete/{id}")
     public String delete(@PathVariable(name = "id") final Long id,
             final RedirectAttributes redirectAttributes) {
-        final String referencedWarning = maritalStatusService.getReferencedWarning(id);
+        final ReferencedWarning referencedWarning = maritalStatusService.getReferencedWarning(id);
         if (referencedWarning != null) {
-            redirectAttributes.addFlashAttribute(WebUtils.MSG_ERROR, referencedWarning);
+            redirectAttributes.addFlashAttribute(WebUtils.MSG_ERROR,
+                    WebUtils.getMessage(referencedWarning.getKey(), referencedWarning.getParams().toArray()));
         } else {
             maritalStatusService.delete(id);
             redirectAttributes.addFlashAttribute(WebUtils.MSG_INFO, WebUtils.getMessage("maritalStatus.delete.success"));

@@ -1,0 +1,54 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layout}">
+    <head>
+        <title>[[#{lender.list.headline}]]</title>
+    </head>
+    <body>
+        <div layout:fragment="content">
+            <div class="d-flex flex-wrap mb-4">
+                <h1 class="flex-grow-1">[[#{lender.list.headline}]]</h1>
+                <div>
+                    <a th:href="@{/lenders/add}" class="btn btn-primary ms-2">[[#{lender.list.createNew}]]</a>
+                </div>
+            </div>
+            <div th:if="${lenders.empty}">[[#{lender.list.empty}]]</div>
+            <div th:if="${!lenders.empty}" class="table-responsive">
+                <table class="table table-striped table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col">[[#{lender.id.label}]]</th>
+                            <th scope="col">[[#{lender.maxLoanAmount.label}]]</th>
+                            <th scope="col">[[#{lender.creditScore.label}]]</th>
+                            <th scope="col">[[#{lender.dateCreated.label}]]</th>
+                            <th scope="col">[[#{lender.lastUpdated.label}]]</th>
+                            <th scope="col">[[#{lender.observations.label}]]</th>
+                            <th scope="col">[[#{lender.person.label}]]</th>
+                            <th><!-- --></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="lender : ${lenders}">
+                            <td>[[${lender.id}]]</td>
+                            <td>[[${lender.maxLoanAmount}]]</td>
+                            <td>[[${lender.creditScore}]]</td>
+                            <td>[[${lender.dateCreated}]]</td>
+                            <td>[[${lender.lastUpdated}]]</td>
+                            <td>[[${lender.observations}]]</td>
+                            <td>[[${lender.person}]]</td>
+                            <td>
+                                <div class="float-end text-nowrap">
+                                    <a th:href="@{/lenders/edit/{id}(id=${lender.id})}" class="btn btn-sm btn-secondary">[[#{lender.list.edit}]]</a>
+                                    <form th:action="@{/lenders/delete/{id}(id=${lender.id})}"
+                                            th:data-confirm-message="#{delete.confirm}" method="post" class="js-submit-confirm d-inline">
+                                        <button type="submit" class="btn btn-sm btn-secondary">[[#{lender.list.delete}]]</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </body>
+</html>

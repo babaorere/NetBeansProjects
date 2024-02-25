@@ -1,0 +1,120 @@
+
+body {
+    background-color: rgba(8, 28, 63, 1);
+    color: #fff; /* White text color for good contrast */
+    margin: 0;
+    padding: 0;
+    padding-top: 56px; /* Altura de la barra de navegación */
+    /* Add other styles as needed */
+
+    min-height: 200vh;
+    display: flex;
+    flex-direction: column;
+}
+
+form {
+    background-color: rgba(8, 28, 63, 1);
+    color: #fff;
+    padding: 10px; /* Espaciado interno para el formulario */
+    max-width: 800px; /* Ancho máximo del formulario */
+    margin: 0 auto; /* Centrar el formulario en la página */
+}
+
+label {
+    display: block; /* Hace que las etiquetas estén en líneas separadas */
+    margin-bottom: 5px; /* Espaciado inferior para las etiquetas */
+}
+
+input {
+    width: 100%; /* Ocupa el 100% del ancho disponible */
+    padding: 8px; /* Espaciado interno para los campos de entrada */
+    margin-bottom: 10px; /* Espaciado inferior para los campos de entrada */
+}
+
+/* Estilo del contenedor (puede ser un div, un párrafo, etc.) */
+.center-container {
+    text-align: center;
+}
+
+input[type="submit"] {
+    background-color: #4caf50; /* Color de fondo del botón de envío */
+    color: #fff; /* Color de letra para el botón de envío */
+    display: inline-block;
+    cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
+    width: auto;
+    padding: 5px 10px; /* Ajusta el relleno según tus preferencias */
+}
+
+main {
+    flex: 1;
+    padding: 20px;
+}
+
+footer {
+    background-color: rgba(8, 28, 63, 255);
+    color: white;
+    padding: 10px;
+    text-align: center;
+}
+
+.loan-management-section {
+    padding: 80px 0;
+    background-color: #f8f9fa;
+}
+
+.section-title {
+    font-size: 36px;
+    font-weight: 700;
+    color: #007bff;
+}
+
+.section-subtitle {
+    font-size: 18px;
+    font-weight: 400;
+    color: #6c757d;
+}
+
+.loan-management-image {
+    max-width: 100%;
+    height: auto;
+}
+
+.centered-image {
+    text-align: center;
+    vertical-align: middle;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    margin: 0;
+}
+
+.rounded-image {
+    border-radius: 10px; /* You can adjust the value according to your preference */
+}
+
+.div-hidden {
+    display: none;
+}
+
+.container {
+    margin-top: 50px;
+}
+
+.login-container {
+    background-color: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.image-container {
+    text-align: center;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin-top: 20px;
+}

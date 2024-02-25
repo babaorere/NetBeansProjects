@@ -1,0 +1,66 @@
+package com.isiweek.company;
+
+import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Constraint;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
+import jakarta.validation.Payload;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.util.Map;
+import org.springframework.web.servlet.HandlerMapping;
+
+
+/**
+ * Validate that the taxidnumber value isn't taken yet.
+ */
+@Target({ FIELD, METHOD, ANNOTATION_TYPE })
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Constraint(
+        validatedBy = CompanyTaxidnumberUnique.CompanyTaxidnumberUniqueValidator.class
+)
+public @interface CompanyTaxidnumberUnique {
+
+    String message() default "{Exists.company.taxidnumber}";
+
+    Class<?>[] groups() default {};
+
+    Class<? extends Payload>[] payload() default {};
+
+    class CompanyTaxidnumberUniqueValidator implements ConstraintValidator<CompanyTaxidnumberUnique, String> {
+
+        private final CompanyService companyService;
+        private final HttpServletRequest request;
+
+        public CompanyTaxidnumberUniqueValidator(final CompanyService companyService,
+                final HttpServletRequest request) {
+            this.companyService = companyService;
+            this.request = request;
+        }
+
+        @Override
+        public boolean isValid(final String value, final ConstraintValidatorContext cvContext) {
+            if (value == null) {
+                // no value present
+                return true;
+            }
+            @SuppressWarnings("unchecked") final Map<String, String> pathVariables = 
+                    ((Map<String, String>)request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE));
+            final String currentId = pathVariables.get("id");
+            if (currentId != null && value.equalsIgnoreCase(companyService.get(Long.parseLong(currentId)).getTaxidnumber())) {
+                // value hasn't changed
+                return true;
+            }
+            return !companyService.taxidnumberExists(value);
+        }
+
+    }
+
+}

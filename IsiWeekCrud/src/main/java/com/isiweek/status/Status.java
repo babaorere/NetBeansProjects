@@ -12,6 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.time.OffsetDateTime;
 import java.util.HashSet;
@@ -42,8 +43,8 @@ public class Status {
         return Status.builder().id(0L).statusEnum(randomValue).build();
     }
 
-    public static Status emptyGenerator() {
-        return Status.builder().id(0L).statusEnum(StatusEnum.PENDING).build();
+    public static Status builderPending() {
+        return Status.builder().statusEnum(StatusEnum.PENDING).build();
     }
 
     @Id
@@ -56,6 +57,7 @@ public class Status {
     @Enumerated(EnumType.STRING)
     @NonNull
     @NotNull(message = "StatusEnum is required")
+    @NotEmpty
     @Builder.Default
     private StatusEnum statusEnum = StatusEnum.PENDING;
 

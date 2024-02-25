@@ -1,15 +1,13 @@
 package com.isiweek.departament;
 
-import com.isiweek.departament.Departament;
-import com.isiweek.departament.DepartamentDTO;
-import com.isiweek.departament.DepartamentRepository;
 import com.isiweek.employee.Employee;
 import com.isiweek.employee.EmployeeRepository;
 import com.isiweek.util.NotFoundException;
-import com.isiweek.util.WebUtils;
+import com.isiweek.util.ReferencedWarning;
 import java.util.List;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
 
 @Service
 public class DepartamentService {
@@ -56,6 +54,8 @@ public class DepartamentService {
     private DepartamentDTO mapToDTO(final Departament departament,
             final DepartamentDTO departamentDTO) {
         departamentDTO.setId(departament.getId());
+        departamentDTO.setDateCreated(departament.getDateCreated());
+        departamentDTO.setLastUpdated(departament.getLastUpdated());
         departamentDTO.setName(departament.getName());
         departamentDTO.setDescription(departament.getDescription());
         return departamentDTO;
@@ -63,6 +63,8 @@ public class DepartamentService {
 
     private Departament mapToEntity(final DepartamentDTO departamentDTO,
             final Departament departament) {
+        departament.setDateCreated(departamentDTO.getDateCreated());
+        departament.setLastUpdated(departamentDTO.getLastUpdated());
         departament.setName(departamentDTO.getName());
         departament.setDescription(departamentDTO.getDescription());
         return departament;
@@ -72,14 +74,16 @@ public class DepartamentService {
         return departamentRepository.existsByNameIgnoreCase(name);
     }
 
-    public String getReferencedWarning(final Long id) {
+    public ReferencedWarning getReferencedWarning(final Long id) {
+        final ReferencedWarning referencedWarning = new ReferencedWarning();
         final Departament departament = departamentRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         final Employee departmentEmployee = employeeRepository.findFirstByDepartment(departament);
         if (departmentEmployee != null) {
-            return WebUtils.getMessage("departament.employee.department.referenced", departmentEmployee.getId());
+            referencedWarning.setKey("departament.employee.department.referenced");
+            referencedWarning.addParam(departmentEmployee.getId());
+            return referencedWarning;
         }
-
         return null;
     }
 

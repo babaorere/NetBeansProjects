@@ -1,6 +1,7 @@
 package com.isiweek.employee_status;
 
-import com.isiweek.employee_status.EmployeeStatusDTO;
+import com.isiweek.util.ReferencedException;
+import com.isiweek.util.ReferencedWarning;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.http.HttpStatus;
@@ -53,6 +54,10 @@ public class EmployeeStatusResource {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEmployeeStatus(@PathVariable(name = "id") final Long id) {
+        final ReferencedWarning referencedWarning = employeeStatusService.getReferencedWarning(id);
+        if (referencedWarning != null) {
+            throw new ReferencedException(referencedWarning);
+        }
         employeeStatusService.delete(id);
         return ResponseEntity.noContent().build();
     }

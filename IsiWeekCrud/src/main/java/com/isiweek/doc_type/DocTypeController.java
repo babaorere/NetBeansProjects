@@ -1,5 +1,6 @@
 package com.isiweek.doc_type;
 
+import com.isiweek.util.ReferencedWarning;
 import com.isiweek.util.WebUtils;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -37,9 +38,6 @@ public class DocTypeController {
     @PostMapping("/add")
     public String add(@ModelAttribute("docType") @Valid final DocTypeDTO docTypeDTO,
             final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
-        if (!bindingResult.hasFieldErrors("name") && docTypeService.nameExists(docTypeDTO.getName())) {
-            bindingResult.rejectValue("name", "Exists.docType.name");
-        }
         if (bindingResult.hasErrors()) {
             return "docType/add";
         }
@@ -58,12 +56,6 @@ public class DocTypeController {
     public String edit(@PathVariable(name = "id") final Long id,
             @ModelAttribute("docType") @Valid final DocTypeDTO docTypeDTO,
             final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
-        final DocTypeDTO currentDocTypeDTO = docTypeService.get(id);
-        if (!bindingResult.hasFieldErrors("name") &&
-                !docTypeDTO.getName().equalsIgnoreCase(currentDocTypeDTO.getName()) &&
-                docTypeService.nameExists(docTypeDTO.getName())) {
-            bindingResult.rejectValue("name", "Exists.docType.name");
-        }
         if (bindingResult.hasErrors()) {
             return "docType/edit";
         }
@@ -75,9 +67,10 @@ public class DocTypeController {
     @PostMapping("/delete/{id}")
     public String delete(@PathVariable(name = "id") final Long id,
             final RedirectAttributes redirectAttributes) {
-        final String referencedWarning = docTypeService.getReferencedWarning(id);
+        final ReferencedWarning referencedWarning = docTypeService.getReferencedWarning(id);
         if (referencedWarning != null) {
-            redirectAttributes.addFlashAttribute(WebUtils.MSG_ERROR, referencedWarning);
+            redirectAttributes.addFlashAttribute(WebUtils.MSG_ERROR,
+                    WebUtils.getMessage(referencedWarning.getKey(), referencedWarning.getParams().toArray()));
         } else {
             docTypeService.delete(id);
             redirectAttributes.addFlashAttribute(WebUtils.MSG_INFO, WebUtils.getMessage("docType.delete.success"));
