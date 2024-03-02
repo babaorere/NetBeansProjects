@@ -1,8 +1,7 @@
-package com.isiweek;
+package com.isiweek.home;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-
 
 @Controller
 public class HomeController {
@@ -12,4 +11,13 @@ public class HomeController {
         return "home/index";
     }
 
+    @GetMapping("/login")
+    public String login() {
+        return "home/login";
+    }
+
+    @GetMapping("/register")
+    public String register() {
+        return "home/register";
+    }
 }

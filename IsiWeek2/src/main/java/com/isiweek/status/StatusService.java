@@ -5,9 +5,9 @@ import com.isiweek.company.CompanyRepository;
 import com.isiweek.util.NotFoundException;
 import com.isiweek.util.ReferencedWarning;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
 
 @Service
 public class StatusService {
@@ -72,12 +72,15 @@ public class StatusService {
         final ReferencedWarning referencedWarning = new ReferencedWarning();
         final Status statusEntity = statusEntityRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
-        final Company statusCompany = companyRepository.findFirstByStatus(statusEntity);
-        if (statusCompany != null) {
+
+        final Optional<Company> statusCompany = companyRepository.findFirstByStatus(statusEntity);
+
+        if (statusCompany.isPresent()) {
             referencedWarning.setKey("statusEntity.company.status.referenced");
-            referencedWarning.addParam(statusCompany.getId());
+            referencedWarning.addParam(statusCompany.get().getId());
             return referencedWarning;
         }
+
         return null;
     }
 

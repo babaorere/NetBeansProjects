@@ -7,6 +7,7 @@ import com.isiweek.user.UserRepository;
 import com.isiweek.util.NotFoundException;
 import com.isiweek.util.ReferencedWarning;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -88,10 +89,11 @@ public class LenderService {
         final Lender lender = lenderRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
 
-        final User lenderUser = userRepository.findFirstByLender(lender);
-        if (lenderUser != null) {
+        final Optional<User> lenderUser = userRepository.findFirstByLender(lender);
+
+        if (lenderUser.isPresent()) {
             referencedWarning.setKey("lender.user.lender.referenced");
-            referencedWarning.addParam(lenderUser.getId());
+            referencedWarning.addParam(lenderUser.get().getId());
             return referencedWarning;
         }
 

@@ -18,14 +18,14 @@
                     <thead>
                         <tr>
                             <th scope="col">[[#{role.id.label}]]</th>
-                            <th scope="col">[[#{role.roleEnum.label}]]</th>
+                            <th scope="col">[[#{role.name.label}]]</th>
                             <th><!-- --></th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr th:each="role : ${roles}">
                             <td>[[${role.id}]]</td>
-                            <td>[[${role.roleEnum}]]</td>
+                            <td>[[${role.name}]]</td>
                             <td>
                                 <div class="float-end text-nowrap">
                                     <a th:href="@{/roles/edit/{id}(id=${role.id})}" class="btn btn-sm btn-secondary">[[#{role.list.edit}]]</a>

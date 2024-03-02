@@ -15,7 +15,7 @@
             <div th:replace="~{fragments/forms::globalErrors('role')}" />
             <form th:action="${requestUri}" method="post">
                 <div th:replace="~{fragments/forms::inputRow(object='role', field='id', disabled=true, type='number')}" />
-                <div th:replace="~{fragments/forms::inputRow(object='role', field='roleEnum', required=true)}" />
+                <div th:replace="~{fragments/forms::inputRow(object='role', field='name', required=true)}" />
                 <input type="submit" th:value="#{role.edit.headline}" class="btn btn-primary mt-4" />
             </form>
         </div>

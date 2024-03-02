@@ -1,17 +1,17 @@
 package com.isiweek.company;
 
 import com.isiweek.status.Status;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
-
 
 public interface CompanyRepository extends JpaRepository<Company, Long> {
 
-    Company findFirstByStatus(Status statusEntity);
+    Optional<Company> findFirstByStatus(Status statusEntity);
 
-    boolean existsByEmailIgnoreCase(String email);
+    Boolean existsByEmailIgnoreCase(String email);
 
-    boolean existsByTaxidnumberIgnoreCase(String taxidnumber);
+    Boolean existsByTaxidnumberIgnoreCase(String taxidnumber);
 
-    boolean existsByNameIgnoreCase(String name);
+    Boolean existsByNameIgnoreCase(String name);
 
 }

@@ -1,4 +1,4 @@
-package com.isiweek.role;
+package com.isiweek.debtor;
 
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.FIELD;
@@ -18,30 +18,30 @@ import org.springframework.web.servlet.HandlerMapping;
 
 
 /**
- * Validate that the roleEnum value isn't taken yet.
+ * Validate that the name value isn't taken yet.
  */
 @Target({ FIELD, METHOD, ANNOTATION_TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Constraint(
-        validatedBy = RoleRoleEnumUnique.RoleRoleEnumUniqueValidator.class
+        validatedBy = DebtorNameUnique.DebtorNameUniqueValidator.class
 )
-public @interface RoleRoleEnumUnique {
+public @interface DebtorNameUnique {
 
-    String message() default "{Exists.role.roleEnum}";
+    String message() default "{Exists.debtor.name}";
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
 
-    class RoleRoleEnumUniqueValidator implements ConstraintValidator<RoleRoleEnumUnique, String> {
+    class DebtorNameUniqueValidator implements ConstraintValidator<DebtorNameUnique, String> {
 
-        private final RoleService roleService;
+        private final DebtorService debtorService;
         private final HttpServletRequest request;
 
-        public RoleRoleEnumUniqueValidator(final RoleService roleService,
+        public DebtorNameUniqueValidator(final DebtorService debtorService,
                 final HttpServletRequest request) {
-            this.roleService = roleService;
+            this.debtorService = debtorService;
             this.request = request;
         }
 
@@ -54,11 +54,11 @@ public @interface RoleRoleEnumUnique {
             @SuppressWarnings("unchecked") final Map<String, String> pathVariables = 
                     ((Map<String, String>)request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE));
             final String currentId = pathVariables.get("id");
-            if (currentId != null && value.equalsIgnoreCase(roleService.get(Long.parseLong(currentId)).getRoleEnum())) {
+            if (currentId != null && value.equalsIgnoreCase(debtorService.get(Long.parseLong(currentId)).getName())) {
                 // value hasn't changed
                 return true;
             }
-            return !roleService.roleEnumExists(value);
+            return !debtorService.nameExists(value);
         }
 
     }

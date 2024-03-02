@@ -1,7 +1,6 @@
 package com.isiweek.status;
 
 import com.isiweek.company.Company;
-import com.isiweek.config.DomainConfig;
 import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Optional;
@@ -14,23 +13,22 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+//import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+//import org.springframework.test.context.ContextConfiguration;
+//import org.springframework.test.context.junit.jupiter.SpringExtension;
+//import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 @Disabled
 @ComponentScan(basePackages = "com.isiweek")
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@ExtendWith(SpringExtension.class)
-@SpringJUnitConfig
+//@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+//@ExtendWith(SpringExtension.class)
+//@SpringJUnitConfig
 @SpringBootTest()
-@ContextConfiguration(classes = DomainConfig.class)
-@ExtendWith(SpringExtension.class)
+//@ContextConfiguration(classes = DomainConfig.class)
+//@ExtendWith(SpringExtension.class)
 public class StatusTest {
 
     private final StatusRepository statusRepository;

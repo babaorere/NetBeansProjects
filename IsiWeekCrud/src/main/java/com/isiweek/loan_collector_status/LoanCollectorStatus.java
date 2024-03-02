@@ -28,12 +28,6 @@ public class LoanCollectorStatus {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private OffsetDateTime dateCreated;
-
-    @Column(nullable = false)
-    private OffsetDateTime lastUpdated;
-
     @Column(nullable = false, unique = true, length = 128)
     private String name;
 

@@ -24,6 +24,7 @@
     <!-- Configuración por defecto para el resto de los loggers -->
     <root level="info">
         <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
     </root>
 
 </configuration>

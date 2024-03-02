@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layout}">
+<head>
+    <title>Registro de Usuario</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="d-flex flex-wrap mb-4">
+        <h1 class="flex-grow-1">Registro de Usuario</h1>
+        <div>
+            <a th:href="@{/login}" class="btn btn-secondary">Iniciar Sesión</a>
+        </div>
+    </div>
+    <div th:replace="~{fragments/forms::globalErrors('user')}" />
+    <form th:action="@{/api/auth/signup}" method="post">
+        <div th:replace="~{fragments/forms::inputRow(object='registerData', field='username', required=true)}" />
+        <div th:replace="~{fragments/forms::inputRow(object='registerData', field='password', required=true)}" />
+        <div th:replace="~{fragments/forms::inputRow(object='registerData', field='confirmPassword', required=true)}" />
+        <input type="submit" value="Registrar" class="btn btn-primary mt-4" />
+    </form>
+</div>
+</body>
+</html>
+

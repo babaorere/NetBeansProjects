@@ -61,7 +61,7 @@ public class UserService {
 
     private UserDTO mapToDTO(final User user, final UserDTO userDTO) {
         userDTO.setId(user.getId());
-        userDTO.setName(user.getName());
+        userDTO.setUsername(user.getUsername());
         userDTO.setPassword(user.getPassword());
         userDTO.setRole(user.getRole() == null ? null : user.getRole().getId());
         userDTO.setLender(user.getLender() == null ? null : user.getLender().getId());
@@ -69,7 +69,7 @@ public class UserService {
     }
 
     private User mapToEntity(final UserDTO userDTO, final User user) {
-        user.setName(userDTO.getName());
+        user.setUsername(userDTO.getUsername());
         user.setPassword(userDTO.getPassword());
         final Role role = userDTO.getRole() == null ? null : roleRepository.findById(userDTO.getRole())
                 .orElseThrow(() -> new NotFoundException("role not found"));
@@ -81,7 +81,7 @@ public class UserService {
     }
 
     public boolean nameExists(final String name) {
-        return userRepository.existsByNameIgnoreCase(name);
+        return userRepository.existsByUsernameIgnoreCase(name);
     }
 
     public ReferencedWarning getReferencedWarning(final Long id) {

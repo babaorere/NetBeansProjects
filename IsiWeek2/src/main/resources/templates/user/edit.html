@@ -19,6 +19,7 @@
                 <div th:replace="~{fragments/forms::inputRow(object='user', field='password', required=true)}" />
                 <div th:replace="~{fragments/forms::inputRow(object='user', field='role', required=true, type='select')}" />
                 <div th:replace="~{fragments/forms::inputRow(object='user', field='lender', type='select')}" />
+                <div th:replace="~{fragments/forms::inputRow(object='user', field='debtor', type='select')}" />
                 <input type="submit" th:value="#{user.edit.headline}" class="btn btn-primary mt-4" />
             </form>
         </div>

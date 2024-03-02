@@ -5,9 +5,9 @@ import com.isiweek.user.UserRepository;
 import com.isiweek.util.NotFoundException;
 import com.isiweek.util.ReferencedWarning;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
 
 @Service
 public class RoleService {
@@ -52,29 +52,34 @@ public class RoleService {
 
     private RoleDTO mapToDTO(final Role role, final RoleDTO roleDTO) {
         roleDTO.setId(role.getId());
-        roleDTO.setRoleEnum(role.getRoleEnum());
+        roleDTO.setName(role.getName());
         return roleDTO;
     }
 
     private Role mapToEntity(final RoleDTO roleDTO, final Role role) {
-        role.setRoleEnum(roleDTO.getRoleEnum());
+        role.setName(roleDTO.getName());
         return role;
     }
 
-    public boolean roleEnumExists(final String roleEnum) {
-        return roleRepository.existsByRoleEnumIgnoreCase(roleEnum);
+    public boolean nameExists(final String name) {
+        return roleRepository.existsByNameIgnoreCase(name);
     }
 
     public ReferencedWarning getReferencedWarning(final Long id) {
+
         final ReferencedWarning referencedWarning = new ReferencedWarning();
+
         final Role role = roleRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
-        final User roleUser = userRepository.findFirstByRole(role);
-        if (roleUser != null) {
+
+        final Optional<User> roleUser = userRepository.findFirstByRole(role);
+
+        if (roleUser.isPresent()) {
             referencedWarning.setKey("role.user.role.referenced");
-            referencedWarning.addParam(roleUser.getId());
+            referencedWarning.addParam(roleUser.get().getId());
             return referencedWarning;
         }
+
         return null;
     }
 
