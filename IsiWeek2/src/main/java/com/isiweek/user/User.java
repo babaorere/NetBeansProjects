@@ -3,6 +3,7 @@ package com.isiweek.user;
 import com.isiweek.debtor.Debtor;
 import com.isiweek.lender.Lender;
 import com.isiweek.role.Role;
+import com.isiweek.status.Status;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -15,10 +16,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import java.time.OffsetDateTime;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,20 +26,17 @@ import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Getter
 @Setter
-@Builder
 @Table(uniqueConstraints = {
-    @UniqueConstraint(columnNames = "name")})
-public class User implements UserDetails {
+    @UniqueConstraint(columnNames = "username")})
+public class User {
 
     @Id
     @Column(nullable = false, updatable = false)
@@ -54,16 +50,20 @@ public class User implements UserDetails {
     private String password;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = true, name = "role_id")
+    @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "lender_id", nullable = true)
+    @JoinColumn(name = "lender_id")
     private Lender lender;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "debtor_id", nullable = true)
+    @JoinColumn(name = "debtor_id")
     private Debtor debtor;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "status_id")
+    private Status status;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
@@ -73,33 +73,7 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private OffsetDateTime lastUpdated;
 
-    public List<Role> getRoles() {
+    public Collection<Role> getRoles() {
         return List.of(role);
     }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Arrays.asList(role).stream().map(roleAux -> new SimpleGrantedAuthority(roleAux.getName())).collect(Collectors.toList());
-    }
-
 }

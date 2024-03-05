@@ -1,11 +1,13 @@
 package com.isiweek.status;
 
 import com.isiweek.company.Company;
+import com.isiweek.user.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -39,8 +41,11 @@ public class Status {
     @Enumerated(EnumType.STRING)
     private StatusEnum name;
 
-    @OneToMany(mappedBy = "status")
+    @OneToMany(mappedBy = "status", fetch = FetchType.LAZY)
     private Set<Company> companies;
+
+    @OneToMany(mappedBy = "status", fetch = FetchType.LAZY)
+    private Set<User> user;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
@@ -49,4 +54,5 @@ public class Status {
     @LastModifiedDate
     @Column(nullable = false)
     private OffsetDateTime lastUpdated;
+
 }

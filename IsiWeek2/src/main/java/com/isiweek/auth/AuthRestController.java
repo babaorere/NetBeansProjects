@@ -1,10 +1,12 @@
 package com.isiweek.auth;
 
+import com.isiweek.role.Role;
 import com.isiweek.security.AuthServiceImpl;
 import com.isiweek.security.AuthenticationUser;
 import com.isiweek.security.JwtAuthResponse;
 import com.isiweek.security.JwtTokenProvider;
 import com.isiweek.user.User;
+import java.util.List;
 import java.util.Optional;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,9 +51,7 @@ public class AuthRestController {
             final AuthenticationUser authUser = new AuthenticationUser(
                     userOp.get().getUsername(),
                     userOp.get().getPassword(),
-                    true,
-                    userOp.get().getRoles()
-            );
+                    true, (List<Role>) userOp.get().getRoles());
 
             // Generate JWT token
             final String jwtToken = jwtTokenProvider.generateToken(authUser);

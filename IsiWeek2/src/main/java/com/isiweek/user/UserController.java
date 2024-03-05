@@ -1,9 +1,13 @@
 package com.isiweek.user;
 
+import com.isiweek.debtor.Debtor;
+import com.isiweek.debtor.DebtorRepository;
 import com.isiweek.lender.Lender;
 import com.isiweek.lender.LenderRepository;
 import com.isiweek.role.Role;
 import com.isiweek.role.RoleRepository;
+import com.isiweek.status.Status;
+import com.isiweek.status.StatusRepository;
 import com.isiweek.util.CustomCollectors;
 import com.isiweek.util.ReferencedWarning;
 import com.isiweek.util.WebUtils;
@@ -19,6 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+
 @Controller
 @RequestMapping("/users")
 public class UserController {
@@ -26,24 +31,33 @@ public class UserController {
     private final UserService userService;
     private final RoleRepository roleRepository;
     private final LenderRepository lenderRepository;
+    private final DebtorRepository debtorRepository;
+    private final StatusRepository statusRepository;
 
     public UserController(final UserService userService, final RoleRepository roleRepository,
-            final LenderRepository lenderRepository) {
+            final LenderRepository lenderRepository, final DebtorRepository debtorRepository,
+            final StatusRepository statusRepository) {
         this.userService = userService;
         this.roleRepository = roleRepository;
         this.lenderRepository = lenderRepository;
+        this.debtorRepository = debtorRepository;
+        this.statusRepository = statusRepository;
     }
 
     @ModelAttribute
     public void prepareContext(final Model model) {
-
         model.addAttribute("roleValues", roleRepository.findAll(Sort.by("id"))
                 .stream()
                 .collect(CustomCollectors.toSortedMap(Role::getId, Role::getName)));
-
         model.addAttribute("lenderValues", lenderRepository.findAll(Sort.by("id"))
                 .stream()
                 .collect(CustomCollectors.toSortedMap(Lender::getId, Lender::getObservations)));
+        model.addAttribute("debtorValues", debtorRepository.findAll(Sort.by("id"))
+                .stream()
+                .collect(CustomCollectors.toSortedMap(Debtor::getId, Debtor::getName)));
+        model.addAttribute("statusValues", statusRepository.findAll(Sort.by("id"))
+                .stream()
+                .collect(CustomCollectors.toSortedMap(Status::getId, Status::getId)));
     }
 
     @GetMapping
@@ -60,15 +74,11 @@ public class UserController {
     @PostMapping("/add")
     public String add(@ModelAttribute("user") @Valid final UserDTO userDTO,
             final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
-
         if (bindingResult.hasErrors()) {
             return "user/add";
         }
-
         userService.create(userDTO);
-
         redirectAttributes.addFlashAttribute(WebUtils.MSG_SUCCESS, WebUtils.getMessage("user.create.success"));
-
         return "redirect:/users";
     }
 

@@ -1,17 +1,20 @@
 package com.isiweek.user;
 
+import com.isiweek.debtor.Debtor;
+import com.isiweek.debtor.DebtorRepository;
 import com.isiweek.lender.Lender;
 import com.isiweek.lender.LenderRepository;
 import com.isiweek.person.Person;
 import com.isiweek.person.PersonRepository;
 import com.isiweek.role.Role;
 import com.isiweek.role.RoleRepository;
+import com.isiweek.status.Status;
+import com.isiweek.status.StatusRepository;
 import com.isiweek.util.NotFoundException;
 import com.isiweek.util.ReferencedWarning;
 import java.util.List;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
 
 @Service
 public class UserService {
@@ -19,13 +22,18 @@ public class UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final LenderRepository lenderRepository;
+    private final DebtorRepository debtorRepository;
+    private final StatusRepository statusRepository;
     private final PersonRepository personRepository;
 
     public UserService(final UserRepository userRepository, final RoleRepository roleRepository,
-            final LenderRepository lenderRepository, final PersonRepository personRepository) {
+            final LenderRepository lenderRepository, final DebtorRepository debtorRepository,
+            final StatusRepository statusRepository, final PersonRepository personRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.lenderRepository = lenderRepository;
+        this.debtorRepository = debtorRepository;
+        this.statusRepository = statusRepository;
         this.personRepository = personRepository;
     }
 
@@ -65,6 +73,8 @@ public class UserService {
         userDTO.setPassword(user.getPassword());
         userDTO.setRole(user.getRole() == null ? null : user.getRole().getId());
         userDTO.setLender(user.getLender() == null ? null : user.getLender().getId());
+        userDTO.setDebtor(user.getDebtor() == null ? null : user.getDebtor().getId());
+        userDTO.setStatus(user.getStatus() == null ? null : user.getStatus().getId());
         return userDTO;
     }
 
@@ -77,11 +87,17 @@ public class UserService {
         final Lender lender = userDTO.getLender() == null ? null : lenderRepository.findById(userDTO.getLender())
                 .orElseThrow(() -> new NotFoundException("lender not found"));
         user.setLender(lender);
+        final Debtor debtor = userDTO.getDebtor() == null ? null : debtorRepository.findById(userDTO.getDebtor())
+                .orElseThrow(() -> new NotFoundException("debtor not found"));
+        user.setDebtor(debtor);
+        final Status status = userDTO.getStatus() == null ? null : statusRepository.findById(userDTO.getStatus())
+                .orElseThrow(() -> new NotFoundException("status not found"));
+        user.setStatus(status);
         return user;
     }
 
-    public boolean nameExists(final String name) {
-        return userRepository.existsByUsernameIgnoreCase(name);
+    public boolean usernameExists(final String username) {
+        return userRepository.existsByUsernameIgnoreCase(username);
     }
 
     public ReferencedWarning getReferencedWarning(final Long id) {

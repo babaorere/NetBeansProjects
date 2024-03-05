@@ -23,7 +23,7 @@ public class AuthController {
     }
 
     @GetMapping("/login")
-    public String GetMappingLogin(@ModelAttribute("data") final LoginData loginData) {
+    public String PostMappingLogin(@ModelAttribute("data") final LoginData loginData) {
 
         return "auth/login";
     }

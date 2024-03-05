@@ -18,28 +18,28 @@ import org.springframework.web.servlet.HandlerMapping;
 
 
 /**
- * Validate that the name value isn't taken yet.
+ * Validate that the username value isn't taken yet.
  */
 @Target({ FIELD, METHOD, ANNOTATION_TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Constraint(
-        validatedBy = UserNameUnique.UserNameUniqueValidator.class
+        validatedBy = UserUsernameUnique.UserUsernameUniqueValidator.class
 )
-public @interface UserNameUnique {
+public @interface UserUsernameUnique {
 
-    String message() default "{Exists.user.name}";
+    String message() default "{Exists.user.username}";
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
 
-    class UserNameUniqueValidator implements ConstraintValidator<UserNameUnique, String> {
+    class UserUsernameUniqueValidator implements ConstraintValidator<UserUsernameUnique, String> {
 
         private final UserService userService;
         private final HttpServletRequest request;
 
-        public UserNameUniqueValidator(final UserService userService,
+        public UserUsernameUniqueValidator(final UserService userService,
                 final HttpServletRequest request) {
             this.userService = userService;
             this.request = request;
@@ -58,7 +58,7 @@ public @interface UserNameUnique {
                 // value hasn't changed
                 return true;
             }
-            return !userService.nameExists(value);
+            return !userService.usernameExists(value);
         }
 
     }

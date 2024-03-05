@@ -2,10 +2,15 @@ package com.isiweek.user;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Getter
 @Setter
 public class UserDTO {
@@ -14,7 +19,7 @@ public class UserDTO {
 
     @NotNull
     @Size(max = 255)
-    @UserNameUnique
+    @UserUsernameUnique
     private String username;
 
     @NotNull
@@ -25,5 +30,9 @@ public class UserDTO {
     private Long role;
 
     private Long lender;
+
+    private Long debtor;
+
+    private Long status;
 
 }

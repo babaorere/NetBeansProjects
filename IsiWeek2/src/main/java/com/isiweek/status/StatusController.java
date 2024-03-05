@@ -15,13 +15,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 @Controller
-@RequestMapping("/statusEntities")
+@RequestMapping("/statuses")
 public class StatusController {
 
-    private final StatusService statusEntityService;
+    private final StatusService statusService;
 
-    public StatusController(final StatusService statusEntityService) {
-        this.statusEntityService = statusEntityService;
+    public StatusController(final StatusService statusService) {
+        this.statusService = statusService;
     }
 
     @ModelAttribute
@@ -31,56 +31,56 @@ public class StatusController {
 
     @GetMapping
     public String list(final Model model) {
-        model.addAttribute("statusEntities", statusEntityService.findAll());
-        return "statusEntity/list";
+        model.addAttribute("statuses", statusService.findAll());
+        return "status/list";
     }
 
     @GetMapping("/add")
-    public String add(@ModelAttribute("statusEntity") final StatusDTO statusEntityDTO) {
-        return "statusEntity/add";
+    public String add(@ModelAttribute("status") final StatusDTO statusDTO) {
+        return "status/add";
     }
 
     @PostMapping("/add")
-    public String add(@ModelAttribute("statusEntity") @Valid final StatusDTO statusEntityDTO,
+    public String add(@ModelAttribute("status") @Valid final StatusDTO statusDTO,
             final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
-            return "statusEntity/add";
+            return "status/add";
         }
-        statusEntityService.create(statusEntityDTO);
-        redirectAttributes.addFlashAttribute(WebUtils.MSG_SUCCESS, WebUtils.getMessage("statusEntity.create.success"));
-        return "redirect:/statusEntities";
+        statusService.create(statusDTO);
+        redirectAttributes.addFlashAttribute(WebUtils.MSG_SUCCESS, WebUtils.getMessage("status.create.success"));
+        return "redirect:/statuses";
     }
 
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable(name = "id") final Long id, final Model model) {
-        model.addAttribute("statusEntity", statusEntityService.get(id));
-        return "statusEntity/edit";
+        model.addAttribute("status", statusService.get(id));
+        return "status/edit";
     }
 
     @PostMapping("/edit/{id}")
     public String edit(@PathVariable(name = "id") final Long id,
-            @ModelAttribute("statusEntity") @Valid final StatusDTO statusEntityDTO,
+            @ModelAttribute("status") @Valid final StatusDTO statusDTO,
             final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
-            return "statusEntity/edit";
+            return "status/edit";
         }
-        statusEntityService.update(id, statusEntityDTO);
-        redirectAttributes.addFlashAttribute(WebUtils.MSG_SUCCESS, WebUtils.getMessage("statusEntity.update.success"));
-        return "redirect:/statusEntities";
+        statusService.update(id, statusDTO);
+        redirectAttributes.addFlashAttribute(WebUtils.MSG_SUCCESS, WebUtils.getMessage("status.update.success"));
+        return "redirect:/statuses";
     }
 
     @PostMapping("/delete/{id}")
     public String delete(@PathVariable(name = "id") final Long id,
             final RedirectAttributes redirectAttributes) {
-        final ReferencedWarning referencedWarning = statusEntityService.getReferencedWarning(id);
+        final ReferencedWarning referencedWarning = statusService.getReferencedWarning(id);
         if (referencedWarning != null) {
             redirectAttributes.addFlashAttribute(WebUtils.MSG_ERROR,
                     WebUtils.getMessage(referencedWarning.getKey(), referencedWarning.getParams().toArray()));
         } else {
-            statusEntityService.delete(id);
-            redirectAttributes.addFlashAttribute(WebUtils.MSG_INFO, WebUtils.getMessage("statusEntity.delete.success"));
+            statusService.delete(id);
+            redirectAttributes.addFlashAttribute(WebUtils.MSG_INFO, WebUtils.getMessage("status.delete.success"));
         }
-        return "redirect:/statusEntities";
+        return "redirect:/statuses";
     }
 
 }

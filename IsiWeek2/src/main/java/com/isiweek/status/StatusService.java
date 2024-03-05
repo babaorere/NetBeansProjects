@@ -2,6 +2,8 @@ package com.isiweek.status;
 
 import com.isiweek.company.Company;
 import com.isiweek.company.CompanyRepository;
+import com.isiweek.user.User;
+import com.isiweek.user.UserRepository;
 import com.isiweek.util.NotFoundException;
 import com.isiweek.util.ReferencedWarning;
 import java.util.List;
@@ -12,72 +14,82 @@ import org.springframework.stereotype.Service;
 @Service
 public class StatusService {
 
-    private final StatusRepository statusEntityRepository;
+    private final StatusRepository statusRepository;
     private final CompanyRepository companyRepository;
+    private final UserRepository userRepository;
 
-    public StatusService(final StatusRepository statusEntityRepository,
-            final CompanyRepository companyRepository) {
-        this.statusEntityRepository = statusEntityRepository;
+    public StatusService(final StatusRepository statusRepository,
+            final CompanyRepository companyRepository, final UserRepository userRepository) {
+        this.statusRepository = statusRepository;
         this.companyRepository = companyRepository;
+        this.userRepository = userRepository;
     }
 
     public List<StatusDTO> findAll() {
-        final List<Status> statusEntities = statusEntityRepository.findAll(Sort.by("id"));
-        return statusEntities.stream()
-                .map(statusEntity -> mapToDTO(statusEntity, new StatusDTO()))
+        final List<Status> statuses = statusRepository.findAll(Sort.by("id"));
+        return statuses.stream()
+                .map(status -> mapToDTO(status, new StatusDTO()))
                 .toList();
     }
 
     public StatusDTO get(final Long id) {
-        return statusEntityRepository.findById(id)
-                .map(statusEntity -> mapToDTO(statusEntity, new StatusDTO()))
+        return statusRepository.findById(id)
+                .map(status -> mapToDTO(status, new StatusDTO()))
                 .orElseThrow(NotFoundException::new);
     }
 
-    public Long create(final StatusDTO statusEntityDTO) {
-        final Status statusEntity = new Status();
-        mapToEntity(statusEntityDTO, statusEntity);
-        return statusEntityRepository.save(statusEntity).getId();
+    public Long create(final StatusDTO statusDTO) {
+
+        final Status status = new Status();
+
+        mapToEntity(statusDTO, status);
+        return statusRepository.save(status).getId();
     }
 
-    public void update(final Long id, final StatusDTO statusEntityDTO) {
-        final Status statusEntity = statusEntityRepository.findById(id)
+    public void update(final Long id, final StatusDTO statusDTO) {
+        final Status status = statusRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
-        mapToEntity(statusEntityDTO, statusEntity);
-        statusEntityRepository.save(statusEntity);
+        mapToEntity(statusDTO, status);
+        statusRepository.save(status);
     }
 
     public void delete(final Long id) {
-        statusEntityRepository.deleteById(id);
+        statusRepository.deleteById(id);
     }
 
-    private StatusDTO mapToDTO(final Status statusEntity,
-            final StatusDTO statusEntityDTO) {
-        statusEntityDTO.setId(statusEntity.getId());
-        statusEntityDTO.setName(statusEntity.getName());
-        return statusEntityDTO;
+    private StatusDTO mapToDTO(final Status status, final StatusDTO statusDTO) {
+        statusDTO.setId(status.getId());
+        statusDTO.setName(status.getName());
+        return statusDTO;
     }
 
-    private Status mapToEntity(final StatusDTO statusEntityDTO,
-            final Status statusEntity) {
-        statusEntity.setName(statusEntityDTO.getName());
-        return statusEntity;
+    private Status mapToEntity(final StatusDTO statusDTO, final Status status) {
+        status.setName(statusDTO.getName());
+        return status;
     }
 
     public boolean nameExists(final StatusEnum name) {
-        return statusEntityRepository.existsByName(name);
+        return statusRepository.existsByName(name);
     }
 
     public ReferencedWarning getReferencedWarning(final Long id) {
         final ReferencedWarning referencedWarning = new ReferencedWarning();
-        final Status statusEntity = statusEntityRepository.findById(id)
+        final Status status = statusRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
 
-        final Optional<Company> statusCompany = companyRepository.findFirstByStatus(statusEntity);
+        final Optional<Company> statusCompany = companyRepository.findFirstByStatus(status);
 
         if (statusCompany.isPresent()) {
-            referencedWarning.setKey("statusEntity.company.status.referenced");
+            referencedWarning.setKey("status.company.status.referenced");
             referencedWarning.addParam(statusCompany.get().getId());
+            return referencedWarning;
+        }
+
+        final Optional<User> statusUser = userRepository.findFirstByStatus(status);
+
+        if (statusUser.isPresent()) {
+            referencedWarning.setKey("status.user.status.referenced");
+            referencedWarning.addParam(statusUser.get().getId());
             return referencedWarning;
         }
 

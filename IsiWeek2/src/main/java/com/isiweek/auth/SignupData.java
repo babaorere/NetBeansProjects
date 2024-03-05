@@ -1,6 +1,5 @@
 package com.isiweek.auth;
 
-import com.isiweek.user.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -18,7 +17,6 @@ public class SignupData {
 
     @NotNull
     @Size(max = 255)
-    @UserNameUnique
     private String username;
 
     @NotNull
