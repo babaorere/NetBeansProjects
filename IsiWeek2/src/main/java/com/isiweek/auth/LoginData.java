@@ -17,7 +17,7 @@ public class LoginData {
 
     @NotNull
     @Size(max = 255)
-    private String username;
+    private String email;
 
     @NotNull
     @Size(max = 255)
@@ -25,7 +25,7 @@ public class LoginData {
 
     @Override
     public String toString() {
-        return "LoginData [\"username\": " + username + "]";
+        return "LoginData [\"username\": " + email + "]";
     }
 
 }

@@ -34,7 +34,7 @@ public class PersonController {
     public void prepareContext(final Model model) {
         model.addAttribute("userValues", userRepository.findAll(Sort.by("id"))
                 .stream()
-                .collect(CustomCollectors.toSortedMap(User::getId, User::getUsername)));
+                .collect(CustomCollectors.toSortedMap(User::getId, User::getEmail)));
     }
 
     @GetMapping

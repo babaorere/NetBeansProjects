@@ -1,23 +1,41 @@
 
-body {
-    background-color: rgba(8, 28, 63, 1);
-    color: #fff; /* White text color for good contrast */
+.body-link {
+    background-color: rgba(12, 53, 106, 0.5);
+    color: white;
     margin: 0;
     padding: 0;
-    padding-top: 56px; /* Altura de la barra de navegación */
+    padding-top: 56px;
     /* Add other styles as needed */
 
-    min-height: 200vh;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
+
+    padding-bottom: 0px;
+    background-image: url('../img/logo384x384.png');
+    background-position: center;
+    background-size: 80% auto;
+    background-repeat: no-repeat;
 }
 
-form {
-    background-color: rgba(8, 28, 63, 1);
-    color: #fff;
-    padding: 10px; /* Espaciado interno para el formulario */
-    max-width: 800px; /* Ancho máximo del formulario */
+.text-white {
+    color: white;
+}
+
+
+.footer-link {
+    background-color: rgba(12, 53, 106, 0.00);
+    color: white;
+}
+
+
+.form-link {
+    background-color: rgba(8, 28, 63, 0.25);
+    color: white;
+    padding: 20px;
+    width: 25%;
     margin: 0 auto; /* Centrar el formulario en la página */
+    border-radius: 10px; /* Bordes redondeados */
 }
 
 label {
@@ -26,57 +44,19 @@ label {
 }
 
 input {
-    width: 100%; /* Ocupa el 100% del ancho disponible */
+    width: 90%; /* Ocupa el 100% del ancho disponible */
     padding: 8px; /* Espaciado interno para los campos de entrada */
     margin-bottom: 10px; /* Espaciado inferior para los campos de entrada */
 }
 
-/* Estilo del contenedor (puede ser un div, un párrafo, etc.) */
-.center-container {
-    text-align: center;
-}
 
 input[type="submit"] {
     background-color: #4caf50; /* Color de fondo del botón de envío */
-    color: #fff; /* Color de letra para el botón de envío */
+    color: white; /* Color de letra para el botón de envío */
     display: inline-block;
     cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
     width: auto;
     padding: 5px 10px; /* Ajusta el relleno según tus preferencias */
-}
-
-main {
-    flex: 1;
-    padding: 20px;
-}
-
-footer {
-    background-color: rgba(8, 28, 63, 255);
-    color: white;
-    padding: 10px;
-    text-align: center;
-}
-
-.loan-management-section {
-    padding: 80px 0;
-    background-color: #f8f9fa;
-}
-
-.section-title {
-    font-size: 36px;
-    font-weight: 700;
-    color: #007bff;
-}
-
-.section-subtitle {
-    font-size: 18px;
-    font-weight: 400;
-    color: #6c757d;
-}
-
-.loan-management-image {
-    max-width: 100%;
-    height: auto;
 }
 
 .centered-image {
@@ -89,32 +69,70 @@ footer {
     margin: 0;
 }
 
-.rounded-image {
-    border-radius: 10px; /* You can adjust the value according to your preference */
-}
-
-.div-hidden {
-    display: none;
-}
-
 .container {
-    margin-top: 50px;
+    margin-top: 5px;
 }
 
-.login-container {
-    background-color: #ffffff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    padding: 20px;
+.rounded-image {
     border-radius: 10px;
 }
 
-.image-container {
-    text-align: center;
+.button-link {
+    display: inline-block;
+    padding: 10px 20px; /* Espaciado alrededor del texto */
+    background-color: #007bff; /* Color de fondo */
+    color: #fff; /* Color del texto */
+    text-decoration: none; /* Elimina subrayado predeterminado */
+    border-radius: 5px; /* Añade bordes redondeados */
+    transition: background-color 0.3s; /* Efecto de transición */
 }
 
-img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 10px;
-    margin-top: 20px;
+.button-link:hover {
+    background-color: #0056b3; /* Cambia el color de fondo al pasar el mouse */
+}
+
+.form-container {
+    text-align: center; /* Centra el contenido del formulario */
+    margin: auto; /* Centra el formulario horizontalmente */
+    width: 50%; /* Ancho del formulario */
+    padding: 20px; /* Espaciado interno del formulario */
+    background-color: rgba(8, 28, 63, 0.25); /* Color de fondo del formulario */
+    border-radius: 10px; /* Bordes redondeados del formulario */
+}
+
+.form-container a {
+    display: block; /* Hace que los enlaces estén en líneas separadas */
+    width: 100%; /* Ancho del enlace */
+    margin-bottom: 10px; /* Espaciado inferior entre los enlaces */
+}
+
+.form-container input[type="text"],
+.form-container input[type="password"] {
+    width: 100%; /* Ocupa el 100% del ancho disponible */
+    padding: 8px; /* Espaciado interno para los campos de entrada */
+    margin-bottom: 10px; /* Espaciado inferior para los campos de entrada */
+}
+
+.form-container input[type="submit"] {
+    background-color: #4caf50; /* Color de fondo del botón de envío */
+    color: white; /* Color de letra para el botón de envío */
+    border: none; /* Elimina el borde del botón */
+    cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
+    width: 100%; /* Ancho del botón */
+    padding: 10px; /* Espaciado interno del botón */
+}
+
+.form-link {
+    width: 100%; /* Ancho completo del formulario */
+    text-align: center; /* Centrar el contenido del formulario */
+}
+
+.form-link .button-link {
+    display: block; /* Hace que los enlaces estén en líneas separadas */
+    width: 100%; /* Ancho del enlace */
+    margin-bottom: 10px; /* Espaciado inferior entre los enlaces */
+}
+
+.translucent {
+    opacity: 0.5; /* Ajusta el valor de la opacidad según lo desees */
 }

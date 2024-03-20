@@ -11,13 +11,8 @@ public class HomeController {
         return "home/index";
     }
 
-    @GetMapping("/login")
-    public String login() {
-        return "home/login";
-    }
-
-    @GetMapping("/register")
-    public String register() {
-        return "home/register";
+    @GetMapping("/home")
+    public String home() {
+        return "home/index";
     }
 }

@@ -4,8 +4,10 @@ import com.isiweek.user.User;
 import com.isiweek.user.UserRepository;
 import com.isiweek.util.NotFoundException;
 import com.isiweek.util.ReferencedWarning;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,7 @@ public class RoleService {
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
 
+    @Autowired
     public RoleService(final RoleRepository roleRepository, final UserRepository userRepository) {
         this.roleRepository = roleRepository;
         this.userRepository = userRepository;
@@ -62,13 +65,11 @@ public class RoleService {
     }
 
     public boolean nameExists(final String name) {
-        return roleRepository.existsByNameIgnoreCase(name);
+        return roleRepository.existsByName(name);
     }
 
     public ReferencedWarning getReferencedWarning(final Long id) {
-
         final ReferencedWarning referencedWarning = new ReferencedWarning();
-
         final Role role = roleRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
 
@@ -81,6 +82,26 @@ public class RoleService {
         }
 
         return null;
+    }
+
+    public void persistAll() {
+        List<RoleEnum> allRoles = Arrays.asList(RoleEnum.values());
+
+        for (RoleEnum roleEnum : allRoles) {
+            persistRole(roleEnum);
+        }
+    }
+
+    private void persistRole(RoleEnum roleEnum) {
+        String roleName = roleEnum.name();
+
+        Optional<Role> existingRoleOptional = roleRepository.findByName(roleName);
+
+        if (existingRoleOptional.isEmpty()) {
+            Role newRole = new Role();
+            newRole.setName(roleName);
+            roleRepository.save(newRole);
+        }
     }
 
 }

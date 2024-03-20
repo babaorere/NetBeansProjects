@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-
 @Controller
 @RequestMapping("/users")
 public class UserController {
@@ -46,15 +45,19 @@ public class UserController {
 
     @ModelAttribute
     public void prepareContext(final Model model) {
+
         model.addAttribute("roleValues", roleRepository.findAll(Sort.by("id"))
                 .stream()
                 .collect(CustomCollectors.toSortedMap(Role::getId, Role::getName)));
+
         model.addAttribute("lenderValues", lenderRepository.findAll(Sort.by("id"))
                 .stream()
                 .collect(CustomCollectors.toSortedMap(Lender::getId, Lender::getObservations)));
+
         model.addAttribute("debtorValues", debtorRepository.findAll(Sort.by("id"))
                 .stream()
                 .collect(CustomCollectors.toSortedMap(Debtor::getId, Debtor::getName)));
+
         model.addAttribute("statusValues", statusRepository.findAll(Sort.by("id"))
                 .stream()
                 .collect(CustomCollectors.toSortedMap(Status::getId, Status::getId)));
@@ -74,11 +77,14 @@ public class UserController {
     @PostMapping("/add")
     public String add(@ModelAttribute("user") @Valid final UserDTO userDTO,
             final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
+
         if (bindingResult.hasErrors()) {
             return "user/add";
         }
+
         userService.create(userDTO);
         redirectAttributes.addFlashAttribute(WebUtils.MSG_SUCCESS, WebUtils.getMessage("user.create.success"));
+
         return "redirect:/users";
     }
 

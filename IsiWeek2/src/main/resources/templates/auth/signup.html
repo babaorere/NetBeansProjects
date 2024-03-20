@@ -1,35 +1,34 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
-<head>
-    <title>Registro de Usuario</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" integrity="sha384-Zenh87qX5JnK2Jl6ugLK/vZ/+KQ90/D9GA/SKgx5c2-7uKeMFbglNNayedefLro" crossorigin="anonymous">
-</head>
-<body>
-<div layout:fragment="content">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6">
-                <div class="d-flex flex-wrap mb-4">
-                    <h1 class="flex-grow-1">Registro de Usuario</h1>
-                    <div>
-                        <a th:href="@{/login}" class="btn btn-secondary">Iniciar Sesión</a>
-                    </div>
-                </div>
-                <div th:replace="~{fragments/forms::globalErrors('user')}" />
-                <form th:action="@{/api/auth/signup}" method="post">
-                    <div th:replace="~{fragments/forms::inputRow(object='registerData', field='username', required=true)}" />
-                    <div th:replace="~{fragments/forms::inputRow(object='registerData', field='password', required=true)}" />
-                    <div th:replace="~{fragments/forms::inputRow(object='registerData', field='confirmPassword', required=true)}" />
-                    <input type="submit" value="Registrar" class="btn btn-primary mt-4" />
-                </form>
-            </div>
-            <div class="col-md-6">
-                <img src="imagen.jpg" alt="Imagen de registro" class="img-fluid">
-            </div>
-        </div>
-    </div>
-</div>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout_auth}">
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2JKwGdrgZDkR03vVBQV8gApp2mcFX11111Ah4En02A0gWRGcTi027f4fy9H" crossorigin="anonymous"></script>
-</body>
+    <head>
+        <title th:text="#{user.register}">Registration of a User</title>
+    </head>
+
+    <body class="body-link">
+        <div layout:fragment="content">
+            <section>
+
+                <div class="row justify-content-center">
+                    <div class="d-flex align-items-center">
+                        <h1 th:text="#{user.register}">User Signup</h1>
+
+                        <div class="button-link">
+                            <a th:href="@{/auth/login}" class="button-link">Login</a>
+                        </div>
+
+                        <div th:replace="~{fragments/forms::globalErrors('data')}" />
+                        <form th:action="@{/auth/signup}" method="post">
+                            <div th:replace="~{fragments/forms::inputRow(object='data', field='email', required=true, type='email')}" />
+                            <div th:replace="~{fragments/forms::inputRow(object='data', field='password', required=true, type='password')}" />
+                            <div th:replace="~{fragments/forms::inputRow(object='data', field='confirmPassword', required=true, type='password')}" />
+                            <div th:replace="~{fragments/forms::inputRow(object='data', field='role', required=true, type='select')}" />
+                            <input type="submit" value="Registrar" class="btn btn-primary mt-4" />
+                        </form>
+                    </div>
+                </div>                            
+            </section>
+        </div>
+    </body>
 </html>

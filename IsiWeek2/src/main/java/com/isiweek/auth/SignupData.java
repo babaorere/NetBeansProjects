@@ -7,17 +7,19 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
+@ToString
 @Builder
 public class SignupData {
 
     @NotNull
     @Size(max = 255)
-    private String username;
+    private String email;
 
     @NotNull
     @Size(max = 255)
@@ -27,9 +29,13 @@ public class SignupData {
     @Size(max = 255)
     private String confirmPassword;
 
-    @Override
-    public String toString() {
-        return "RegisterData [\"username\": " + username + "]";
-    }
+    @NotNull
+    private Long role;
+
+    private Long lender;
+
+    private Long debtor;
+
+    private Long status;
 
 }

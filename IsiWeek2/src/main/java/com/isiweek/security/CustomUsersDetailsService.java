@@ -30,10 +30,10 @@ public class CustomUsersDetailsService implements UserDetailsService {
 
     //Método para traernos un usuario con todos sus datos por medio de sus username
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String inEmail) throws UsernameNotFoundException {
 
-        com.isiweek.user.User user = userRepository.findByUsernameIgnoreCase(username).orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+        com.isiweek.user.User user = userRepository.findByEmailIgnoreCase(inEmail).orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
 
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), mapToAuthorities((List<Role>) user.getRoles()));
+        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), mapToAuthorities((List<Role>) user.getRoles()));
     }
 }

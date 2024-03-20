@@ -6,6 +6,7 @@ import com.isiweek.user.User;
 import com.isiweek.user.UserRepository;
 import com.isiweek.util.NotFoundException;
 import com.isiweek.util.ReferencedWarning;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Sort;
@@ -68,8 +69,8 @@ public class StatusService {
         return status;
     }
 
-    public boolean nameExists(final StatusEnum name) {
-        return statusRepository.existsByName(name);
+    public Boolean nameExists(final StatusEnum inItem) {
+        return statusRepository.existsByName(inItem.name());
     }
 
     public ReferencedWarning getReferencedWarning(final Long id) {
@@ -94,6 +95,25 @@ public class StatusService {
         }
 
         return null;
+    }
+
+    public void persistAll() {
+        List<StatusEnum> allStatus = Arrays.asList(StatusEnum.values());
+
+        for (StatusEnum item : allStatus) {
+            persistStatus(item.name());
+        }
+    }
+
+    private void persistStatus(String name) {
+
+        Optional<Status> existingStatusOptional = statusRepository.findByName(name);
+
+        if (existingStatusOptional.isEmpty()) {
+            Status newStatus = new Status();
+            newStatus.setName(name);
+            statusRepository.save(newStatus);
+        }
     }
 
 }

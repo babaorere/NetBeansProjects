@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head layout:fragment="head">
+    <title>Título de la Página</title>
+    <!-- Otros elementos del head comunes -->
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <link rel="icon" type="image/ico" th:href="@{/img/favicon.ico}" />
+
+    <link rel="stylesheet" type="text/css" th:href="@{/css/app.css}" />  
+</head>
+<body>
+    <header layout:fragment="header">
+        <!-- Contenido del encabezado -->
+        <h1>Encabezado</h1>
+    </header>
+
+    <nav layout:fragment="navigator">
+        <!-- Contenido de la barra de navegación -->
+        <ul>
+            <li><a href="/">Inicio</a></li>
+            <li><a href="/about">Acerca de</a></li>
+            <li><a href="/contact">Contacto</a></li>
+        </ul>
+    </nav>
+    
+    <div layout:fragment="content">
+        <!-- Fragmento para el contenido específico de cada página -->
+    </div>
+    
+    <footer layout:fragment="footer">
+        <!-- Contenido del pie de página -->
+        <p>Derechos de Autor &copy; 2024 Mi Sitio Web</p>
+    </footer>
+</body>
+</html>

@@ -18,6 +18,6 @@ public class StatusDTO {
 
     @NotNull
     @StatusNameUnique
-    private StatusEnum name;
+    private String name;
 
 }

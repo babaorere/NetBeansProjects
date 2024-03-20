@@ -6,16 +6,26 @@
         <!-- Incluye el fragmento headerTemplate -->
     <th:replace th:fragment="commonHeader" th:include="fragments/headerTemplate"></th:replace>
 
-    <title>[[${status}]] - [[${error}]]</title>
+    <title>System Error</title>
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+    </script> 
+
 </head>
 <body>
     <div layout:fragment="content">
-        <h1 class="mb-4">[[${status}]] - [[${error}]]</h1>
-        <p>[[#{error.message}]]</p>
-    </div>
+        <h1 class="mb-4">
+            <p th:text="${errorMessage}"></p>
+        </h1>
 
-    <!-- Botón de retorno usando JavaScript -->
-    <button onclick="goBack()">Return</button>
+        <!-- Botón de retorno utilizando Bootstrap -->
+        <div class="text-center">
+            <button class="btn btn-primary" onclick="goBack()">Return</button>
+        </div>
+    </div>
 
     <script>
         function goBack() {

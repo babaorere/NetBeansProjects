@@ -19,8 +19,8 @@ public class UserDTO {
 
     @NotNull
     @Size(max = 255)
-    @UserUsernameUnique
-    private String username;
+    @UserEmailUnique
+    private String email;
 
     @NotNull
     @Size(max = 255)
