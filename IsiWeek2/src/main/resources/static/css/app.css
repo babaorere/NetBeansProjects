@@ -1,3 +1,6 @@
+.margin-right-15 {
+    margin-right: 25px;
+}
 
 .body-link {
     background-color: rgba(12, 53, 106, 0.5);
@@ -135,4 +138,46 @@ input[type="submit"] {
 
 .translucent {
     opacity: 0.5; /* Ajusta el valor de la opacidad según lo desees */
+}
+
+
+.body-error {
+    background-color: #FFC436; /* Color de fondo */
+    color: white; /* Color del texto */
+    font-family: Arial, sans-serif; /* Familia de fuentes */
+}
+
+.container-error {
+    width: 80%; /* Ancho del contenedor */
+    margin: 0 auto; /* Centra el contenedor horizontalmente */
+    padding-top: 50px; /* Espacio superior */
+}
+
+.form-error {
+    background-color: rgb(255, 196, 54);
+    padding: 20px; /* Espacio interno del formulario */
+    border-radius: 10px; /* Bordes redondeados */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Sombra */
+    text-align: center; /* Centra el texto y los botones dentro del formulario */
+}
+
+.title-error, .message-error, .btn-return-error {
+    text-align: center; /* Centra el texto y los botones dentro del formulario */
+}
+
+.message-error {
+    margin-bottom: 20px; /* Espacio entre los párrafos */
+}
+
+.btn-return-error {
+    padding: 10px 20px; /* Espacio interno del botón */
+    border: none; /* Quita los bordes */
+    border-radius: 5px; /* Bordes redondeados */
+    background-color: #007bff; /* Color de fondo del botón */
+    color: white; /* Color del texto del botón */
+    cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
+}
+
+.btn-return-error:hover {
+    background-color: #0056b3; /* Cambia el color de fondo al pasar sobre el botón */
 }

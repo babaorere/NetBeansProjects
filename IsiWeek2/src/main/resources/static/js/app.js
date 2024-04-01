@@ -1,16 +1,20 @@
+function winBack() {
+    window.history.back();
+}
+
 /**
  * Register an event at the document for the specified selector,
  * so events are still catched after DOM changes.
  */
 function handleEvent(eventType, selector, handler) {
-    document.addEventListener(eventType, function(event) {
+    document.addEventListener(eventType, function (event) {
         if (event.target.matches(selector + ', ' + selector + ' *')) {
             handler.apply(event.target.closest(selector), arguments);
         }
     });
 }
 
-handleEvent('submit', '.js-submit-confirm', function(event) {
+handleEvent('submit', '.js-submit-confirm', function (event) {
     if (!confirm(this.getAttribute('data-confirm-message'))) {
         event.preventDefault();
         return false;
@@ -36,6 +40,12 @@ function initDatepicker() {
             flatpickrConfig.altInput = true;
             flatpickrConfig.altFormat = 'Y-m-d H:i:S';
             flatpickrConfig.dateFormat = 'Y-m-dTH:i:S';
+            // workaround label issue
+            flatpickrConfig.onReady = function () {
+                const id = this.input.id;
+                this.input.id = null;
+                this.altInput.id = id;
+            };
         }
         flatpickr($item, flatpickrConfig);
     });

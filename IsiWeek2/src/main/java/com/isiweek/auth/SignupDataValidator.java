@@ -12,39 +12,37 @@ public class SignupDataValidator implements ConstraintValidator<ValidSignupData,
 
     @Override
     public boolean isValid(SignupData signupData, ConstraintValidatorContext context) {
-        // Verifica que el rol, el prestamista, el deudor y el estado no sean nulos
-        if ((signupData.getEmail() == null)
-                || signupData.getEmail().isBlank()) {
-            context.disableDefaultConstraintViolation();
-            context.buildConstraintViolationWithTemplate("The email field cannot be null.")
+
+        context.disableDefaultConstraintViolation();
+
+        if (signupData.getEmail() == null || signupData.getEmail().isBlank()) {
+            context.buildConstraintViolationWithTemplate("The email field cannot be null or empty.")
                     .addPropertyNode("email")
                     .addConstraintViolation();
             return false;
         }
 
-        if (signupData.getRole() == null) {
-            context.disableDefaultConstraintViolation();
+        if (signupData.getIdRole() == null || signupData.getIdRole() == 0) {
             context.buildConstraintViolationWithTemplate("The role field cannot be null.")
-                    .addPropertyNode("role")
+                    .addPropertyNode("idRole")
                     .addConstraintViolation();
             return false;
         }
 
         // Verifica que la contraseña y la confirmación de contraseña coincidan
         if (!signupData.getPassword().equals(signupData.getConfirmPassword())) {
-            context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate("Passwords do not match.")
                     .addPropertyNode("confirmPassword")
                     .addConstraintViolation();
             return false;
         }
 
-        // Verificar si el usuario ya existe
+        // Verificar si el usuario ya existe (solo si el email es válido)
         if (userRepository.existsByEmailIgnoreCase(signupData.getEmail())) {
-            context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate("User with email: " + signupData.getEmail() + " already exists.")
                     .addPropertyNode("email")
                     .addConstraintViolation();
+            return false;
         }
 
         return true;

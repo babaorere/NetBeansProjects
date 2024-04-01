@@ -2,6 +2,7 @@ package com.isiweek.security;
 
 import com.isiweek.role.Role;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
@@ -20,14 +21,26 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 @Builder
 public class AuthenticationUser implements Authentication {
 
-    private String username;
+    private String email;
     private String password;
     private Boolean isAuthenticated;
     private List<Role> listRole;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return listRole.stream().map(roleAux -> new SimpleGrantedAuthority(roleAux.getName())).collect(Collectors.toList());
+        if (listRole == null) {
+            return Collections.emptyList();
+        }
+
+        /*
+            Code snippet utilizes Java Stream API to transform a list of Role objects (listRole) into a list of 
+            SimpleGrantedAuthority objects. Each Role object is mapped to a SimpleGrantedAuthority object representing its name.
+         */
+        List<SimpleGrantedAuthority> authorities = listRole != null
+                ? listRole.stream().map(roleAux -> new SimpleGrantedAuthority(roleAux.getName())).collect(Collectors.toList())
+                : Collections.emptyList();
+
+        return authorities;
     }
 
     @Override
@@ -37,12 +50,12 @@ public class AuthenticationUser implements Authentication {
 
     @Override
     public Object getDetails() {
-        return username;
+        return email;
     }
 
     @Override
     public Object getPrincipal() {
-        return username;
+        return email;
     }
 
     @Override
@@ -57,7 +70,7 @@ public class AuthenticationUser implements Authentication {
 
     @Override
     public String getName() {
-        return username;
+        return email;
     }
 
 }

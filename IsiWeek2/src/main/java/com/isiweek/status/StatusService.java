@@ -4,7 +4,7 @@ import com.isiweek.company.Company;
 import com.isiweek.company.CompanyRepository;
 import com.isiweek.user.User;
 import com.isiweek.user.UserRepository;
-import com.isiweek.util.NotFoundException;
+import com.isiweek.exceptions.NotFoundException;
 import com.isiweek.util.ReferencedWarning;
 import java.util.Arrays;
 import java.util.List;

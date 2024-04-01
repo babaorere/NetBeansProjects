@@ -18,7 +18,6 @@ import jakarta.persistence.UniqueConstraint;
 import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.List;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,18 +29,21 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor
-@AllArgsConstructor
 @Builder
 @Getter
 @Setter
 @Table(uniqueConstraints = {
-    @UniqueConstraint(columnNames = "username")})
+    @UniqueConstraint(columnNames = "username"),
+    @UniqueConstraint(columnNames = "email")})
 public class User {
 
     @Id
     @Column(nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false, unique = true)
+    private String username;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -76,4 +78,42 @@ public class User {
     public Collection<Role> getRoles() {
         return List.of(role);
     }
+
+    public User(Long inId, String inUsername, String inEmail, String inPassword, Role inRole, Lender inLender, Debtor inDebtor, Status inStatus, OffsetDateTime inDateCreated, OffsetDateTime inLastUpdated) {
+        this.id = inId;
+        this.username = inEmail;
+        this.email = inEmail;
+        this.password = inPassword;
+        this.role = inRole;
+        this.lender = inLender;
+        this.debtor = inDebtor;
+        this.status = inStatus;
+        this.dateCreated = inDateCreated;
+        this.lastUpdated = inLastUpdated;
+    }
+
+    /**
+     * @param inUsername the username to set
+     */
+    public void setUsername(String inUsername) {
+        if (inUsername == null || inUsername.isBlank()) {
+            return;
+        }
+
+        this.username = inUsername;
+        this.email = inUsername;
+    }
+
+    /**
+     * @param inEmail the email to set
+     */
+    public void setEmail(String inEmail) {
+        if (inEmail == null || inEmail.isBlank()) {
+            return;
+        }
+
+        this.username = inEmail;
+        this.email = inEmail;
+    }
+
 }

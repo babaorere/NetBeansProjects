@@ -1,5 +1,8 @@
-package com.isiweek.auth;
+package com.isiweek;
 
+import com.isiweek.auth.LoginData;
+import com.isiweek.auth.SignupData;
+import com.isiweek.auth.ValidSignupData;
 import com.isiweek.debtor.Debtor;
 import com.isiweek.debtor.DebtorRepository;
 import com.isiweek.lender.Lender;
@@ -19,33 +22,29 @@ import com.isiweek.user.User;
 import com.isiweek.user.UserService;
 import com.isiweek.util.CustomCollectors;
 import com.isiweek.util.WebUtils;
-import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Validated
 @Log4j2
-@RequestMapping("/auth")
+@RequestMapping("/")
 @Controller
-public class AuthController {
+public class HomeController {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthServiceImpl authServiceImpl;
@@ -56,7 +55,7 @@ public class AuthController {
     private final StatusRepository statusRepository;
 
     @Autowired
-    public AuthController(JwtTokenProvider inJwtTokenProvider, AuthServiceImpl inAuthServiceImpl, final UserService userService, final RoleRepository roleRepository,
+    public HomeController(JwtTokenProvider inJwtTokenProvider, AuthServiceImpl inAuthServiceImpl, final UserService userService, final RoleRepository roleRepository,
             final LenderRepository lenderRepository, final DebtorRepository debtorRepository,
             final StatusRepository statusRepository) {
 
@@ -69,55 +68,66 @@ public class AuthController {
         this.statusRepository = statusRepository;
     }
 
-    @GetMapping("/signup")
+    @GetMapping({"/", "/index", "/index.html", "/home", "/home.html"})
+    public String index() {
+        return "public/index";
+    }
+
+    @GetMapping({"/signup", "/public/isiweek-signup"})
     public String GetMappingSignUp(@ModelAttribute("data") final SignupData signupData) {
         log.info("GetMappingSignUp Inmediatamente al entrar");
 
-        return "auth/signup";
+        signupData.reset();
+        return "public/isiweek-signup";
     }
 
-    @PostMapping("/signup")
-    public ModelAndView PostMappingSignUp(@Valid @ValidSignupData @ModelAttribute("data") final SignupData signupData,
-            final BindingResult bindingResult, final RedirectAttributes redirectAttributes) {
-        log.info("Inmediatamente al entrar");
+    @PostMapping({"/signup", "/public/isiweek-signup"})
+    public ModelAndView PostMappingSignUp(@ModelAttribute("data") @Valid @ValidSignupData final SignupData signupData,
+            final BindingResult bindingResult,
+            final RedirectAttributes redirectAttributes,
+            final ModelAndView modelAndView) {
+        log.info("PostMappingSignUp inmediatamente al entrar");
 
         if (bindingResult.hasErrors()) {
-            return new ModelAndView("auth/signup", "data", signupData);
+            return new ModelAndView("public/isiweek-signup", "data", signupData);
         }
 
-        log.info("Antes de tratar de hacer signup");
+        log.info("PostMappingSignUp antes de tratar de hacer signup");
 
         try {
             log.info(signupData);
             Optional<User> user = authServiceImpl.signup(signupData);
+            signupData.reset();
             redirectAttributes.addFlashAttribute(WebUtils.MSG_SUCCESS, WebUtils.getMessage("user.create.success"));
+            modelAndView.clear();
+            log.info("PostMappingSignUp despues hacer signup");
+            return new ModelAndView("redirect:/");
+
         } catch (RoleNotFoundException ex) {
             bindingResult.rejectValue("role", "error.role.notfound", "Role not found");
-            return new ModelAndView("auth/signup", "data", signupData);
+            return new ModelAndView("public/isiweek-signup", "data", signupData);
         } catch (StatusNotFoundException ex) {
             bindingResult.rejectValue("status", "error.status.notfound", "Status not found");
-            return new ModelAndView("auth/signup", "data", signupData);
+            return new ModelAndView("public/isiweek-signup", "data", signupData);
         } catch (UserAlreadyExistsException ex) {
             log.error("Error, usuario ya existe");
             redirectAttributes.addFlashAttribute(WebUtils.MSG_ERROR, WebUtils.getMessage("user.create.alreadyexist"));
-            bindingResult.rejectValue("username", "error.username.alreadyexist", "User already exist");
+            bindingResult.rejectValue("email", "error.username.alreadyexist", "User already exist");
             log.error("retornando a: /signup");
-            return new ModelAndView("auth/signup", "data", signupData);
+            return new ModelAndView("public/isiweek-signup", "data", signupData);
         } catch (Exception ex) {
             bindingResult.rejectValue(ex.toString(), "error.general");
-            return new ModelAndView("auth/signup", "data", signupData);
+            return new ModelAndView("public/isiweek-signup", "data", signupData);
         }
-
-        return new ModelAndView("redirect:/");
     }
 
-    @GetMapping("/login")
+    @GetMapping({"/login", "/public/isiweek-login"})
     public String GetMappingLogin(@ModelAttribute("data") final LoginData loginData) {
 
-        return "auth/login";
+        return "public/login";
     }
 
-    @PostMapping("/login")
+    @PostMapping({"/login", "/public/isiweek-login"})
     public String PostMappingLogin(@RequestBody LoginData loginData) {
 
         final Optional<User> userOp = authServiceImpl.login(loginData);
@@ -147,29 +157,40 @@ public class AuthController {
         return null;
     }
 
-    @ExceptionHandler(ConstraintViolationException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String handleValidationException(ConstraintViolationException ex, Model model) {
-        model.addAttribute("errorMessage", "Passwords do not match: " + ex.getMessage());
-        return "errorMessage";
-    }
-
+//    @ExceptionHandler(ConstraintViolationException.class)
+//    @ResponseStatus(HttpStatus.BAD_REQUEST)
+//    public String handleValidationException(ConstraintViolationException ex, Model model) {
+//
+//        if (model != null) {
+//            model.addAttribute("title", "Passwords do not match");
+//            model.addAttribute("status", "Passwords do not match");
+//
+//            String errorMessage = "Passwords do not match";
+//            if (ex != null) {
+//                errorMessage += ":\n" + ex.toString();
+//            }
+//
+//            model.addAttribute("errorMessage", errorMessage);
+//        }
+//
+//        return "public/isiweek-error";
+//    }
     @ModelAttribute
     public void prepareContext(final Model model) {
 
-        model.addAttribute("roleValues", roleRepository.findAll(Sort.by("id"))
+        model.addAttribute("idRoleValues", roleRepository.findAll(Sort.by("id"))
                 .stream()
                 .collect(CustomCollectors.toSortedMap(Role::getId, Role::getName)));
 
-        model.addAttribute("lenderValues", lenderRepository.findAll(Sort.by("id"))
+        model.addAttribute("idLenderValues", lenderRepository.findAll(Sort.by("id"))
                 .stream()
                 .collect(CustomCollectors.toSortedMap(Lender::getId, Lender::getObservations)));
 
-        model.addAttribute("debtorValues", debtorRepository.findAll(Sort.by("id"))
+        model.addAttribute("idDebtorValues", debtorRepository.findAll(Sort.by("id"))
                 .stream()
                 .collect(CustomCollectors.toSortedMap(Debtor::getId, Debtor::getName)));
 
-        model.addAttribute("statusValues", statusRepository.findAll(Sort.by("id"))
+        model.addAttribute("idStatusValues", statusRepository.findAll(Sort.by("id"))
                 .stream()
                 .collect(CustomCollectors.toSortedMap(Status::getId, Status::getId)));
     }

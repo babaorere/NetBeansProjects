@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout_auth}">
+
+    <head>
+        <title th:text="#{user.register}">Registration of a User</title>
+    </head>
+
+    <body class="body-link">
+        <div layout:fragment="content">
+            <section>
+
+                <div class="row justify-content-center">
+                    <div class="d-flex align-items-center">
+                        <div id="form" name="form" class="col-md-6 mx-auto text-center">
+
+                            <h2 th:text="#{user.register}">User Signup</h2>
+
+                            <div th:replace="~{fragments/forms::globalErrors('data')}" > 
+                            </div>
+
+                            <form th:action="@{/public/isiweek-signup}" method="post"> 
+                                <div th:replace="~{fragments/forms::inputRow(object='data', field='email', required=true, type='email')}" /> 
+                                <div th:replace="~{fragments/forms::inputRow(object='data', field='password', required=true, type='password')}" />
+                                <div th:replace="~{fragments/forms::inputRow(object='data', field='confirmPassword', required=true, type='password')}" />
+                                <div th:replace="~{fragments/forms::inputRow(object='data', field='idRole', required=true, type='select')}" /> 
+                                <input type="submit" 
+                                       th:value="#{user.save}" 
+                                       class="btn btn-primary mt-4 margin-right-25" />
+                                <button type="button" 
+                                        onclick="history.back()" 
+                                        id="cancelButton" 
+                                        name="cancelButton" 
+                                        th:text="#{user.cancel}" 
+                                        class="btn btn-secondary 
+                                        mt-4">Cancel</button>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>                            
+            </section>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                if (!sessionStorage.getItem('firstLoad')) {
+                    document.getElementById('email').value = '';
+                    document.getElementById('password').value = '';
+                    document.getElementById('confirmPassword').value = '';
+                    document.getElementById('idRole').value = '';
+                    sessionStorage.setItem('firstLoad', 'true');
+                }
+            });
+
+            document.addEventListener('DOMContentLoaded', function () {
+                // Restaurar valores de sessionStorage si están disponibles
+                document.getElementById('username').value = sessionStorage.getItem('username') || '';
+                document.getElementById('email').value = sessionStorage.getItem('email') || '';
+            });
+
+            document.getElementById('signupForm').addEventListener('submit', function () {
+                // Almacenar valores de campos en sessionStorage cuando se envíe el formulario
+                sessionStorage.setItem('username', document.getElementById('username').value);
+                sessionStorage.setItem('email', document.getElementById('email').value);
+            });
+
+        </script>                                
+    </body>
+</html>

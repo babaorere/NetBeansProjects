@@ -20,11 +20,11 @@
             <div th:if="${type != 'checkbox'}" class="col-md-10">
                 <input th:if="${type == 'text' || type == 'password' || type == 'email' || type == 'tel' || type == 'number'}"
                        th:type="${type}" th:field="*{__${field}__}" th:disabled="${disabled}"
-                       th:classappend="${inputClassappend}" class="form-control" />
+                       th:classappend="${inputClassappend}" class="form-control" autocomplete="off" />
                 <textarea th:if="${type == 'textarea'}" th:field="*{__${field}__}" th:disabled="${disabled}"
-                          th:classappend="${inputClassappend}" class="form-control" />
+                          th:classappend="${inputClassappend}" class="form-control" autocomplete="off" />
                 <select th:if="${type == 'select' || type == 'multiselect'}" th:field="*{__${field}__}" th:disabled="${disabled}"
-                        th:multiple="${type == 'multiselect'}" th:classappend="${inputClassappend}" class="form-select">
+                        th:multiple="${type == 'multiselect'}" th:classappend="${inputClassappend}" class="form-select" autocomplete="off">
                     <option th:if="${type == 'select'}" value="">[[#{select.empty.label}]]</option>
                     <option th:if="${!(__${field}__Values instanceof T(java.util.Map))}"
                             th:each="optionValue : ${__${field}__Values}" th:value="${optionValue}">[[${optionValue}]]</option>
@@ -33,7 +33,7 @@
                 </select>
                 <div th:if="${type == 'radio' && required != true}" class="form-check form-check-inline pt-2">
                     <input value="" th:checked="*{__${field}__} == null" th:name="${field}" th:disabled="${disabled}"
-                           th:classappend="${inputClassappend}" type="radio" class="form-check-input" />
+                           th:classappend="${inputClassappend}" type="radio" class="form-check-input" autocomplete="off" />
                     <label class="form-check-label">[[#{select.empty.label}]]</label>
                 </div>
                 <div th:if="${type == 'radio'}" th:each="radioValue : ${__${field}__Values}" class="form-check form-check-inline pt-2">

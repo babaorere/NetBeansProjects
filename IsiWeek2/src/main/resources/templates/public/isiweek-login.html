@@ -11,13 +11,13 @@
                 <div class="d-flex flex-wrap mb-4">
                     <h1 class="flex-grow-1">Iniciar Sesión</h1>
                     <div>
-                        <a th:href="@{/auth/signup}" class="btn btn-secondary">Registrarse</a>
+                        <a th:href="@{/public/signup}" class="btn btn-secondary">Registrarse</a>
                     </div>
                 </div>
                 <div th:replace="~{fragments/forms::globalErrors('data')}" />
                 <div>
 
-                    <form th:action="@{/auth/login}" method="post">
+                    <form th:action="@{/public/login}" method="post">
                         <!-- Agregar campos para el formulario de login -->
                         <div th:replace="~{fragments/forms::inputRow(object='data', field='username', required=true)}" />
                         <div th:replace="~{fragments/forms::inputRow(object='data', field='password', required=true)}" />

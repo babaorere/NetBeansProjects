@@ -2,7 +2,7 @@ package com.isiweek.debtor;
 
 import com.isiweek.user.User;
 import com.isiweek.user.UserRepository;
-import com.isiweek.util.NotFoundException;
+import com.isiweek.exceptions.NotFoundException;
 import com.isiweek.util.ReferencedWarning;
 import java.util.List;
 import java.util.Optional;

@@ -1,7 +1,7 @@
 package com.isiweek.company;
 
 import com.isiweek.status.Status;
-import com.isiweek.util.NotFoundException;
+import com.isiweek.exceptions.NotFoundException;
 import java.util.List;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;

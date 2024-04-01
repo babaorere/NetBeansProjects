@@ -10,7 +10,7 @@ import com.isiweek.role.Role;
 import com.isiweek.role.RoleRepository;
 import com.isiweek.status.Status;
 import com.isiweek.status.StatusRepository;
-import com.isiweek.util.NotFoundException;
+import com.isiweek.exceptions.NotFoundException;
 import com.isiweek.util.ReferencedWarning;
 import java.util.List;
 import org.springframework.data.domain.Sort;

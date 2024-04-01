@@ -4,7 +4,7 @@ import com.isiweek.lender.Lender;
 import com.isiweek.lender.LenderRepository;
 import com.isiweek.user.User;
 import com.isiweek.user.UserRepository;
-import com.isiweek.util.NotFoundException;
+import com.isiweek.exceptions.NotFoundException;
 import com.isiweek.util.ReferencedWarning;
 import java.util.List;
 import org.springframework.data.domain.Sort;

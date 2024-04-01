@@ -52,6 +52,7 @@ public class SecurityConfig_ {
 //                    authorize.requestMatchers(HttpMethod.GET, "/api/**").hasAnyRole("ADMIN", "USER");
 //                    authorize.requestMatchers(HttpMethod.PATCH, "/api/**").hasAnyRole("ADMIN", "USER");
 //                    authorize.requestMatchers(HttpMethod.GET, "/api/**").permitAll();
+//                    authorize.requestMatchers("/public/**").permitAll();
 //                    authorize.requestMatchers("/auth/**").permitAll();
 //                    authorize.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll();
 //                    authorize.requestMatchers(HttpMethod.GET, "/public/**").permitAll();
